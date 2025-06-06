@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - BAMZY MEDIA</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar/Navigation -->
+        <div class="sidebar">
+            <div class="logo">
+                <h2>BAMZY MEDIA</h2>
+            </div>
+            <div class="user-info">
+                <div class="avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-details">
+                    <p class="username">Welcome, <span id="userName">User</span></p>
+                    <p class="balance">Balance: <span id="userBalance">0.00</span></p>
+                </div>
+            </div>
+            <nav class="menu">
+                <ul>
+                    <li class="active"><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart <span id="cartCount" class="badge">0</span></a></li>
+                    <li><a href="purchases.html"><i class="fas fa-history"></i> Purchase History</a></li>
+                    <li><a href="#" id="fundAccount"><i class="fas fa-wallet"></i> Fund Account</a></li>
+                    <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages <span id="unreadCount" class="badge" style="display: none;">0</span></a></li>
+                    <li><a href="#" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <header class="dashboard-header">
+                <div class="hamburger-menu">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search accounts...">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+                <div class="header-actions">
+                    <a href="cart.html" class="cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="headerCartCount" class="badge">0</span>
+                    </a>
+                    <a href="messages.html" class="message-icon">
+                        <i class="fas fa-envelope"></i>
+                        <span id="headerUnreadCount" class="badge" style="display: none;">0</span>
+                    </a>
+                </div>
+            </header>
+
+            <!-- Filter Section -->
+            <div class="filter-section">
+                <h3>Filter by Platform</h3>
+                <div class="platform-filters">
+                    <button class="filter-btn active" data-platform="all">All</button>
+                    <button class="filter-btn" data-platform="tiktok">
+                        <i class="fab fa-tiktok"></i> TikTok
+                    </button>
+                    <button class="filter-btn" data-platform="facebook">
+                        <i class="fab fa-facebook"></i> Facebook
+                    </button>
+                    <button class="filter-btn" data-platform="twitter">
+                        <i class="fab fa-twitter"></i> Twitter
+                    </button>
+                    <button class="filter-btn" data-platform="instagram">
+                        <i class="fab fa-instagram"></i> Instagram
+                    </button>
+                    <button class="filter-btn" data-platform="snapchat">
+                        <i class="fab fa-snapchat"></i> Snapchat
+                    </button>
+                </div>
+            </div>
+
+            <!-- Accounts Grid -->
+            <div class="accounts-section">
+                <h2>Available Accounts</h2>
+                <div class="accounts-grid" id="accountsGrid">
+                    <!-- Accounts will be loaded dynamically here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fund Account Modal -->
+    <div id="fundModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Fund Your Account</h2>
+            <p>Please enter the amount you would like to fund your account with:</p>
+        
+            <div class="form-group">
+                <label for="fundAmount">Amount ($)</label>
+                <input type="number" id="fundAmount" min="1" step="0.01" placeholder="Enter amount">
+            </div>
+        
+            <div class="fund-options">
+                <div class="fund-option">
+                    <div class="fund-option-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="fund-option-info">
+                        <div class="fund-option-title">Chat with Admin</div>
+                        <div class="fund-option-description">Send your funding request directly to the admin via chat</div>
+                    </div>
+                </div>
+            </div>
+        
+            <button id="sendFundRequest" class="btn btn-primary">Send Fund Request</button>
+        </div>
+    </div>
+
+    <!-- Account Details Modal -->
+    <div id="accountModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="accountDetails">
+                <!-- Account details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

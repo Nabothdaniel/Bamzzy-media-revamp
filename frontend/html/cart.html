@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart - BAMZY MEDIA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="stylesl.css">
+    <link rel="stylesheet" href="cart.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>BAMZY MEDIA</h2>
+                <button id="closeSidebar" class="close-sidebar"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-details">
+                    <h3 id="userName">Loading...</h3>
+                    <p id="userBalance">Balance: ₦0</p>
+                </div>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li class="active"><a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart <span id="cartCount" class="badge">0</span></a></li>
+                <li><a href="purchases.html"><i class="fas fa-history"></i> Purchase History</a></li>
+                <li><a href="#" id="fundAccount"><i class="fas fa-wallet"></i> Fund Account</a></li>
+                <li><a href="#" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="top-bar">
+                <button id="toggleSidebar" class="toggle-sidebar"><i class="fas fa-bars"></i></button>
+                <h1>Shopping Cart</h1>
+                <div class="user-actions">
+                    <a href="dashboard.html" class="back-button"><i class="fas fa-arrow-left"></i> Back</a>
+                </div>
+            </div>
+
+            <div class="content-wrapper">
+                <div class="cart-container">
+                    <div class="cart-header">
+                        <h2>Your Cart</h2>
+                        <p>Review your selected accounts before checkout</p>
+                    </div>
+                    
+                    <div id="cartItems" class="cart-items">
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Loading cart...</p>
+                        </div>
+                    </div>
+                    
+                    <div class="cart-summary">
+                        <div class="summary-row">
+                            <span>Total Items:</span>
+                            <span id="totalItems">0</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Total Price:</span>
+                            <span id="totalPrice">₦0</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Your Balance:</span>
+                            <span id="cartUserBalance">₦0</span>
+                        </div>
+                        <button id="checkoutButton" class="btn-primary checkout-btn" disabled>
+                            <i class="fas fa-lock"></i> Checkout
+                        </button>
+                        <div id="insufficientFunds" class="insufficient-funds" style="display: none;">
+                            <p><i class="fas fa-exclamation-triangle"></i> Insufficient funds</p>
+                            <button id="fundFromCart" class="btn-secondary">Fund Account</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fund Account Modal -->
+    <div id="fundModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Fund Your Account</h2>
+            <div class="fund-options">
+                <div class="fund-option">
+                    <h3>Chat with Admin</h3>
+                    <p>To fund your account, please chat with our admin who will guide you through the process.</p>
+                    <div class="bank-details">
+                        <p>Our admin will provide you with:</p>
+                        <ul>
+                            <li>Bank account details for transfer</li>
+                            <li>Alternative payment methods</li>
+                            <li>Assistance with any questions</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="fund-form">
+                <div class="form-group">
+                    <label for="fundAmount">Amount (₦)</label>
+                    <input type="number" id="fundAmount" min="1000" step="1000" required>
+                </div>
+                <button id="sendFundRequest" class="btn-primary">Send Fund Request</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Success Modal -->
+    <div id="checkoutSuccessModal" class="modal">
+        <div class="modal-content success-modal">
+            <span class="close">&times;</span>
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Purchase Successful!</h2>
+            <p>Your accounts have been purchased successfully.</p>
+            <p>You can view your purchased accounts and login details in your <a href="purchases.html">Purchase History</a>.</p>
+            <div class="modal-actions">
+                <button id="viewPurchasesBtn" class="btn-primary">View Purchases</button>
+                <button id="continueShopping" class="btn-secondary">Continue Shopping</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="cart.js"></script>
+</body>
+</html>

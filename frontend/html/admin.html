@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - BAMZY MEDIA</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .logo h2 {
+            font-family: 'Montserrat', sans-  sans-serif;
+        }
+        
+        .logo h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #1e40af;
+        }
+        
+        .sidebar {
+            background: linear-gradient(to bottom, #1e40af, #3b82f6);
+        }
+        
+        .menu a {
+            font-weight: 500;
+        }
+        
+        .admin-dashboard h2, 
+        .manage-accounts h2, 
+        .transactions h2, 
+        .users-section h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .admin-dashboard h2:after, 
+        .manage-accounts h2:after, 
+        .transactions h2:after, 
+        .users-section h2:after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: #3b82f6;
+            border-radius: 3px;
+        }
+        
+        .stat-card {
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .stat-icon {
+            color: #1e40af;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .table-actions button {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            margin: 0 5px;
+            padding: 5px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        
+        .edit-btn {
+            color: #3b82f6;
+        }
+        
+        .delete-btn {
+            color: #ef4444;
+        }
+        
+        .edit-btn:hover, .message-user-btn:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+        
+        .delete-btn:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .table-actions {
+                display: flex;
+                justify-content: center;
+            }
+            
+            .table-actions button {
+                padding: 8px;
+                margin: 0 3px;
+            }
+            
+            .table-actions i {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar/Navigation -->
+        <div class="sidebar">
+            <div class="logo">
+                <h2>BAMZY MEDIA</h2>
+                <span class="admin-badge">Admin</span>
+            </div>
+            <div class="user-info">
+                <div class="avatar">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="user-details">
+                    <p class="username">Admin Panel</p>
+                </div>
+            </div>
+            <nav class="menu">
+                <ul>
+                    <li class="active"><a href="admin.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="#" id="showAccounts"><i class="fas fa-users"></i> Manage Accounts</a></li>
+                    <li><a href="#" id="showTransactions"><i class="fas fa-exchange-alt"></i> Transactions</a></li>
+                    <li><a href="#" id="showUsers"><i class="fas fa-user-friends"></i> Users</a></li>
+                    <li><a href="admin-fund.html"><i class="fas fa-wallet"></i> Fund User</a></li>
+                    <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages <span id="unreadCount" class="badge" style="display: none;">0</span></a></li>
+                    <li><a href="#" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <header class="dashboard-header">
+                <div class="hamburger-menu">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search...">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+                <div class="header-actions">
+                    <button id="addAccountBtn" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add New Account
+                    </button>
+                    <a href="messages.html" class="message-icon">
+                        <i class="fas fa-envelope"></i>
+                        <span id="headerUnreadCount" class="badge" style="display: none;">0</span>
+                    </a>
+                </div>
+            </header>
+
+            <!-- Dashboard Overview -->
+            <div class="admin-dashboard" id="adminDashboard">
+                <h2>Admin Dashboard</h2>
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total Accounts</h3>
+                            <p id="totalAccounts">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Accounts Sold</h3>
+                            <p id="accountsSold">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total Revenue</h3>
+                            <p id="totalRevenue">$0.00</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-friends"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total Users</h3>
+                            <p id="totalUsers">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-activity">
+                    <h3>Recent Activity</h3>
+                    <div class="activity-list" id="recentActivity">
+                        <!-- Recent activity will be loaded dynamically here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manage Accounts Section -->
+            <div class="manage-accounts" id="manageAccounts" style="display: none;">
+                <h2>Manage Social Media Accounts</h2>
+                <div class="accounts-table-container">
+                    <div class="table-responsive">
+                        <table class="accounts-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Platform</th>
+                                    <th>Image</th>
+                                    <th>Price</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="accountsTableBody">
+                                <!-- Accounts will be loaded dynamically here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transactions Section -->
+            <div class="transactions" id="transactionsSection" style="display: none;">
+                <h2>Transactions</h2>
+                <div class="transactions-table-container">
+                    <div class="table-responsive">
+                        <table class="transactions-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>User</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactionsTableBody">
+                                <!-- Transactions will be loaded dynamically here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Section -->
+            <div class="users-section" id="usersSection" style="display: none;">
+                <h2>Users</h2>
+                <div class="users-table-container">
+                    <div class="table-responsive">
+                        <table class="users-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Balance</th>
+                                    <th>Joined</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <!-- Users will be loaded dynamically here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Account Modal -->
+    <div id="addAccountModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add New Social Media Account</h2>
+            <form id="addAccountForm">
+                <div class="form-group">
+                    <label for="platform">Platform</label>
+                    <select id="platform" name="platform" required>
+                        <option value="">Select Platform</option>
+                        <option value="tiktok">TikTok</option>
+                        <option value="facebook">Facebook</option>
+                        <option value="twitter">Twitter</option>
+                        <option value="instagram">Instagram</option>
+                        <option value="snapchat">Snapchat</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="accountImage">Account Image</label>
+                    <input type="file" id="accountImage" name="accountImage" accept="image/*" required>
+                    <div id="imagePreview" class="image-preview"></div>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price (₦)</label>
+                    <input type="number" id="price" name="price" min="1" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginDetails">Login Details</label>
+                    <textarea id="loginDetails" name="loginDetails" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="howToUse">How To Use Manual</label>
+                    <textarea id="howToUse" name="howToUse" rows="3" placeholder="Enter instructions on how to use this account (e.g., authenticator setup, security tips, etc.)" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Account</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Account Modal -->
+    <div id="editAccountModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Social Media Account</h2>
+            <form id="editAccountForm">
+                <input type="hidden" id="editAccountId" name="accountId">
+                <div class="form-group">
+                    <label for="editPlatform">Platform</label>
+                    <select id="editPlatform" name="platform" required>
+                        <option value="">Select Platform</option>
+                        <option value="tiktok">TikTok</option>
+                        <option value="facebook">Facebook</option>
+                        <option value="twitter">Twitter</option>
+                        <option value="instagram">Instagram</option>
+                        <option value="snapchat">Snapchat</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editAccountImage">Account Image</label>
+                    <input type="file" id="editAccountImage" name="accountImage" accept="image/*">
+                    <div id="editImagePreview" class="image-preview"></div>
+                </div>
+                <div class="form-group">
+                    <label for="editPrice">Price (₦)</label>
+                    <input type="number" id="editPrice" name="price" min="1" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="editLoginDetails">Login Details</label>
+                    <textarea id="editLoginDetails" name="loginDetails" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editDescription">Description</label>
+                    <textarea id="editDescription" name="description" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editHowToUse">How To Use Manual</label>
+                    <textarea id="editHowToUse" name="howToUse" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editStatus">Status</label>
+                    <select id="editStatus" name="status" required>
+                        <option value="available">Available</option>
+                        <option value="sold">Sold Out</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Update Account</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

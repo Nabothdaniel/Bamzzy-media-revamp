@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fund User Account - SocialSwap</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .fund-container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .fund-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .fund-form .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .fund-form label {
+            font-weight: 600;
+            color: #333;
+        }
+        .fund-form input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .fund-form button {
+            margin-top: 10px;
+        }
+        .user-search-results {
+            margin-top: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .user-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        .user-item:hover {
+            background-color: #f9f9f9;
+        }
+        .user-item.selected {
+            background-color: #e6f7ff;
+        }
+        .user-item .user-info {
+            margin-left: 10px;
+        }
+        .user-item .user-name {
+            font-weight: 600;
+        }
+        .user-item .user-email {
+            font-size: 12px;
+            color: #666;
+        }
+        .user-item .user-id {
+            font-size: 12px;
+            color: #999;
+        }
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 15px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar/Navigation -->
+        <div class="sidebar">
+            <div class="logo">
+                <h2>SocialSwap</h2>
+                <span class="admin-badge">Admin</span>
+            </div>
+            <div class="user-info">
+                <div class="avatar">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="user-details">
+                    <p class="username">Admin Panel</p>
+                </div>
+            </div>
+            <nav class="menu">
+                <ul>
+                    <li><a href="admin.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="admin.html" id="showAccounts"><i class="fas fa-users"></i> Manage Accounts</a></li>
+                    <li><a href="admin.html" id="showTransactions"><i class="fas fa-exchange-alt"></i> Transactions</a></li>
+                    <li><a href="admin.html" id="showUsers"><i class="fas fa-user-friends"></i> Users</a></li>
+                    <li class="active"><a href="admin-fund.html"><i class="fas fa-wallet"></i> Fund User</a></li>
+                    <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages <span id="unreadCount" class="badge" style="display: none;">0</span></a></li>
+                    <li><a href="#" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <header class="dashboard-header">
+                <div class="hamburger-menu">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search...">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+                <div class="header-actions">
+                    <a href="messages.html" class="message-icon">
+                        <i class="fas fa-envelope"></i>
+                        <span id="headerUnreadCount" class="badge" style="display: none;">0</span>
+                    </a>
+                </div>
+            </header>
+
+            <!-- Fund User Section -->
+            <div class="admin-dashboard">
+                <h2>Fund User Account</h2>
+                <p>Use this form to add funds to a user's account.</p>
+
+                <div class="fund-container">
+                    <form id="fundUserForm" class="fund-form">
+                        <div class="form-group">
+                            <label for="userSearch">Search User</label>
+                            <input type="text" id="userSearch" placeholder="Search by name, email, or ID">
+                        </div>
+
+                        <div class="user-search-results" id="userSearchResults">
+                            <!-- User search results will be displayed here -->
+                        </div>
+
+                        <div class="form-group">
+                            <label for="selectedUserId">Selected User ID</label>
+                            <input type="text" id="selectedUserId" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="selectedUserName">Selected User Name</label>
+                            <input type="text" id="selectedUserName" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fundAmount">Amount (₦)</label>
+                            <input type="number" id="fundAmount" min="1" step="0.01" placeholder="Enter amount">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Fund Account</button>
+                    </form>
+
+                    <div id="successMessage" class="success-message">
+                        User account has been funded successfully!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Check if user is logged in and is admin
+            const token = localStorage.getItem("token");
+            const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+            if (!token || !user || user.role !== "admin") {
+                window.location.href = "/login.html";
+                return;
+            }
+
+            // Handle logout
+            const logoutBtn = document.getElementById("logout");
+            if (logoutBtn) {
+                logoutBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("user");
+                    window.location.href = "/login.html";
+                });
+            }
+
+            // Handle mobile sidebar toggle
+            const hamburgerMenu = document.querySelector(".hamburger-menu");
+            const sidebar = document.querySelector(".sidebar");
+
+            if (hamburgerMenu && sidebar) {
+                hamburgerMenu.addEventListener("click", () => {
+                    sidebar.classList.toggle("active");
+                });
+            }
+
+            // Function to close sidebar on mobile after selection
+            function closeSidebarOnMobile() {
+                if (window.innerWidth <= 768 && sidebar.classList.contains("active")) {
+                    sidebar.classList.remove("active");
+                }
+            }
+
+            // Add click event to all sidebar menu items
+            const sidebarMenuItems = document.querySelectorAll(".sidebar .menu li a");
+            sidebarMenuItems.forEach((item) => {
+                item.addEventListener("click", () => {
+                    closeSidebarOnMobile();
+                });
+            });
+
+            // Load users for search
+            let users = [];
+            fetch("/api/admin/users", {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success && data.users) {
+                        users = data.users.filter(u => u.role !== "admin");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                });
+
+            // Handle user search
+            const userSearchInput = document.getElementById("userSearch");
+            const userSearchResults = document.getElementById("userSearchResults");
+            const selectedUserIdInput = document.getElementById("selectedUserId");
+            const selectedUserNameInput = document.getElementById("selectedUserName");
+
+            userSearchInput.addEventListener("input", function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                if (searchTerm.length < 2) {
+                    userSearchResults.innerHTML = "";
+                    return;
+                }
+
+                const filteredUsers = users.filter(user => 
+                    user.name.toLowerCase().includes(searchTerm) || 
+                    user.email.toLowerCase().includes(searchTerm) ||
+                    user.id.toString().includes(searchTerm)
+                );
+
+                userSearchResults.innerHTML = "";
+                
+                if (filteredUsers.length === 0) {
+                    userSearchResults.innerHTML = "<p>No users found</p>";
+                    return;
+                }
+
+                filteredUsers.forEach(user => {
+                    const userItem = document.createElement("div");
+                    userItem.className = "user-item";
+                    userItem.dataset.id = user.id;
+                    userItem.dataset.name = user.name;
+                    
+                    userItem.innerHTML = `
+                        <div class="avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-info">
+                            <div class="user-name">${user.name}</div>
+                            <div class="user-email">${user.email}</div>
+                            <div class="user-id">ID: ${user.id}</div>
+                        </div>
+                    `;
+
+                    userItem.addEventListener("click", function() {
+                        // Remove selected class from all items
+                        document.querySelectorAll(".user-item").forEach(item => {
+                            item.classList.remove("selected");
+                        });
+
+                        // Add selected class to clicked item
+                        this.classList.add("selected");
+
+                        // Set selected user ID and name
+                        selectedUserIdInput.value = this.dataset.id;
+                        selectedUserNameInput.value = this.dataset.name;
+                    });
+
+                    userSearchResults.appendChild(userItem);
+                });
+            });
+
+            // Handle fund form submission
+            const fundUserForm = document.getElementById("fundUserForm");
+            const successMessage = document.getElementById("successMessage");
+
+            fundUserForm.addEventListener("submit", function(e) {
+                e.preventDefault();
+
+                const userId = selectedUserIdInput.value;
+                const amount = document.getElementById("fundAmount").value;
+
+                if (!userId) {
+                    alert("Please select a user");
+                    return;
+                }
+
+                if (!amount || isNaN(amount) || amount <= 0) {
+                    alert("Please enter a valid amount");
+                    return;
+                }
+
+                // Send fund request to server
+                fetch("/api/admin/fund-user", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        userId,
+                        amount: parseFloat(amount),
+                    }),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            // Show success message
+                            successMessage.style.display = "block";
+                            
+                            // Reset form
+                            fundUserForm.reset();
+                            userSearchResults.innerHTML = "";
+                            
+                            // Hide success message after 3 seconds
+                            setTimeout(() => {
+                                successMessage.style.display = "none";
+                            }, 3000);
+                        } else {
+                            alert(data.message || "Failed to fund user account");
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        alert("An error occurred. Please try again.");
+                    });
+            });
+
+            // Check for unread messages
+            function checkUnreadMessages() {
+                fetch("/api/messages", {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            const totalUnread = data.conversations.reduce((total, conv) => total + conv.unreadCount, 0);
+                            updateUnreadMessageCount(totalUnread);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                    });
+            }
+
+            // Function to update unread message count
+            function updateUnreadMessageCount(count) {
+                const unreadCountElements = document.querySelectorAll("#unreadCount, #headerUnreadCount");
+
+                unreadCountElements.forEach((element) => {
+                    if (count > 0) {
+                        element.textContent = count;
+                        element.style.display = "inline-flex";
+                    } else {
+                        element.style.display = "none";
+                    }
+                });
+            }
+
+            // Check for unread messages on page load
+            checkUnreadMessages();
+
+            // Check for unread messages periodically
+            setInterval(checkUnreadMessages, 30000); // Check every 30 seconds
+        });
+    </script>
+</body>
+</html>

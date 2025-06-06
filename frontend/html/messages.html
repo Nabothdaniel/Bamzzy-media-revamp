@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages - BAMZY MEDIA</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .messages-container {
+            display: flex;
+            height: calc(100vh - 80px);
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .conversations-list {
+            width: 300px;
+            border-right: 1px solid #eee;
+            overflow-y: auto;
+        }
+        .conversation-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .conversation-item:hover {
+            background-color: #f9f9f9;
+        }
+        .conversation-item.active {
+            background-color: #e6f7ff;
+        }
+        .conversation-item .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+        .conversation-item .avatar i {
+            font-size: 20px;
+            color: #666;
+        }
+        .conversation-item .conversation-info {
+            flex: 1;
+        }
+        .conversation-item .conversation-name {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        .conversation-item .conversation-preview {
+            font-size: 12px;
+            color: #666;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+        .conversation-item .conversation-time {
+            font-size: 11px;
+            color: #999;
+            margin-left: 5px;
+        }
+        .conversation-item .unread-badge {
+            background-color: #1e88e5;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            margin-left: 5px;
+        }
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-height: 100%;
+        }
+        .chat-header {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .chat-header .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+        .chat-header .avatar i {
+            font-size: 20px;
+            color: #666;
+        }
+        .chat-header .chat-title {
+            font-weight: 600;
+        }
+        .chat-header .chat-subtitle {
+            font-size: 12px;
+            color: #666;
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            max-height: calc(100vh - 200px);
+            scrollbar-width: thin;
+            scrollbar-color: #ddd #f5f5f5;
+        }
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-messages::-webkit-scrollbar-track {
+            background: #f5f5f5;
+        }
+        .chat-messages::-webkit-scrollbar-thumb {
+            background-color: #ddd;
+            border-radius: 6px;
+        }
+        .message {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            margin-bottom: 10px;
+            position: relative;
+            word-wrap: break-word;
+        }
+        .message-time {
+            font-size: 11px;
+            color: #999;
+            margin-top: 5px;
+            text-align: right;
+        }
+        .message.sent {
+            align-self: flex-end;
+            background-color: #dcf8c6;
+        }
+        .message.received {
+            align-self: flex-start;
+            background-color: #f1f0f0;
+        }
+        .chat-input {
+            padding: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 24px;
+            font-size: 14px;
+            outline: none;
+        }
+        .chat-input button {
+            margin-left: 10px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #1e88e5;
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .chat-input button:hover {
+            background-color: #1976d2;
+        }
+        .chat-input button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #666;
+        }
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #ddd;
+        }
+        .empty-state p {
+            font-size: 16px;
+            text-align: center;
+        }
+        .admin-badge {
+            background-color: #ff9800;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            margin-left: 5px;
+        }
+        .mobile-back {
+            display: none;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 768px) {
+            .messages-container {
+                flex-direction: column;
+            }
+            .conversations-list {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #eee;
+                max-height: 300px;
+            }
+            .mobile-back {
+                display: block;
+            }
+            .chat-area {
+                display: none;
+            }
+            .chat-area.active {
+                display: flex;
+            }
+            .conversations-list.hidden {
+                display: none;
+            }
+            .chat-messages {
+                max-height: calc(100vh - 250px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar/Navigation -->
+        <div class="sidebar" id="sidebar">
+            <!-- Sidebar content will be loaded dynamically based on user role -->
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <header class="dashboard-header">
+                <div class="hamburger-menu">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <h2>Messages</h2>
+                <div class="header-actions">
+                    <!-- Header actions will be loaded dynamically based on user role -->
+                </div>
+            </header>
+
+            <!-- Messages Container -->
+            <div class="messages-container">
+                <div class="conversations-list" id="conversationsList">
+                    <!-- Conversations will be loaded dynamically -->
+                    <div class="empty-state">
+                        <i class="fas fa-comments"></i>
+                        <p>Loading conversations...</p>
+                    </div>
+                </div>
+                
+                <div class="chat-area" id="chatArea">
+                    <div class="empty-state">
+                        <i class="fas fa-comment-dots"></i>
+                        <p>Select a conversation to start messaging</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Check if user is logged in
+            const token = localStorage.getItem("token");
+            const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+            if (!token || !user) {
+                window.location.href = "/login.html";
+                return;
+            }
+
+            // Load sidebar based on user role
+            const sidebar = document.getElementById("sidebar");
+            if (sidebar) {
+                if (user.role === "admin") {
+                    sidebar.innerHTML = `
+                        <div class="logo">
+                            <h2>BAMZY MEDIA</h2>
+                            <span class="admin-badge">Admin</span>
+                        </div>
+                        <div class="user-info">
+                            <div class="avatar">
+                                <i class="fas fa-user-shield"></i>
+                            </div>
+                            <div class="user-details">
+                                <p class="username">Admin Panel</p>
+                            </div>
+                        </div>
+                        <nav class="menu">
+                            <ul>
+                                <li><a href="admin.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                                <li><a href="admin.html" id="showAccounts"><i class="fas fa-users"></i> Manage Accounts</a></li>
+                                <li><a href="admin.html" id="showTransactions"><i class="fas fa-exchange-alt"></i> Transactions</a></li>
+                                <li><a href="admin.html" id="showUsers"><i class="fas fa-user-friends"></i> Users</a></li>
+                                <li><a href="admin-fund.html"><i class="fas fa-wallet"></i> Fund User</a></li>
+                                <li class="active"><a href="messages.html"><i class="fas fa-envelope"></i> Messages <span id="unreadCount" class="badge" style="display: none;">0</span></a></li>
+                                <li><a href="#" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                            </ul>
+                        </nav>
+                    `;
+                } else {
+                    sidebar.innerHTML = `
+                        <div class="logo">
+                            <h2>BAMZY MEDIA</h2>
+                        </div>
+                        <div class="user-info">
+                            <div class="avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="user-details">
+                                <p class="username" id="userName">${user.name || "User"}</p>
+                                <p class="balance">Balance: ₦<span id="userBalance">${formatNumber(user.balance || 0)}</span></p>
+                            </div>
+                        </div>
+                        <nav class="menu">
+                            <ul>
+                                <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                                <li><a href="purchases.html"><i class="fas fa-shopping-bag"></i> Purchase History</a></li>
+                                <li><a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart <span id="cartCount" class="badge">0</span></a></li>
+                                <li class="active"><a href="messages.html"><i class="fas fa-envelope"></i> Messages <span id="unreadCount" class="badge" style="display: none;">0</span></a></li>
+                                <li><a href="#" id="fundAccount"><i class="fas fa-wallet"></i> Fund Account</a></li>
+                                <li><a href="#" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                            </ul>
+                        </nav>
+                    `;
+
+                    // Update cart count
+                    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+                    const cartCountElement = document.getElementById("cartCount");
+                    if (cartCountElement) {
+                        cartCountElement.textContent = cart.length;
+                    }
+                }
+            }
+
+            // Handle logout
+            const logoutBtn = document.getElementById("logout");
+            if (logoutBtn) {
+                logoutBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("user");
+                    window.location.href = "/login.html";
+                });
+            }
+
+            // Handle mobile sidebar toggle
+            const hamburgerMenu = document.querySelector(".hamburger-menu");
+            if (hamburgerMenu && sidebar) {
+                hamburgerMenu.addEventListener("click", () => {
+                    sidebar.classList.toggle("active");
+                });
+            }
+
+            // Function to close sidebar on mobile after selection
+            function closeSidebarOnMobile() {
+                if (window.innerWidth <= 768 && sidebar.classList.contains("active")) {
+                    sidebar.classList.remove("active");
+                }
+            }
+
+            // Add click event to all sidebar menu items
+            const sidebarMenuItems = document.querySelectorAll(".sidebar .menu li a");
+            sidebarMenuItems.forEach((item) => {
+                item.addEventListener("click", () => {
+                    closeSidebarOnMobile();
+                });
+            });
+
+            // Handle fund account for regular users
+            const fundAccountBtn = document.getElementById("fundAccount");
+            if (fundAccountBtn && user.role !== "admin") {
+                fundAccountBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    
+                    // Create a conversation with admin
+                    const adminId = "1"; // Admin ID
+                    
+                    // Redirect to the conversation
+                    window.location.href = `messages.html?userId=${adminId}&userName=Admin`;
+                });
+            }
+
+            // Load conversations
+            const conversationsList = document.getElementById("conversationsList");
+            const chatArea = document.getElementById("chatArea");
+            let activeConversation = null;
+
+            // Check for URL parameters (direct message)
+            const urlParams = new URLSearchParams(window.location.search);
+            const directUserId = urlParams.get("userId");
+            const directUserName = urlParams.get("userName");
+
+            // Function to scroll chat to bottom
+            function scrollChatToBottom() {
+                const chatMessages = document.getElementById("chatMessages");
+                if (chatMessages) {
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
+            }
+
+            function loadConversations() {
+                fetch("/api/messages", {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            const conversations = data.conversations;
+                            
+                            if (conversations.length === 0) {
+                                conversationsList.innerHTML = `
+                                    <div class="empty-state">
+                                        <i class="fas fa-comments"></i>
+                                        <p>No conversations yet</p>
+                                    </div>
+                                `;
+                                return;
+                            }
+
+                            conversationsList.innerHTML = "";
+                            
+                            // Sort conversations by last message time (newest first)
+                            conversations.sort((a, b) => {
+                                const timeA = new Date(a.lastMessage.timestamp);
+                                const timeB = new Date(b.lastMessage.timestamp);
+                                return timeB - timeA;
+                            });
+
+                            conversations.forEach((conversation) => {
+                                const conversationItem = document.createElement("div");
+                                conversationItem.className = "conversation-item";
+                                conversationItem.dataset.id = conversation.partnerId;
+                                conversationItem.dataset.name = conversation.partnerName;
+                                
+                                const lastMessageTime = new Date(conversation.lastMessage.timestamp);
+                                const formattedTime = formatMessageTime(lastMessageTime);
+                                
+                                conversationItem.innerHTML = `
+                                    <div class="avatar">
+                                        <i class="fas ${conversation.partnerRole === 'admin' ? 'fa-user-shield' : 'fa-user'}"></i>
+                                    </div>
+                                    <div class="conversation-info">
+                                        <div class="conversation-name">
+                                            ${conversation.partnerName}
+                                            ${conversation.partnerRole === 'admin' ? '<span class="admin-badge">Admin</span>' : ''}
+                                        </div>
+                                        <div class="conversation-preview">
+                                            ${conversation.lastMessage.message.substring(0, 50)}${conversation.lastMessage.message.length > 50 ? '...' : ''}
+                                        </div>
+                                    </div>
+                                    <div class="conversation-time">${formattedTime}</div>
+                                    ${conversation.unreadCount > 0 ? `<div class="unread-badge">${conversation.unreadCount}</div>` : ''}
+                                `;
+
+                                conversationItem.addEventListener("click", function() {
+                                    // Remove active class from all items
+                                    document.querySelectorAll(".conversation-item").forEach(item => {
+                                        item.classList.remove("active");
+                                    });
+
+                                    // Add active class to clicked item
+                                    this.classList.add("active");
+
+                                    // Load conversation
+                                    loadConversation(this.dataset.id, this.dataset.name);
+
+                                    // On mobile, hide conversations list and show chat area
+                                    if (window.innerWidth <= 768) {
+                                        conversationsList.classList.add("hidden");
+                                        chatArea.classList.add("active");
+                                    }
+                                });
+
+                                conversationsList.appendChild(conversationItem);
+                            });
+
+                            // If there's a direct message parameter, open that conversation
+                            if (directUserId && directUserName) {
+                                // Check if conversation exists
+                                const existingConversation = conversations.find(c => c.partnerId === directUserId);
+                                
+                                if (existingConversation) {
+                                    // Click on the existing conversation
+                                    const conversationItem = document.querySelector(`.conversation-item[data-id="${directUserId}"]`);
+                                    if (conversationItem) {
+                                        conversationItem.click();
+                                    }
+                                } else {
+                                    // Create a new conversation
+                                    loadConversation(directUserId, directUserName);
+                                    
+                                    // On mobile, hide conversations list and show chat area
+                                    if (window.innerWidth <= 768) {
+                                        conversationsList.classList.add("hidden");
+                                        chatArea.classList.add("active");
+                                    }
+                                }
+                            }
+                        } else {
+                            conversationsList.innerHTML = `
+                                <div class="empty-state">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <p>Failed to load conversations</p>
+                                </div>
+                            `;
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        conversationsList.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <p>An error occurred. Please try again.</p>
+                            </div>
+                        `;
+                    });
+            }
+
+            function loadConversation(partnerId, partnerName) {
+                activeConversation = {
+                    partnerId,
+                    partnerName
+                };
+
+                // Set up chat area
+                chatArea.innerHTML = `
+                    <div class="chat-header">
+                        <div class="mobile-back">
+                            <i class="fas fa-arrow-left"></i>
+                        </div>
+                        <div class="avatar">
+                            <i class="fas ${partnerId === "1" ? 'fa-user-shield' : 'fa-user'}"></i>
+                        </div>
+                        <div>
+                            <div class="chat-title">
+                                ${partnerName}
+                                ${partnerId === "1" ? '<span class="admin-badge">Admin</span>' : ''}
+                            </div>
+                            <div class="chat-subtitle">
+                                ${partnerId === "1" ? 'Admin' : 'User'} • ID: ${partnerId}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="empty-state">
+                            <i class="fas fa-comment-dots"></i>
+                            <p>Loading messages...</p>
+                        </div>
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" id="messageInput" placeholder="Type a message...">
+                        <button id="sendButton" disabled>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                `;
+
+                // Handle mobile back button
+                const mobileBackBtn = chatArea.querySelector(".mobile-back");
+                if (mobileBackBtn) {
+                    mobileBackBtn.addEventListener("click", function() {
+                        conversationsList.classList.remove("hidden");
+                        chatArea.classList.remove("active");
+                    });
+                }
+
+                // Handle message input
+                const messageInput = document.getElementById("messageInput");
+                const sendButton = document.getElementById("sendButton");
+
+                if (messageInput && sendButton) {
+                    messageInput.addEventListener("input", function() {
+                        sendButton.disabled = this.value.trim() === "";
+                    });
+
+                    messageInput.addEventListener("keypress", function(e) {
+                        if (e.key === "Enter" && this.value.trim() !== "") {
+                            sendMessage();
+                        }
+                    });
+
+                    sendButton.addEventListener("click", sendMessage);
+                }
+
+                // Load messages
+                fetch(`/api/messages/${partnerId}`, {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            const messages = data.messages;
+                            const chatMessages = document.getElementById("chatMessages");
+                            
+                            if (messages.length === 0) {
+                                chatMessages.innerHTML = `
+                                    <div class="empty-state">
+                                        <i class="fas fa-comment-dots"></i>
+                                        <p>No messages yet. Start the conversation!</p>
+                                    </div>
+                                `;
+                                return;
+                            }
+
+                            chatMessages.innerHTML = "";
+                            
+                            messages.forEach((message) => {
+                                const messageElement = document.createElement("div");
+                                messageElement.className = `message ${message.senderId === user.id ? 'sent' : 'received'}`;
+                                
+                                const messageTime = new Date(message.timestamp);
+                                const formattedTime = formatMessageTime(messageTime);
+                                
+                                messageElement.innerHTML = `
+                                    ${message.message}
+                                    <div class="message-time">${formattedTime}</div>
+                                `;
+
+                                chatMessages.appendChild(messageElement);
+                            });
+
+                            // Scroll to bottom after messages are loaded
+                            setTimeout(scrollChatToBottom, 100);
+                        } else {
+                            const chatMessages = document.getElementById("chatMessages");
+                            chatMessages.innerHTML = `
+                                <div class="empty-state">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <p>Failed to load messages</p>
+                                </div>
+                            `;
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        const chatMessages = document.getElementById("chatMessages");
+                        chatMessages.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <p>An error occurred. Please try again.</p>
+                            </div>
+                        `;
+                    });
+            }
+
+            function sendMessage() {
+                const messageInput = document.getElementById("messageInput");
+                const message = messageInput.value.trim();
+                
+                if (message === "" || !activeConversation) return;
+                
+                // Clear input
+                messageInput.value = "";
+                document.getElementById("sendButton").disabled = true;
+                
+                // Add message to UI immediately
+                const chatMessages = document.getElementById("chatMessages");
+                const messageElement = document.createElement("div");
+                messageElement.className = "message sent";
+                
+                const now = new Date();
+                const formattedTime = formatMessageTime(now);
+                
+                messageElement.innerHTML = `
+                    ${message}
+                    <div class="message-time">${formattedTime}</div>
+                `;
+
+                // Remove empty state if it exists
+                const emptyState = chatMessages.querySelector(".empty-state");
+                if (emptyState) {
+                    chatMessages.innerHTML = "";
+                }
+
+                chatMessages.appendChild(messageElement);
+                
+                // Scroll to bottom after sending a message
+                scrollChatToBottom();
+                
+                // Send message to server
+                fetch("/api/messages", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        receiverId: activeConversation.partnerId,
+                        message,
+                    }),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (!data.success) {
+                            alert("Failed to send message. Please try again.");
+                        }
+                        
+                        // Reload conversations to update preview
+                        loadConversations();
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        alert("An error occurred. Please try again.");
+                    });
+            }
+
+            function formatMessageTime(date) {
+                const now = new Date();
+                const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                const yesterday = new Date(today);
+                yesterday.setDate(yesterday.getDate() - 1);
+                
+                const messageDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+                
+                if (messageDate.getTime() === today.getTime()) {
+                    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                } else if (messageDate.getTime() === yesterday.getTime()) {
+                    return 'Yesterday';
+                } else {
+                    return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+                }
+            }
+
+            // Load conversations on page load
+            loadConversations();
+
+            // Check for new messages periodically
+            setInterval(() => {
+                if (!activeConversation) {
+                    loadConversations();
+                } else {
+                    // Reload current conversation
+                    fetch(`/api/messages/${activeConversation.partnerId}`, {
+                        method: "GET",
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            if (data.success) {
+                                const messages = data.messages;
+                                const chatMessages = document.getElementById("chatMessages");
+                                
+                                // Count current messages
+                                const currentMessages = chatMessages.querySelectorAll(".message").length;
+                                
+                                // If there are new messages
+                                if (messages.length > currentMessages) {
+                                    // Add only new messages
+                                    for (let i = currentMessages; i < messages.length; i++) {
+                                        const message = messages[i];
+                                        
+                                        // Skip if it's a sent message (already in UI)
+                                        if (message.senderId === user.id) continue;
+                                        
+                                        const messageElement = document.createElement("div");
+                                        messageElement.className = "message received";
+                                        
+                                        const messageTime = new Date(message.timestamp);
+                                        const formattedTime = formatMessageTime(messageTime);
+                                        
+                                        messageElement.innerHTML = `
+                                            ${message.message}
+                                            <div class="message-time">${formattedTime}</div>
+                                        `;
+
+                                        chatMessages.appendChild(messageElement);
+                                    }
+                                    
+                                    // Scroll to bottom when new messages arrive
+                                    scrollChatToBottom();
+                                }
+                            }
+                        })
+                        .catch((error) => {
+                            console.error("Error:", error);
+                        });
+                    
+                    // Also reload conversations to update unread counts
+                    loadConversations();
+                }
+            }, 5000); // Check every 5 seconds
+
+            // Add window resize event to adjust chat container height
+            window.addEventListener('resize', function() {
+                setTimeout(scrollChatToBottom, 100);
+            });
+        });
+
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+    </script>
+</body>
+</html>
