@@ -5,7 +5,7 @@ import path from 'path';
 import sharp from 'sharp';
 import { fileURLToPath } from 'url';
 
-import { Account } from '../models/Accounts.js';
+import { Account } from '../models/Account.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,54 +15,6 @@ const UPLOAD_DIR = path.join(__dirname, '../uploads');
 if (!fs.existsSync(UPLOAD_DIR)) {
     fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }
-
-//@desc     get all accounts by admin
-//@route    GET /api/v1/accounts
-//@role     get all accounts
-const getAccounts = async (req, res) => {
-    const accounts = readDataFile(ACCOUNTS_FILE)
-
-    // Remove login details for non-admin users
-    let filteredAccounts = accounts
-    if (req.user.role !== "admin") {
-        filteredAccounts = accounts.map((account) => {
-            const { loginDetails, ...accountData } = account
-            return accountData
-        })
-    }
-
-    return res.json({ success: true, accounts: filteredAccounts })
-}
-
-
-//@desc     get account by id
-//@route    GET /api/v1/accounts:id
-//@role     user get account by id
-const getAccountById = (req, res) => {
-    const { id } = req.params
-    const accounts = readDataFile(ACCOUNTS_FILE)
-
-    // Find account by id
-    const account = accounts.find((account) => account.id === id)
-
-    if (!account) {
-        return res.status(404).json({ success: false, message: "Account not found" })
-    }
-
-    // Remove login details for non-admin users
-    if (req.user.role !== "admin") {
-        const { loginDetails, ...accountData } = account
-        return res.json({ success: true, account: accountData })
-    }
-
-    return res.json({ success: true, account })
-}
-
-//@desc   create account by admin
-//@route POST /api/vi/accounts
-//@role  create account
-
-
 
 // @desc    Create a new social-media account
 // @route   POST /api/accounts
@@ -114,7 +66,7 @@ const createAccount = async (req, res) => {
             description,
             howToUse,
             status: status || undefined,   // will default in schema
-            admin: req.user._id,
+            adminId: req.user.id,
         });
 
         return res.status(201).json({
@@ -130,26 +82,109 @@ const createAccount = async (req, res) => {
     }
 };
 
-const deleteAccount = (req, res) => {
+//@desc     get all accounts by admin
+//@route    GET /api/v1/accounts
+//@role     get all accounts
+const getAccounts = async (req, res) => {
+    const accounts = readDataFile(ACCOUNTS_FILE)
+
+    // Remove login details for non-admin users
+    let filteredAccounts = accounts
+    if (req.user.role !== "admin") {
+        filteredAccounts = accounts.map((account) => {
+            const { loginDetails, ...accountData } = account
+            return accountData
+        })
+    }
+
+    return res.json({ success: true, accounts: filteredAccounts })
+}
+
+// GET /api/v1/accounts
+const getPublicAccountsForUser = async (req, res) => {
+    try {
+        const accounts = await Account.find().lean();
+
+        // Remove sensitive info
+        const publicAccounts = accounts.map(({ loginDetails, ...rest }) => rest);
+
+        return res.json({ success: true, accounts: publicAccounts });
+    } catch (err) {
+        console.error('User Get Error:', err);
+        return res.status(500).json({ success: false, message: 'Server error' });
+    }
+};
+
+// GET /api/v1/accounts/admin
+const getAllAccountsForAdmin = async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ success: false, message: 'Access denied' });
+    }
+
+    // Fetch all accounts with Sequelize
+    const accounts = await Account.findAll({
+      // optionally include related admin user info if needed:
+      // include: [{ model: User, attributes: ['id', 'name', 'email', 'role'] }]
+      raw: true,  // returns plain JS objects instead of Sequelize instances
+    });
+
+    return res.json({ success: true, accounts });
+  } catch (err) {
+    console.error('Admin Get Error:', err);
+    return res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+
+
+
+//@desc     get account by id
+//@route    GET /api/v1/accounts:id
+//@role     user get account by id
+const getAccountById = (req, res) => {
     const { id } = req.params
     const accounts = readDataFile(ACCOUNTS_FILE)
 
-    // Find account index
-    const accountIndex = accounts.findIndex((account) => account.id === id)
+    // Find account by id
+    const account = accounts.find((account) => account.id === id)
 
-    if (accountIndex === -1) {
+    if (!account) {
         return res.status(404).json({ success: false, message: "Account not found" })
     }
 
-    // Remove account
-    accounts.splice(accountIndex, 1)
-
-    if (writeDataFile(ACCOUNTS_FILE, accounts)) {
-        return res.json({ success: true, message: "Account deleted successfully" })
-    } else {
-        return res.status(500).json({ success: false, message: "Failed to delete account" })
+    // Remove login details for non-admin users
+    if (req.user.role !== "admin") {
+        const { loginDetails, ...accountData } = account
+        return res.json({ success: true, account: accountData })
     }
+
+    return res.json({ success: true, account })
 }
 
+//@desc   create account by admin
+//@route POST /api/vi/accounts
+//@role  create account
 
-export { createAccount }
+
+
+
+const deleteAccount = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deleted = await Account.findByIdAndDelete(id);
+
+    if (!deleted) {
+      return res.status(404).json({ success: false, message: 'Account not found' });
+    }
+
+    return res.json({ success: true, message: 'Account deleted successfully' });
+  } catch (err) {
+    console.error('Delete error:', err);
+    return res.status(500).json({ success: false, message: 'Failed to delete account' });
+  }
+};
+
+
+export { createAccount,getAllAccountsForAdmin,getAccounts,getPublicAccountsForUser }

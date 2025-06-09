@@ -1,86 +1,66 @@
-//@desc  registers new users
-//@route POST /api/auth/register
-//@role  authenticate user
-
-import { User } from '../models/Users.js';
-import { generateToken } from '../utils/helperfns.js';
 import bcrypt from 'bcrypt';
+import { generateToken } from '../utils/helperfns.js';
+import User from '../models/User.js';
 
 const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-
-    // Basic validation
-    if (!name || !email || !password) {
+    if (!name || !email || !password)
       return res.status(400).json({ success: false, message: 'All fields are required' });
-    }
 
-    // Check if user already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
+    const existingUser = await User.findOne({ where: { email: email.toLowerCase() } });
+
+    if (existingUser)
       return res.status(400).json({ success: false, message: 'Email already exists' });
-    }
 
-    // Create and save user
-    const newUser = await User.create({ name, email:email.toLowerCase(), password, role: 'user' });
-    await newUser.save();
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    let token = generateToken(newUser);
+    const newUser = await User.create({
+      name,
+      email: email.toLowerCase(),
+      password: hashedPassword,
+      role: 'user',
+    });
+
+    const token = generateToken(newUser);
 
     res.cookie('token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', //use secure cookies in prod
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'Strict',
       maxAge: 24 * 60 * 60 * 1000,
     });
 
-    // Success response (omit password)
     return res.status(201).json({
       success: true,
       message: 'User registered successfully',
       user: {
-        id: newUser._id,
+        id: newUser.id,
         name: newUser.name,
         email: newUser.email,
-        token: token,
+        token,
       },
     });
-  } catch (err) {
-    console.error('Registration error:', err);
+  } catch (error) {
+    console.error('Registration error:', error);
     return res.status(500).json({ success: false, message: 'Server error' });
   }
 };
 
-
-
-//@desc  user login
-//@route POST /api/auth/login
-//@role  login user
-
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
+    if (!email || !password)
+      return res.status(400).json({ success: false, message: 'Email and password are required' });
 
-    // Validate input
-    if (!email || !password) {
-      return res.status(400).json({ success: false, message: 'Name, email, and password are required' });
-    }
+    const user = await User.findOne({ where: { email: email.toLowerCase() } });
 
-    // Check if user exists
-    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) return res.status(401).json({ success: false, message: 'Invalid credentials' });
 
-    console.log(user)
-    if (!user) {
-      return res.status(401).json({ success: false, message: 'Invalid credentials' });
-    }
-
-    // Compare password
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(401).json({ success: false, message: 'Invalid credentials' });
-    }
 
-    // Generate JWT
+    if (!isMatch) return res.status(401).json({ success: false, message: 'Invalid credentials' });
+
     const token = generateToken(user);
 
     res.cookie('token', token, {
@@ -88,11 +68,10 @@ const loginUser = async (req, res) => {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'Lax',
       maxAge: 24 * 60 * 60 * 1000,
-      path: '/'
+      path: '/',
     });
 
-    // Return token and user (exclude password)
-    const { password: _, ...userData } = user.toObject();
+    const { password: _, ...userData } = user.toJSON();
 
     return res.status(200).json({
       success: true,
@@ -100,41 +79,37 @@ const loginUser = async (req, res) => {
       token,
       user: userData,
     });
-  } catch (err) {
-    console.error('Login error:', err);
+  } catch (error) {
+    console.error('Login error:', error);
     return res.status(500).json({ success: false, message: 'Server error' });
   }
 };
 
 const userProfile = async (req, res) => {
   try {
-    // req.user.id is set in authMiddleware
-    const user = await User.findById(req.user.id).select('-password'); // exclude password
+    const user = await User.findByPk(req.user.id, {
+      attributes: ['id', 'name', 'email', 'role', 'createdAt', 'updatedAt'],
+    });
 
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
-    }
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
     res.json({ success: true, user });
   } catch (error) {
+    console.error('User profile error:', error);
     res.status(500).json({ success: false, message: 'Server error' });
   }
-}
+};
 
 const deleteUser = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const deletedCount = await User.destroy({ where: { id: req.user.id } });
 
-    const deletedUser = await User.findByIdAndDelete(userId);
-
-    // If user not found, return 404
-    if (!deletedUser) {
+    if (!deletedCount)
       return res.status(404).json({ success: false, message: 'User not found' });
-    }
 
     return res.status(200).json({ success: true, message: 'User deleted successfully' });
-  } catch (err) {
-    console.error('Delete user error:', err);
+  } catch (error) {
+    console.error('Delete user error:', error);
     return res.status(500).json({ success: false, message: 'Server error' });
   }
 };
@@ -147,32 +122,26 @@ const logoutUser = (req, res) => {
     path: '/',
   });
 
-  return res.status(200).json({
-    success: true,
-    message: 'Logged out successfully',
-  });
+  return res.status(200).json({ success: true, message: 'Logged out successfully' });
 };
 
 const updatePassword = async (req, res) => {
-  const { email, newPassword } = req.body;
-
-  console.log("REQ BODY:", req.body);
-
-  if (!email || !newPassword) {
-    return res.status(400).json({ message: 'Email and new password are required.' });
-  }
-
   try {
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const { email, newPassword } = req.body;
 
-    if (!user) {
-      return res.status(404).json({ message: 'User not found.' });
-    }
+    if (!email || !newPassword)
+      return res.status(400).json({ message: 'Email and new password are required.' });
 
-    user.password = newPassword; 
-    await user.save();
+    const user = await User.findOne({ where: { email: email.toLowerCase() } });
 
-    console.log("Password reset for:", user.email);
+    if (!user) return res.status(404).json({ message: 'User not found.' });
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await User.update(
+      { password: hashedPassword },
+      { where: { id: user.id } }
+    );
 
     res.status(200).json({ message: 'Password has been reset successfully.' });
   } catch (error) {
@@ -181,6 +150,11 @@ const updatePassword = async (req, res) => {
   }
 };
 
-
-
-export { registerUser, loginUser, userProfile, deleteUser, logoutUser, updatePassword };
+export {
+  registerUser,
+  loginUser,
+  userProfile,
+  deleteUser,
+  logoutUser,
+  updatePassword,
+};

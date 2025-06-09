@@ -5,9 +5,9 @@ import cors from 'cors';
 import { fileURLToPath } from "url"
 import dotenv from "dotenv"
 import { authRoute } from './src/routes/auth.js'
-import {accountRoute} from './src/routes/account.js'
-import {adminrouter} from './src/routes/adminRoutes.js'
-import connectDb from "./src/utils/db.js"
+import { accountRoute } from './src/routes/account.js'
+import { adminrouter } from './src/routes/adminRoutes.js'
+import sequelize from "./src/utils/database.js";
 
 dotenv.config();
 
@@ -16,11 +16,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express()
-const PORT = process.env.PORT || 7860
+const PORT = process.env.PORT || 5000
 
-//connect to database
-
-connectDb();
 
 // Middleware
 app.use(express.json());
@@ -28,6 +25,12 @@ app.use(cors({
   origin: "http://127.0.0.1:5500", // allow Live Server origin
   credentials: true
 }))
+
+//connect db
+
+sequelize.authenticate()
+  .then(() => console.log('✅ Database connected'))
+  .catch(err => console.error('❌ DB connection failed:', err));
 
 // Serve uploaded images statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

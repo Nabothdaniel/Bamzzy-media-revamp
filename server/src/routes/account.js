@@ -5,7 +5,7 @@ import multer from 'multer';
 
 import { authenticateToken } from '../middleware/authenticateMiddlware.js';
 import { isAdmin } from '../middleware/isAdminMiddleware.js';
-import { createAccount } from '../controller/accountController.js';
+import { createAccount, getAllAccountsForAdmin } from '../controller/accountController.js';
 
 const router = express.Router();
 
@@ -19,8 +19,10 @@ router.post(
   '/create-account',
   authenticateToken,
   isAdmin,
-  upload.single('imageUpload'),
+  upload.single('image'),
   createAccount
 );
+
+router.get('/admin-accounts', authenticateToken, isAdmin, getAllAccountsForAdmin);
 
 export const accountRoute = router;

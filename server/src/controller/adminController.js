@@ -1,7 +1,8 @@
 
 
-import { User } from "../models/Users.js";
-import { generateToken } from "../utils/helperfns.js";
+import bcrypt from 'bcrypt';
+import User from '../models/User.js';  
+import { generateToken } from '../utils/helperfns.js';
 
 const signupAdmin = async (req, res) => {
   const { name, email, password } = req.body;
@@ -12,21 +13,22 @@ const signupAdmin = async (req, res) => {
       return res.status(400).json({ success: false, message: 'All fields are required' });
     }
 
-    // Check for existing email
-    const existingUser = await User.findOne({ email });
+    // Check if user exists
+    const existingUser = await User.findOne({ where: { email: email.toLowerCase() } });
     if (existingUser) {
       return res.status(400).json({ success: false, message: 'Email already exists' });
     }
 
-    // Create new admin
-    const admin = new User({
-      name,
-      email,
-      password,
-      role: 'admin'
-    });
+    // Hash password before saving
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    await admin.save();
+    // Create new admin user
+    const admin = await User.create({
+      name,
+      email: email.toLowerCase(),
+      password: hashedPassword,
+      role: 'admin',
+    });
 
     // Generate token
     const token = generateToken(admin);
@@ -37,32 +39,34 @@ const signupAdmin = async (req, res) => {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 24 * 60 * 60 * 1000,
-      path: '/'
+      path: '/',
     });
 
-    // Success response
+    // Success response (use id instead of _id for Sequelize)
     res.status(201).json({
       success: true,
       message: 'Admin account created successfully',
       admin: {
-        _id: admin._id,
-        username: admin.name,
+        id: admin.id,
+        name: admin.name,
         email: admin.email,
-        role: admin.role
+        role: admin.role,
       },
-      token
+      token,
     });
-
   } catch (error) {
     res.status(400).json({
       success: false,
       message: 'Error creating admin account',
-      error: error.message
+      error: error.message,
     });
   }
 };
 
-export default signupAdmin;
+
+
+
+
 
 const adminStats = (req, res) => {
   const accounts = readDataFile(ACCOUNTS_FILE)
