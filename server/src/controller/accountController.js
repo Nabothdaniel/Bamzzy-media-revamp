@@ -1,4 +1,21 @@
 
+
+import fs from 'fs';
+import path from 'path';
+import sharp from 'sharp';
+import { fileURLToPath } from 'url';
+
+import { Account } from '../models/Accounts.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const UPLOAD_DIR = path.join(__dirname, '../uploads');
+
+// Ensure uploads directory exists
+if (!fs.existsSync(UPLOAD_DIR)) {
+    fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+}
+
 //@desc     get all accounts by admin
 //@route    GET /api/v1/accounts
 //@role     get all accounts
@@ -45,77 +62,69 @@ const getAccountById = (req, res) => {
 //@route POST /api/vi/accounts
 //@role  create account
 
-const createAccount = (req, res) => {
-    const { platform, image, price, loginDetails, description, howToUse } = req.body
 
-    if (!platform || !image || !price || !loginDetails || !description || !howToUse) {
-        return res.status(400).json({ success: false, message: "Missing required fields" })
-    }
 
-    const accounts = readDataFile(ACCOUNTS_FILE)
-
-    // Create new account
-    const newAccount = {
-        id: Date.now().toString(),
+// @desc    Create a new social-media account
+// @route   POST /api/accounts
+// @access  Admin
+const createAccount = async (req, res) => {
+    const {
         platform,
-        image,
-        price: Number.parseFloat(price),
-        loginDetails,
-        description,
-        howToUse,
-        status: "available",
-    }
-
-    accounts.push(newAccount)
-
-    if (writeDataFile(ACCOUNTS_FILE, accounts)) {
-        return res.json({ success: true, message: "Account added successfully", account: newAccount })
-    } else {
-        return res.status(500).json({ success: false, message: "Failed to add account" })
-    }
-}
-
-const updateAccount = (req, res) => {
-    const { id } = req.params
-    const { platform, image, price, loginDetails, description, howToUse, status } = req.body
-
-    if (!platform || !price || !loginDetails || !description || !howToUse || !status) {
-        return res.status(400).json({ success: false, message: "Missing required fields" })
-    }
-
-    const accounts = readDataFile(ACCOUNTS_FILE)
-
-    // Find account index
-    const accountIndex = accounts.findIndex((account) => account.id === id)
-
-    if (accountIndex === -1) {
-        return res.status(404).json({ success: false, message: "Account not found" })
-    }
-
-    // Update account
-    const updatedAccount = {
-        ...accounts[accountIndex],
-        platform,
-        price: Number.parseFloat(price),
+        price,
         loginDetails,
         description,
         howToUse,
         status,
+    } = req.body;
+
+    // 1) Validate fields + file
+    if (!req.file) {
+        return res.status(400).json({ success: false, message: 'Image file is required.' });
+    }
+    if (!platform || price == null || !loginDetails || !description || !howToUse) {
+        return res.status(400).json({
+            success: false,
+            message: 'platform, price, loginDetails, description and howToUse are required.',
+        });
     }
 
-    // Update image if provided
-    if (image) {
-        updatedAccount.image = image
-    }
+    try {
+        // 2) Compress & save the image
+        const filename = `${Date.now()}-${req.file.originalname.replace(/\s+/g, '_')}`;
+        const filepath = path.join(UPLOAD_DIR, filename);
 
-    accounts[accountIndex] = updatedAccount
+        await sharp(req.file.buffer)
+            .resize({ width: 800 })       // optional: max width
+            .jpeg({ quality: 80 })        // compress to 80% quality
+            .toFile(filepath);
 
-    if (writeDataFile(ACCOUNTS_FILE, accounts)) {
-        return res.json({ success: true, message: "Account updated successfully", account: updatedAccount })
-    } else {
-        return res.status(500).json({ success: false, message: "Failed to update account" })
+        // 3) Build URL path (served via express.static)
+        const imageUrl = `/uploads/${filename}`;
+
+        // 4) Create account document
+        const account = await Account.create({
+            platform: platform.trim(),
+            image: imageUrl,
+            price: parseFloat(price),
+            loginDetails,
+            description,
+            howToUse,
+            status: status || undefined,   // will default in schema
+            admin: req.user._id,
+        });
+
+        return res.status(201).json({
+            success: true,
+            message: 'Account created successfully',
+            account,
+        });
+    } catch (err) {
+        console.error('Create account error:', err);
+        return res
+            .status(500)
+            .json({ success: false, message: 'Server error – could not create account' });
     }
-}
+};
 
 const deleteAccount = (req, res) => {
     const { id } = req.params
@@ -139,4 +148,4 @@ const deleteAccount = (req, res) => {
 }
 
 
-export { getAccounts, getAccountById, createAccount, updateAccount, deleteAccount }
+export { getAccounts, getAccountById, createAccount,  deleteAccount }

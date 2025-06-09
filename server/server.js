@@ -5,6 +5,7 @@ import cors from 'cors';
 import { fileURLToPath } from "url"
 import dotenv from "dotenv"
 import { authRoute } from './src/routes/auth.js'
+import {accountRoute} from './src/routes/account.js'
 import connectDb from "./src/utils/db.js"
 
 dotenv.config();
@@ -21,11 +22,14 @@ const PORT = process.env.PORT || 7860
 connectDb();
 
 // Middleware
-app.use(express.json())
+app.use(express.json());
 app.use(cors({
   origin: "http://127.0.0.1:5500", // allow Live Server origin
   credentials: true
 }))
+
+// Serve uploaded images statically
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(bodyParser.json({ limit: "50mb" }))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static(path.join(__dirname, ".")))
@@ -34,6 +38,7 @@ app.use(express.static(path.join(__dirname, ".")))
 
 //routes
 app.use('/api/v1/auth', authRoute)
+app.use('/api/v1/', accountRoute);
 
 
 

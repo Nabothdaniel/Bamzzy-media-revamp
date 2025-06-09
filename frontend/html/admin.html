@@ -1,388 +1,652 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - BAMZY MEDIA</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="dashboard.css">
-    <link rel="stylesheet" href="admin.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - BAMZY MEDIA</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Space Grotesk -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!--font awesome cdn-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Space Grotesk', sans-serif;
         }
-        
-        .logo h2 {
-            font-family: 'Montserrat', sans-  sans-serif;
+
+        html {
+            scroll-behavior: smooth;
+
         }
-        
-        .logo h2 {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: #1e40af;
+
+        /* Scrollbar styling for WebKit browsers (Chrome, Safari) */
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 8px;
         }
-        
-        .sidebar {
-            background: linear-gradient(to bottom, #1e40af, #3b82f6);
-        }
-        
-        .menu a {
-            font-weight: 500;
-        }
-        
-        .admin-dashboard h2, 
-        .manage-accounts h2, 
-        .transactions h2, 
-        .users-section h2 {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-            color: #1e40af;
-            margin-bottom: 1.5rem;
-            position: relative;
-            display: inline-block;
-        }
-        
-        .admin-dashboard h2:after, 
-        .manage-accounts h2:after, 
-        .transactions h2:after, 
-        .users-section h2:after {
-            content: "";
-            position: absolute;
-            bottom: -8px;
-            left: 0;
-            width: 60px;
-            height: 3px;
-            background-color: #3b82f6;
-            border-radius: 3px;
-        }
-        
-        .stat-card {
-            border-left: 4px solid #3b82f6;
-        }
-        
-        .stat-icon {
-            color: #1e40af;
-        }
-        
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        .table-actions button {
-            background-color: transparent;
-            border: none;
-            cursor: pointer;
-            margin: 0 5px;
-            padding: 5px;
+
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            /* light gray track */
             border-radius: 4px;
-            transition: all 0.2s ease;
         }
-        
-        .edit-btn {
-            color: #3b82f6;
+
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background-color: #3b82f6;
+            /* Tailwind blue-500 */
+            border-radius: 4px;
+            border: 2px solid #f1f1f1;
+            /* padding around thumb */
         }
-        
-        .delete-btn {
-            color: #ef4444;
+
+        .scrollbar-thin:hover::-webkit-scrollbar-thumb {
+            background-color: #2563eb;
+            /* Tailwind blue-600 darker on hover */
         }
-        
-        .edit-btn:hover, .message-user-btn:hover {
-            background-color: rgba(59, 130, 246, 0.1);
-        }
-        
-        .delete-btn:hover {
-            background-color: rgba(239, 68, 68, 0.1);
-        }
-        
-        @media (max-width: 768px) {
-            .table-actions {
-                display: flex;
-                justify-content: center;
-            }
-            
-            .table-actions button {
-                padding: 8px;
-                margin: 0 3px;
-            }
-            
-            .table-actions i {
-                font-size: 1.2rem;
-            }
+
+        /* Firefox scrollbar */
+        .scrollbar-thin {
+            scrollbar-width: thin;
+            scrollbar-color: #3b82f6 #f1f1f1;
         }
     </style>
 </head>
-<body>
-    <div class="dashboard-container">
-        <!-- Sidebar/Navigation -->
-        <div class="sidebar">
-            <div class="logo">
-                <h2>BAMZY MEDIA</h2>
-                <span class="admin-badge">Admin</span>
+
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Mobile Nav -->
+    <div class="md:hidden flex justify-between items-center px-4 py-3 bg-white shadow">
+        <h2 class="text-lg font-semibold">BAMZY MEDIA</h2>
+        <button id="menuToggle" class="text-2xl">
+            <!-- Bars  -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-800" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+        </button>
+    </div>
+
+    <div class=" flex h-full">
+
+        <!-- Sidebar -->
+        <aside id="sidebar"
+            class="fixed inset-y-0 left-0 w-72 bg-white shadow-lg transform -translate-x-full md:translate-x-0 md:relative md:flex flex-col transition-transform duration-300 z-20">
+            <div class="p-6 border-b">
+                <h2 class="text-xl font-bold hidden md:block">BAMZY MEDIA</h2>
             </div>
-            <div class="user-info">
-                <div class="avatar">
-                    <i class="fas fa-user-shield"></i>
+            <div class="p-4 border-b flex items-center gap-4">
+                <div id="userAvatar"
+                    class="bg-gray-200 w-12 h-12 rounded-full flex items-center justify-center text-xl text-white font-bold">
+                    <!-- Content will be inserted dynamically -->
                 </div>
-                <div class="user-details">
-                    <p class="username">Admin Panel</p>
+
+                <div class="my-2">
+                    <p class="mb-4">Welcome, <span id="userName" class="font-semibold"></span></p>
+                    <span class="bg-blue-600 px-2 py-[.2rem] font-semibold text-white rounded-md shadow-sm">Admin</span>
                 </div>
             </div>
-            <nav class="menu">
-                <ul>
-                    <li class="active"><a href="admin.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                    <li><a href="#" id="showAccounts"><i class="fas fa-users"></i> Manage Accounts</a></li>
-                    <li><a href="#" id="showTransactions"><i class="fas fa-exchange-alt"></i> Transactions</a></li>
-                    <li><a href="#" id="showUsers"><i class="fas fa-user-friends"></i> Users</a></li>
-                    <li><a href="admin-fund.html"><i class="fas fa-wallet"></i> Fund User</a></li>
-                    <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages <span id="unreadCount" class="badge" style="display: none;">0</span></a></li>
-                    <li><a href="#" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                </ul>
+            <nav class="flex-grow p-4 space-y-4">
+                <a href="dashboard.html"
+                    class="flex items-center gap-3 text-blue-600 font-semibold bg-blue-50 rounded-lg px-3 py-2 transition hover:bg-blue-100 hover:text-blue-700">
+                    <!-- Home Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path
+                            d="M3 9.75L12 3l9 6.75v10.5A2.25 2.25 0 0118.75 22.5h-13.5A2.25 2.25 0 013 20.25v-10.5z" />
+                        <path d="M9 22.5v-7.5h6v7.5" />
+                    </svg>
+                    Dashboard
+                </a>
+
+                <a href="#fund-request" id="fundAccount"
+                    class="flex items-center gap-3 text-gray-700 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
+                    <!-- Wallet Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+
+                    Fund Request
+                </a>
+
+                <a href="messages.html"
+                    class="flex items-center gap-3 text-gray-700 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
+                    <!-- Envelope Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                    </svg>
+
+                    Messages
+                    <span id="unreadCount"
+                        class="ml-auto bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full hidden">0</span>
+                </a>
+
+                <a href="#" id="logout"
+                    class="flex items-center gap-3 text-red-500 rounded-lg px-3 py-2 transition hover:bg-red-50 hover:text-red-600 active:bg-red-100">
+                    <!-- Logout Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-6 0v-1m6-10V5a3 3 0 00-6 0v1" />
+                    </svg>
+                    Logout
+                </a>
             </nav>
-        </div>
+
+        </aside>
 
         <!-- Main Content -->
-        <div class="main-content">
-            <header class="dashboard-header">
-                <div class="hamburger-menu">
-                    <i class="fas fa-bars"></i>
-                </div>
-                <div class="search-bar">
-                    <input type="text" placeholder="Search...">
-                    <button><i class="fas fa-search"></i></button>
-                </div>
-                <div class="header-actions">
-                    <button id="addAccountBtn" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> Add New Account
+        <main class='flex-1 w-full p-6  md:ml-3 min-h-screen'>
+            <!-- Header -->
+            <div class="my-5 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                <!-- Heading -->
+                <h1 class="text-xl md:text-3xl font-semibold">Admin Dashboard</h1>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-row flex-wrap gap-3">
+                    <!-- Create Account Button -->
+                    <button id="openModalBtn"
+                        class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Create Account
                     </button>
-                    <a href="messages.html" class="message-icon">
-                        <i class="fas fa-envelope"></i>
-                        <span id="headerUnreadCount" class="badge" style="display: none;">0</span>
+
+                    <!-- Edit Account Button -->
+                    <button id="openEditModalBtn"
+                        class="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500 hover:bg-yellow-800 text-white rounded-md transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M11 5h2m-1 0v14m-7-7h14" />
+                        </svg>
+                        Edit Account
+                    </button>
+                </div>
+            </div>
+
+            <header class=" flex md:flex justify-between items-center mb-6">
+                <div class="relative">
+                    <input type="text" placeholder="Search accounts..."
+                        class="pl-10 pr-4 py-2 rounded-md border border-gray-300 focus:outline-none w-full md:w-[60vw]">
+                    <!-- Search Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 text-gray-400 absolute top-1/2 left-3 -translate-y-1/2" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="7" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                </div>
+                <div class="flex gap-4 items-center">
+                    <a href="messages.html" class="relative">
+                        <!-- Envelope Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                        </svg>
+
+                        <span id="headerUnreadCount"
+                            class="absolute -top-2 -right-2 text-xs bg-red-600 text-white px-1 rounded-full hidden">0</span>
                     </a>
                 </div>
             </header>
+            <!-- Stats Section -->
+            <section class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+                <div class="bg-white p-4 rounded-lg shadow flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Total Users</p>
+                        <h4 class="text-xl font-bold">1,204</h4>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                    </svg>
 
-            <!-- Dashboard Overview -->
-            <div class="admin-dashboard" id="adminDashboard">
-                <h2>Admin Dashboard</h2>
-                <div class="stats-cards">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3>Total Accounts</h3>
-                            <p id="totalAccounts">0</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-shopping-cart"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3>Accounts Sold</h3>
-                            <p id="accountsSold">0</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-dollar-sign"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3>Total Revenue</h3>
-                            <p id="totalRevenue">$0.00</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-user-friends"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3>Total Users</h3>
-                            <p id="totalUsers">0</p>
-                        </div>
-                    </div>
                 </div>
 
-                <div class="recent-activity">
-                    <h3>Recent Activity</h3>
-                    <div class="activity-list" id="recentActivity">
-                        <!-- Recent activity will be loaded dynamically here -->
+                <div class="bg-white p-4 rounded-lg shadow flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Accounts Sold</p>
+                        <h4 class="text-xl font-bold">387</h4>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="text-blue-800 h-8 w-8" fill="none"
+                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+
+                </div>
+
+                <div class="bg-white p-4 rounded-lg shadow flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Transactions</p>
+                        <h4 class="text-xl font-bold">₦1,250,000</h4>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-500" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8c-1.104 0-2 .896-2 2v4c0 1.104.896 2 2 2s2-.896 2-2v-4c0-1.104-.896-2-2-2z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h14v2H5z" />
+                    </svg>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg shadow flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Fund Requests</p>
+                        <h4 class="text-xl font-bold">15 Pending</h4>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 17v-6h6v6m2 4H7a2 2 0 01-2-2V7a2 2 0 012-2h3.586a1 1 0 01.707.293l1.414 1.414A1 1 0 0013.414 7H17a2 2 0 012 2v10a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+            </section>
+
+            <!-- Modal Backdrop -->
+            <div id="modalBackdrop" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40"></div>
+
+            <!-- Modal -->
+            <div id="createAccountModal"
+                class="fixed inset-0 mx-3 flex items-center justify-center z-[999] hidden scrollbar-thin">
+                <div class="bg-white rounded-lg shadow-xl w-full max-w-xl p-6 relative max-h-[80vh] flex flex-col">
+
+
+                    <!-- Close Button -->
+                    <button id="closeModalBtn" class="absolute top-4 right-4 text-gray-500 hover:text-red-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+
+                    <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 17v-6a2 2 0 012-2h2a2 2 0 012 2v6m-6 0v-2m6 2v-2M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                        </svg>
+                        Create New Account
+                    </h2>
+
+                    <!-- Form -->
+                    <div class="overflow-y-auto px-6 py-4 flex-1">
+                        <form id="socialMediaForm" class="space-y-4">
+                            <div>
+                                <label for="platform"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Platform</label>
+                                <select id="platform" name="platform" required
+                                    class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-700">
+                                    <option value="">Select Platform</option>
+                                    <option value="tiktok">TikTok</option>
+                                    <option value="facebook">Facebook</option>
+                                    <option value="twitter">Twitter</option>
+                                    <option value="instagram">Instagram</option>
+                                    <option value="snapchat">Snapchat</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium">Category</label>
+                                <input type="text" class="w-full p-2 border border-gray-300 rounded"
+                                    placeholder="e.g., Fashion & Lifestyle">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium">Followers</label>
+                                <input type="number" class="w-full p-2 border border-gray-300 rounded"
+                                    placeholder="e.g., 216000">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium">Price (₦)</label>
+                                <input type="number" class="w-full p-2 border border-gray-300 rounded"
+                                    placeholder="e.g., 230000">
+                            </div>
+                            <div class="mb-6">
+                                <label for="loginDetails" class="block text-sm font-medium text-gray-700 mb-1">Login
+                                    Details</label>
+                                <textarea id="loginDetails" name="loginDetails" rows="3" required class="w-full p-2 border border-gray-300 rounded resize-y
+           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+           text-gray-700"></textarea>
+                            </div>
+
+                            <div class="mb-6">
+                                <label for="description"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                <textarea id="description" name="description" rows="3" required class="w-full p-2 border border-gray-300 rounded resize-y
+           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+           text-gray-700"></textarea>
+                            </div>
+
+                            <div class="mb-6">
+                                <label for="howToUse" class="block text-sm font-medium text-gray-700 mb-1">How To Use
+                                    Manual</label>
+                                <textarea id="howToUse" name="howToUse" rows="3"
+                                    placeholder="Enter instructions on how to use this account (e.g., authenticator setup, security tips, etc.)"
+                                    required class="w-full p-2 border border-gray-300 rounded resize-y
+           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+           text-gray-700"></textarea>
+                            </div>
+
+                            <div>
+                                <label for="imageUpload" class="block text-sm font-medium text-gray-700 mb-1">Upload
+                                    Image</label>
+                                <input type="file" id="imageUpload" name="imageUpload" accept="image/*" class="w-full p-2 border border-gray-300 rounded cursor-pointer
+           file:border-0
+           file:bg-blue-600 file:text-white file:px-4 file:py-2
+           file:rounded file:mr-4
+           hover:file:bg-blue-700
+           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+
+                            <button type="submit"
+                                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                Submit Social Media Account
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!--update account modal-->
+            <div id="editAccountModal"
+                class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black bg-opacity-50 hidden transition-opacity duration-300">
+                <div class="bg-white rounded-t-2xl sm:rounded-lg shadow-xl w-full sm:max-w-xl max-h-[90vh]">
+
+                    <!-- Close Button -->
+                    <button id="closeEditModalBtn" class="absolute top-4 right-4 text-gray-500 hover:text-red-600 z-10">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+
+                    <!-- Modal Header -->
+                    <h2 class="text-2xl font-semibold px-6 pt-6 pb-2 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-500" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M11 5h2m-1 0v14m-7-7h14" />
+                        </svg>
+                        Edit Social Media Account
+                    </h2>
+
+                    <!-- Scrollable Form Content -->
+                    <div class="overflow-y-auto px-6 py-4 space-y-4 max-h-[70vh]">
+                        <form id="editAccountForm" class="space-y-4">
+                            <input type="hidden" id="editAccountId" name="accountId">
+
+                            <div>
+                                <label for="editPlatform"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Platform</label>
+                                <select id="editPlatform" name="platform" required
+                                    class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500">
+                                    <option value="">Select Platform</option>
+                                    <option value="tiktok">TikTok</option>
+                                    <option value="facebook">Facebook</option>
+                                    <option value="twitter">Twitter</option>
+                                    <option value="instagram">Instagram</option>
+                                    <option value="snapchat">Snapchat</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="editAccountImage"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Account Image</label>
+                                <input type="file" id="editAccountImage" name="accountImage" accept="image/*"
+                                    class="w-full p-2 border border-gray-300 rounded cursor-pointer">
+                                <div id="editImagePreview" class="mt-2"></div>
+                            </div>
+
+                            <div>
+                                <label for="editPrice" class="block text-sm font-medium text-gray-700 mb-1">Price
+                                    (₦)</label>
+                                <input type="number" id="editPrice" name="price" min="1" step="0.01" required
+                                    class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500">
+                            </div>
+
+                            <div>
+                                <label for="editLoginDetails" class="block text-sm font-medium text-gray-700 mb-1">Login
+                                    Details</label>
+                                <textarea id="editLoginDetails" name="loginDetails" rows="3" required
+                                    class="w-full p-2 border border-gray-300 rounded resize-y focus:outline-none focus:ring-2 focus:ring-yellow-500"></textarea>
+                            </div>
+
+                            <div>
+                                <label for="editDescription"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                <textarea id="editDescription" name="description" rows="3" required
+                                    class="w-full p-2 border border-gray-300 rounded resize-y focus:outline-none focus:ring-2 focus:ring-yellow-500"></textarea>
+                            </div>
+
+                            <div>
+                                <label for="editHowToUse" class="block text-sm font-medium text-gray-700 mb-1">How To
+                                    Use Manual</label>
+                                <textarea id="editHowToUse" name="howToUse" rows="3" required
+                                    class="w-full p-2 border border-gray-300 rounded resize-y focus:outline-none focus:ring-2 focus:ring-yellow-500"></textarea>
+                            </div>
+
+                            <div>
+                                <label for="editStatus"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                <select id="editStatus" name="status" required
+                                    class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500">
+                                    <option value="available">Available</option>
+                                    <option value="sold">Sold Out</option>
+                                </select>
+                            </div>
+
+                            <button type="submit"
+                                class="bg-yellow-500 hover:bg-yellow-600 text-white font-medium px-4 py-2 rounded flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                Update Account
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
 
             <!-- Manage Accounts Section -->
-            <div class="manage-accounts" id="manageAccounts" style="display: none;">
-                <h2>Manage Social Media Accounts</h2>
-                <div class="accounts-table-container">
-                    <div class="table-responsive">
-                        <table class="accounts-table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Platform</th>
-                                    <th>Image</th>
-                                    <th>Price</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="accountsTableBody">
-                                <!-- Accounts will be loaded dynamically here -->
-                            </tbody>
-                        </table>
-                    </div>
+            <div id="manageAccounts" class=" px-4 py-6">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-800">Manage Social Media Accounts</h2>
+
+                <div class="overflow-x-auto bg-white rounded-lg shadow border border-gray-200">
+                    <table class="min-w-full divide-y divide-gray-200 text-sm text-left text-gray-700">
+                        <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
+                            <tr>
+                                <th scope="col" class="px-4 py-3">ID</th>
+                                <th scope="col" class="px-4 py-3">Platform</th>
+                                <th scope="col" class="px-4 py-3">Image</th>
+                                <th scope="col" class="px-4 py-3">Price</th>
+                                <th scope="col" class="px-4 py-3">Status</th>
+                                <th scope="col" class="px-4 py-3">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="accountsTableBody" class="divide-y divide-gray-200">
+                            <!-- Dynamic account rows will be injected here -->
+                            <tr>
+                                <td class="px-4 py-3">1</td>
+                                <td class="px-4 py-3">Instagram</td>
+                                <td class="px-4 py-3">
+                                    <img src="https://via.placeholder.com/40" alt="Instagram Account"
+                                        class="w-10 h-10 rounded object-cover">
+                                </td>
+                                <td class="px-4 py-3">₦100,000</td>
+                                <td class="px-4 py-3">
+                                    <span
+                                        class="inline-block px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">Available</span>
+                                </td>
+                                <td class="px-4 py-3 space-x-2">
+                                    <button class="text-blue-600 hover:underline">Edit</button>
+                                    <button class="text-red-600 hover:underline">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3">2</td>
+                                <td class="px-4 py-3">Twitter</td>
+                                <td class="px-4 py-3">
+                                    <img src="https://via.placeholder.com/40" alt="Twitter Account"
+                                        class="w-10 h-10 rounded object-cover">
+                                </td>
+                                <td class="px-4 py-3">₦75,500</td>
+                                <td class="px-4 py-3">
+                                    <span
+                                        class="inline-block px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-700 rounded-full">Pending</span>
+                                </td>
+                                <td class="px-4 py-3 space-x-2">
+                                    <button class="text-blue-600 hover:underline">Edit</button>
+                                    <button class="text-red-600 hover:underline">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3">3</td>
+                                <td class="px-4 py-3">TikTok</td>
+                                <td class="px-4 py-3">
+                                    <img src="https://via.placeholder.com/40" alt="TikTok Account"
+                                        class="w-10 h-10 rounded object-cover">
+                                </td>
+                                <td class="px-4 py-3">₦60,000</td>
+                                <td class="px-4 py-3">
+                                    <span
+                                        class="inline-block px-2 py-1 text-xs font-medium bg-red-100 text-red-700 rounded-full">Sold
+                                        Out</span>
+                                </td>
+                                <td class="px-4 py-3 space-x-2">
+                                    <button class="text-blue-600 hover:underline">Edit</button>
+                                    <button class="text-red-600 hover:underline">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
             <!-- Transactions Section -->
-            <div class="transactions" id="transactionsSection" style="display: none;">
-                <h2>Transactions</h2>
-                <div class="transactions-table-container">
-                    <div class="table-responsive">
-                        <table class="transactions-table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>User</th>
-                                    <th>Type</th>
-                                    <th>Amount</th>
-                                    <th>Date</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="transactionsTableBody">
-                                <!-- Transactions will be loaded dynamically here -->
-                            </tbody>
-                        </table>
-                    </div>
+            <div class="transactions px-4 py-6" id="transactionsSection">
+                <h2 class="text-2xl font-semibold mb-4">Transaction History</h2>
+                <div class="overflow-x-auto rounded-lg shadow bg-white">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-100 text-left text-sm font-medium text-gray-700">
+                            <tr>
+                                <th class="px-4 py-3">ID</th>
+                                <th class="px-4 py-3">User</th>
+                                <th class="px-4 py-3">Type</th>
+                                <th class="px-4 py-3">Amount</th>
+                                <th class="px-4 py-3">Date</th>
+                                <th class="px-4 py-3">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsTableBody" class="divide-y divide-gray-100 text-sm text-gray-700">
+                            <!-- Demo Rows -->
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-3">TXN001</td>
+                                <td class="px-4 py-3">John Doe</td>
+                                <td class="px-4 py-3">Purchase</td>
+                                <td class="px-4 py-3">₦25,000</td>
+                                <td class="px-4 py-3">2025-06-07</td>
+                                <td class="px-4 py-3">
+                                    <span
+                                        class="inline-block px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">Completed</span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-3">TXN002</td>
+                                <td class="px-4 py-3">Jane Smith</td>
+                                <td class="px-4 py-3">Top-up</td>
+                                <td class="px-4 py-3">₦10,000</td>
+                                <td class="px-4 py-3">2025-06-06</td>
+                                <td class="px-4 py-3">
+                                    <span
+                                        class="inline-block px-2 py-1 text-xs font-medium text-yellow-700 bg-yellow-100 rounded-full">Pending</span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-3">TXN003</td>
+                                <td class="px-4 py-3">Alex Johnson</td>
+                                <td class="px-4 py-3">Refund</td>
+                                <td class="px-4 py-3">₦5,000</td>
+                                <td class="px-4 py-3">2025-06-05</td>
+                                <td class="px-4 py-3">
+                                    <span
+                                        class="inline-block px-2 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full">Failed</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
-            <!-- Users Section -->
-            <div class="users-section" id="usersSection" style="display: none;">
-                <h2>Users</h2>
-                <div class="users-table-container">
-                    <div class="table-responsive">
-                        <table class="users-table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Balance</th>
-                                    <th>Joined</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="usersTableBody">
-                                <!-- Users will be loaded dynamically here -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Add Account Modal -->
-    <div id="addAccountModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Add New Social Media Account</h2>
-            <form id="addAccountForm">
-                <div class="form-group">
-                    <label for="platform">Platform</label>
-                    <select id="platform" name="platform" required>
-                        <option value="">Select Platform</option>
-                        <option value="tiktok">TikTok</option>
-                        <option value="facebook">Facebook</option>
-                        <option value="twitter">Twitter</option>
-                        <option value="instagram">Instagram</option>
-                        <option value="snapchat">Snapchat</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="accountImage">Account Image</label>
-                    <input type="file" id="accountImage" name="accountImage" accept="image/*" required>
-                    <div id="imagePreview" class="image-preview"></div>
-                </div>
-                <div class="form-group">
-                    <label for="price">Price (₦)</label>
-                    <input type="number" id="price" name="price" min="1" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label for="loginDetails">Login Details</label>
-                    <textarea id="loginDetails" name="loginDetails" rows="3" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea id="description" name="description" rows="3" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="howToUse">How To Use Manual</label>
-                    <textarea id="howToUse" name="howToUse" rows="3" placeholder="Enter instructions on how to use this account (e.g., authenticator setup, security tips, etc.)" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Add Account</button>
-            </form>
-        </div>
-    </div>
 
-    <!-- Edit Account Modal -->
-    <div id="editAccountModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Edit Social Media Account</h2>
-            <form id="editAccountForm">
-                <input type="hidden" id="editAccountId" name="accountId">
-                <div class="form-group">
-                    <label for="editPlatform">Platform</label>
-                    <select id="editPlatform" name="platform" required>
-                        <option value="">Select Platform</option>
-                        <option value="tiktok">TikTok</option>
-                        <option value="facebook">Facebook</option>
-                        <option value="twitter">Twitter</option>
-                        <option value="instagram">Instagram</option>
-                        <option value="snapchat">Snapchat</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="editAccountImage">Account Image</label>
-                    <input type="file" id="editAccountImage" name="accountImage" accept="image/*">
-                    <div id="editImagePreview" class="image-preview"></div>
-                </div>
-                <div class="form-group">
-                    <label for="editPrice">Price (₦)</label>
-                    <input type="number" id="editPrice" name="price" min="1" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label for="editLoginDetails">Login Details</label>
-                    <textarea id="editLoginDetails" name="loginDetails" rows="3" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="editDescription">Description</label>
-                    <textarea id="editDescription" name="description" rows="3" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="editHowToUse">How To Use Manual</label>
-                    <textarea id="editHowToUse" name="howToUse" rows="3" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="editStatus">Status</label>
-                    <select id="editStatus" name="status" required>
-                        <option value="available">Available</option>
-                        <option value="sold">Sold Out</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary">Update Account</button>
-            </form>
-        </div>
-    </div>
 
-    <script src="admin.js"></script>
+            <!-- Fund Requests Section -->
+            <section id="fund-request">
+                <h2 class="text-2xl font-semibold mb-4">Fund Requests</h2>
+                <div class="w-full overflow-x-auto">
+                    <table class="min-w-[600px] w-full table-auto text-left text-sm">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="p-2 whitespace-nowrap">User</th>
+                                <th class="p-2 whitespace-nowrap">Amount</th>
+                                <th class="p-2 whitespace-nowrap">Status</th>
+                                <th class="p-2 whitespace-nowrap">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b">
+                                <td class="p-2 whitespace-nowrap">user@example.com</td>
+                                <td class="p-2 whitespace-nowrap">₦10,000</td>
+                                <td class="p-2 text-yellow-500 font-semibold whitespace-nowrap">Pending</td>
+                                <td class="p-2 whitespace-nowrap">
+                                    <div class="flex flex-wrap gap-2">
+                                        <button
+                                            class="px-3 py-1 bg-green-500 text-white rounded text-sm">Approve</button>
+                                        <button class="px-3 py-1 bg-red-500 text-white rounded text-sm">Reject</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+
+        <div id="logoutAlert"
+            class="fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded shadow hidden">
+            <span id="logoutAlertMessage"></span>
+        </div>
+
+
+    </div>
+    <script src="../js/dashboard.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/userprofile.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/admin.js"></script>
 </body>
+
 </html>

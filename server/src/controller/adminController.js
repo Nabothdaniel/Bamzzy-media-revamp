@@ -1,5 +1,62 @@
 
 
+import User from '../models/User.js';
+
+export const signupAdmin = async (req, res) => {
+  // Only existing superadmins can create new admins
+  const { username, email, password } = req.body;
+
+  try {
+    // Basic validation
+    if (!username || !email || !password) {
+      return res.status(400).json({ success: false, message: 'All fields are required' });
+    }
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ success: false, message: 'Email already exists' });
+    }
+
+    const admin = new User({
+      username,
+      email,
+      password,
+      role: 'admin' // Set role directly to admin
+    });
+
+    
+    await admin.save();
+
+    let token = generateToken(admin);
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', //use secure cookies in prod
+      sameSite: 'lax',
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Admin account created successfully',
+      admin: {
+        _id: admin._id,
+        username: admin.username,
+        email: admin.email,
+        role: admin.role
+      },
+      token
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: 'Error creating admin account',
+      error: error.message
+    });
+  }
+};
+
 const adminStats = (req, res) => {
   const accounts = readDataFile(ACCOUNTS_FILE)
   const users = readDataFile(USERS_FILE)
@@ -31,7 +88,7 @@ const adminStats = (req, res) => {
   })
 }
 
-const adminActvity =  (req, res) => {
+const adminActvity = (req, res) => {
   const transactions = readDataFile(TRANSACTIONS_FILE)
   const users = readDataFile(USERS_FILE)
   const accounts = readDataFile(ACCOUNTS_FILE)
@@ -76,37 +133,37 @@ const adminActvity =  (req, res) => {
     })
 
     // Add recent messages
-  const recentMessages = messages
-    .filter((msg) => msg.receiverId === "1")
-    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-    .slice(0, 3)
+    const recentMessages = messages
+      .filter((msg) => msg.receiverId === "1")
+      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+      .slice(0, 3)
 
-  recentMessages.forEach((message) => {
-    const user = users.find((user) => user.id === message.senderId)
-    activity.push({
-      type: "message",
-      title: `New message from ${user ? user.name : "Unknown user"}`,
-      time: new Date(message.timestamp).toLocaleDateString(),
-      read: message.read,
+    recentMessages.forEach((message) => {
+      const user = users.find((user) => user.id === message.senderId)
+      activity.push({
+        type: "message",
+        title: `New message from ${user ? user.name : "Unknown user"}`,
+        time: new Date(message.timestamp).toLocaleDateString(),
+        read: message.read,
+      })
     })
-  })
 
-  // Sort by most recent
-  activity.sort((a, b) => {
-    if (a.time === "Recently") return -1
-    if (b.time === "Recently") return 1
-    return new Date(b.time) - new Date(a.time)
-  })
+    // Sort by most recent
+    activity.sort((a, b) => {
+      if (a.time === "Recently") return -1
+      if (b.time === "Recently") return 1
+      return new Date(b.time) - new Date(a.time)
+    })
 
-  return res.json({
-    success: true,
-    activity: activity.slice(0, 5),
-  })
+    return res.json({
+      success: true,
+      activity: activity.slice(0, 5),
+    })
   })
 }
 
 
-const checkTransactions =  (req, res) => {
+const checkTransactions = (req, res) => {
   const transactions = readDataFile(TRANSACTIONS_FILE)
   const users = readDataFile(USERS_FILE)
 
@@ -130,59 +187,8 @@ const checkTransactions =  (req, res) => {
   })
 }
 
-const getUsers =  (req, res) => {
-  console.log("Fetching users from:", USERS_FILE)
-  try {
-    // Check if file exists
-    if (!fs.existsSync(USERS_FILE)) {
-      console.log("Users file does not exist, creating it...")
-      const defaultUsers = [
-        {
-          id: "1",
-          name: "Admin User",
-          email: "bamzymediatv@gmail.com",
-          password: hashPassword("babcute1000"),
-          role: "admin",
-          balance: Number.POSITIVE_INFINITY,
-          joined: "2023-01-01",
-        },
-        {
-          id: "2",
-          name: "Test User",
-          email: "user@example.com",
-          password: hashPassword("user123"),
-          role: "user",
-          balance: 100,
-          joined: "2023-01-02",
-        },
-      ]
-      writeDataFile(USERS_FILE, defaultUsers)
-    }
 
-    const users = readDataFile(USERS_FILE)
-    console.log("Users found:", users.length)
-
-    // Format users (remove passwords)
-    const formattedUsers = users.map((user) => {
-      const { password, ...userData } = user
-      return userData
-    })
-
-    return res.json({
-      success: true,
-      users: formattedUsers,
-    })
-  } catch (error) {
-    console.error("Error in /api/admin/users:", error)
-    return res.status(500).json({
-      success: false,
-      message: "Server error while fetching users",
-      error: error.message,
-    })
-  }
-}
-
- const adminFundUsers = (req, res) => {
+const adminFundUsers = (req, res) => {
   const { userId, amount } = req.body
 
   if (!userId || !amount) {
@@ -225,4 +231,4 @@ const getUsers =  (req, res) => {
   }
 }
 
-export {adminActvity,adminStats,checkTransactions,getUsers,adminFundUsers}
+export { adminActvity, adminStats, checkTransactions, getUsers, adminFundUsers }

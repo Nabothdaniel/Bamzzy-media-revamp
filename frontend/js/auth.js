@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (data.success) {
           showCustomAlert("Registration successful! Please login.", "success")
           setTimeout(() => {
-            window.location.href = "./auth.html#login"
+            window.location.href = "./login.html"
           }, 1500)
         } else {
           showError("email", data.message || "Registration failed.")
@@ -129,7 +129,12 @@ document.addEventListener("DOMContentLoaded", () => {
           showCustomAlert("Login successful!", "success")
 
           setTimeout(() => {
-            window.location.href = "./dashboard.html"
+           if(data.user.role === "admin"){
+             window.location.href = "./admin.html"
+           }else{
+             window.location.href = "./dashboard.html"
+           }
+           
           }, 1000)
         } else {
           showError("loginEmail", data.message || "Login failed.")
@@ -141,4 +146,63 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     })
   }
+
+  //logout logic
+  const logOut = async (e) => {
+    e.preventDefault();
+
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = await fetch('http://localhost:5000/api/v1/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        showAlert('Logged out successfully', 'success');
+
+        // Optional delay before redirect
+        setTimeout(() => {
+          window.location.href = './login.html';
+        }, 1500);
+      } else {
+        showAlert(data.message || 'Logout failed', 'error');
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+      showAlert('Logout failed: Network error', 'error');
+    }
+  };
+
+  document.getElementById('logout').addEventListener('click', logOut);
+
+  function showAlert(message, type = 'success') {
+    const alertBox = document.getElementById('logoutAlert');
+    const messageSpan = document.getElementById('logoutAlertMessage');
+
+    messageSpan.textContent = message;
+
+    alertBox.className =
+      'fixed top-4 right-4 px-4 py-2 rounded shadow transition-opacity duration-500 ' +
+      (type === 'success'
+        ? 'bg-green-100 border border-green-400 text-green-700'
+        : 'bg-red-100 border border-red-400 text-red-700');
+
+    alertBox.classList.remove('hidden');
+
+    setTimeout(() => {
+      alertBox.classList.add('hidden');
+    }, 3000);
+  }
+
+
+
+
 })

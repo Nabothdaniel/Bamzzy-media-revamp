@@ -22,7 +22,7 @@ const registerUser = async (req, res) => {
     }
 
     // Create and save user
-    const newUser = await User.create({ name, email, password, role: 'user' });
+    const newUser = await User.create({ name, email:email.toLowerCase(), password, role: 'user' });
     await newUser.save();
 
     let token = generateToken(newUser);
@@ -62,12 +62,14 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     // Validate input
-    if ( !email || !password) {
+    if (!email || !password) {
       return res.status(400).json({ success: false, message: 'Name, email, and password are required' });
     }
 
     // Check if user exists
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email.toLowerCase() });
+
+    console.log(user)
     if (!user) {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
@@ -84,8 +86,9 @@ const loginUser = async (req, res) => {
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'Strict',
+      sameSite: 'Lax',
       maxAge: 24 * 60 * 60 * 1000,
+      path: '/'
     });
 
     // Return token and user (exclude password)
@@ -102,6 +105,21 @@ const loginUser = async (req, res) => {
     return res.status(500).json({ success: false, message: 'Server error' });
   }
 };
+
+const userProfile = async (req, res) => {
+  try {
+    // req.user.id is set in authMiddleware
+    const user = await User.findById(req.user.id).select('-password'); // exclude password
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    res.json({ success: true, user });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+}
 
 const deleteUser = async (req, res) => {
   try {
@@ -121,11 +139,12 @@ const deleteUser = async (req, res) => {
   }
 };
 
- const logoutUser = (req, res) => {
+const logoutUser = (req, res) => {
   res.clearCookie('token', {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production', 
-    sameSite: 'Strict',
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'Lax',
+    path: '/',
   });
 
   return res.status(200).json({
@@ -134,5 +153,34 @@ const deleteUser = async (req, res) => {
   });
 };
 
+const updatePassword = async (req, res) => {
+  const { email, newPassword } = req.body;
 
-export { registerUser, loginUser, deleteUser, logoutUser }
+  console.log("REQ BODY:", req.body);
+
+  if (!email || !newPassword) {
+    return res.status(400).json({ message: 'Email and new password are required.' });
+  }
+
+  try {
+    const user = await User.findOne({ email: email.toLowerCase() });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    user.password = newPassword; 
+    await user.save();
+
+    console.log("Password reset for:", user.email);
+
+    res.status(200).json({ message: 'Password has been reset successfully.' });
+  } catch (error) {
+    console.error('Password reset error:', error);
+    res.status(500).json({ message: 'Something went wrong. Please try again.' });
+  }
+};
+
+
+
+export { registerUser, loginUser, userProfile, deleteUser, logoutUser, updatePassword };
