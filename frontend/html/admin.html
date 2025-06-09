@@ -362,6 +362,16 @@
                                 </svg>
                                 Submit Social Media Account
                             </button>
+                            <div id="loader" class="hidden flex items-center space-x-2 text-blue-600">
+                                <svg class="animate-spin h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                        stroke-width="4">
+                                    </circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                                </svg>
+                                <span>Creating Account....</span>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -638,6 +648,10 @@
         <div id="logoutAlert"
             class="fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded shadow hidden">
             <span id="logoutAlertMessage"></span>
+        </div>
+
+        <div id="customAlert"
+            class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg text-center hidden z-50 font-semibold">
         </div>
 
 

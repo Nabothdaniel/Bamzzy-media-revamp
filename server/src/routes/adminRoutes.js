@@ -2,7 +2,10 @@ import express from 'express';
 
 const router = express.Router();
 
-import { createAccount } from '../controller/accountController';
-import { isAdmin } from '../middleware/isAdminMiddleware';
+//import { isAdmin } from '../middleware/isAdminMiddleware';
+import { signupAdmin } from '../controller/adminController.js';
 
-router.post('/create-account',isAdmin,createAccount);
+router.post('/create-admin',signupAdmin);
+
+
+export const adminrouter = router;

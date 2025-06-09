@@ -88,9 +88,13 @@ const createAccount = async (req, res) => {
         });
     }
 
+    if (!req.file.mimetype.startsWith('image/')) {
+        return res.status(400).json({ success: false, message: 'Only image files are allowed.' });
+    }
+
     try {
-        // 2) Compress & save the image
-        const filename = `${Date.now()}-${req.file.originalname.replace(/\s+/g, '_')}`;
+        const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}-${req.file.originalname.replace(/\s+/g, '_')}`;
+
         const filepath = path.join(UPLOAD_DIR, filename);
 
         await sharp(req.file.buffer)
@@ -148,4 +152,4 @@ const deleteAccount = (req, res) => {
 }
 
 
-export { getAccounts, getAccountById, createAccount,  deleteAccount }
+export { createAccount }

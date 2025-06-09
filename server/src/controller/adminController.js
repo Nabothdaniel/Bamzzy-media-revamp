@@ -1,53 +1,58 @@
 
 
-import User from '../models/User.js';
+import { User } from "../models/Users.js";
+import { generateToken } from "../utils/helperfns.js";
 
-export const signupAdmin = async (req, res) => {
-  // Only existing superadmins can create new admins
-  const { username, email, password } = req.body;
+const signupAdmin = async (req, res) => {
+  const { name, email, password } = req.body;
 
   try {
-    // Basic validation
-    if (!username || !email || !password) {
+    // Validate required fields
+    if (!name || !email || !password) {
       return res.status(400).json({ success: false, message: 'All fields are required' });
     }
 
-    // Check if user already exists
+    // Check for existing email
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ success: false, message: 'Email already exists' });
     }
 
+    // Create new admin
     const admin = new User({
-      username,
+      name,
       email,
       password,
-      role: 'admin' // Set role directly to admin
+      role: 'admin'
     });
 
-    
     await admin.save();
 
-    let token = generateToken(admin);
+    // Generate token
+    const token = generateToken(admin);
 
+    // Set auth cookie
     res.cookie('token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', //use secure cookies in prod
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 24 * 60 * 60 * 1000,
+      path: '/'
     });
 
+    // Success response
     res.status(201).json({
       success: true,
       message: 'Admin account created successfully',
       admin: {
         _id: admin._id,
-        username: admin.username,
+        username: admin.name,
         email: admin.email,
         role: admin.role
       },
       token
     });
+
   } catch (error) {
     res.status(400).json({
       success: false,
@@ -56,6 +61,8 @@ export const signupAdmin = async (req, res) => {
     });
   }
 };
+
+export default signupAdmin;
 
 const adminStats = (req, res) => {
   const accounts = readDataFile(ACCOUNTS_FILE)
@@ -231,4 +238,4 @@ const adminFundUsers = (req, res) => {
   }
 }
 
-export { adminActvity, adminStats, checkTransactions, getUsers, adminFundUsers }
+export { adminActvity, adminStats, checkTransactions, signupAdmin, adminFundUsers }

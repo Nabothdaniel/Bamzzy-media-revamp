@@ -6,6 +6,7 @@ import { fileURLToPath } from "url"
 import dotenv from "dotenv"
 import { authRoute } from './src/routes/auth.js'
 import {accountRoute} from './src/routes/account.js'
+import {adminrouter} from './src/routes/adminRoutes.js'
 import connectDb from "./src/utils/db.js"
 
 dotenv.config();
@@ -38,7 +39,8 @@ app.use(express.static(path.join(__dirname, ".")))
 
 //routes
 app.use('/api/v1/auth', authRoute)
-app.use('/api/v1/', accountRoute);
+app.use('/api/v1/accounts', accountRoute);
+app.use('/api/v1/admin', adminrouter);
 
 
 
