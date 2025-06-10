@@ -103,12 +103,16 @@ const getAccounts = async (req, res) => {
 // GET /api/v1/accounts
 const getPublicAccountsForUser = async (req, res) => {
     try {
-        const accounts = await Account.find().lean();
+        const accounts = await Account.findAll({
+            attributes: {
+                exclude: ['loginDetails'], // exclude sensitive fields
+            },
+            raw: true,
+        });
 
-        // Remove sensitive info
-        const publicAccounts = accounts.map(({ loginDetails, ...rest }) => rest);
+    
 
-        return res.json({ success: true, accounts: publicAccounts });
+        return res.json({ success: true, accounts});
     } catch (err) {
         console.error('User Get Error:', err);
         return res.status(500).json({ success: false, message: 'Server error' });
@@ -117,23 +121,23 @@ const getPublicAccountsForUser = async (req, res) => {
 
 // GET /api/v1/accounts/admin
 const getAllAccountsForAdmin = async (req, res) => {
-  try {
-    if (req.user.role !== 'admin') {
-      return res.status(403).json({ success: false, message: 'Access denied' });
+    try {
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ success: false, message: 'Access denied' });
+        }
+
+        // Fetch all accounts with Sequelize
+        const accounts = await Account.findAll({
+            // optionally include related admin user info if needed:
+            // include: [{ model: User, attributes: ['id', 'name', 'email', 'role'] }]
+            raw: true,  // returns plain JS objects instead of Sequelize instances
+        });
+
+        return res.json({ success: true, accounts });
+    } catch (err) {
+        console.error('Admin Get Error:', err);
+        return res.status(500).json({ success: false, message: 'Server error' });
     }
-
-    // Fetch all accounts with Sequelize
-    const accounts = await Account.findAll({
-      // optionally include related admin user info if needed:
-      // include: [{ model: User, attributes: ['id', 'name', 'email', 'role'] }]
-      raw: true,  // returns plain JS objects instead of Sequelize instances
-    });
-
-    return res.json({ success: true, accounts });
-  } catch (err) {
-    console.error('Admin Get Error:', err);
-    return res.status(500).json({ success: false, message: 'Server error' });
-  }
 };
 
 
@@ -170,21 +174,21 @@ const getAccountById = (req, res) => {
 
 
 const deleteAccount = async (req, res) => {
-  try {
-    const { id } = req.params;
+    try {
+        const { id } = req.params;
 
-    const deleted = await Account.findByIdAndDelete(id);
+        const deleted = await Account.findByIdAndDelete(id);
 
-    if (!deleted) {
-      return res.status(404).json({ success: false, message: 'Account not found' });
+        if (!deleted) {
+            return res.status(404).json({ success: false, message: 'Account not found' });
+        }
+
+        return res.json({ success: true, message: 'Account deleted successfully' });
+    } catch (err) {
+        console.error('Delete error:', err);
+        return res.status(500).json({ success: false, message: 'Failed to delete account' });
     }
-
-    return res.json({ success: true, message: 'Account deleted successfully' });
-  } catch (err) {
-    console.error('Delete error:', err);
-    return res.status(500).json({ success: false, message: 'Failed to delete account' });
-  }
 };
 
 
-export { createAccount,getAllAccountsForAdmin,getAccounts,getPublicAccountsForUser }
+export { createAccount, getAllAccountsForAdmin, getAccounts, getPublicAccountsForUser }
