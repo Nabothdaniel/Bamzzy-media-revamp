@@ -162,17 +162,6 @@
                         </svg>
                         Create Account
                     </button>
-
-                    <!-- Edit Account Button -->
-                    <button id="openEditModalBtn"
-                        class="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500 hover:bg-yellow-800 text-white rounded-md transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M11 5h2m-1 0v14m-7-7h14" />
-                        </svg>
-                        Edit Account
-                    </button>
                 </div>
             </div>
 
@@ -380,7 +369,7 @@
             <!--update account modal-->
             <div id="editAccountModal"
                 class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black bg-opacity-50 hidden transition-opacity duration-300">
-                <div class="bg-white rounded-t-2xl sm:rounded-lg shadow-xl w-full sm:max-w-xl max-h-[90vh]">
+                <div class="relative bg-white rounded-t-2xl sm:rounded-lg shadow-xl w-full sm:max-w-xl max-h-[90vh]">
 
                     <!-- Close Button -->
                     <button id="closeEditModalBtn" class="absolute top-4 right-4 text-gray-500 hover:text-red-600 z-10">
@@ -490,66 +479,24 @@
                             <tr>
                                 <th scope="col" class="px-4 py-3">ID</th>
                                 <th scope="col" class="px-4 py-3">Platform</th>
-                                <th scope="col" class="px-4 py-3">Image</th>
                                 <th scope="col" class="px-4 py-3">Price</th>
                                 <th scope="col" class="px-4 py-3">Status</th>
                                 <th scope="col" class="px-4 py-3">Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="accountsTableBody" class="divide-y divide-gray-200">
+
+
+                        <tbody id="accountsTableBody" class="divide-y divide-gray-200 mx-auto">
                             <!-- Dynamic account rows will be injected here -->
-                            <tr>
-                                <td class="px-4 py-3">1</td>
-                                <td class="px-4 py-3">Instagram</td>
-                                <td class="px-4 py-3">
-                                    <img src="https://via.placeholder.com/40" alt="Instagram Account"
-                                        class="w-10 h-10 rounded object-cover">
-                                </td>
-                                <td class="px-4 py-3">₦100,000</td>
-                                <td class="px-4 py-3">
-                                    <span
-                                        class="inline-block px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">Available</span>
-                                </td>
-                                <td class="px-4 py-3 space-x-2">
-                                    <button class="text-blue-600 hover:underline">Edit</button>
-                                    <button class="text-red-600 hover:underline">Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3">2</td>
-                                <td class="px-4 py-3">Twitter</td>
-                                <td class="px-4 py-3">
-                                    <img src="https://via.placeholder.com/40" alt="Twitter Account"
-                                        class="w-10 h-10 rounded object-cover">
-                                </td>
-                                <td class="px-4 py-3">₦75,500</td>
-                                <td class="px-4 py-3">
-                                    <span
-                                        class="inline-block px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-700 rounded-full">Pending</span>
-                                </td>
-                                <td class="px-4 py-3 space-x-2">
-                                    <button class="text-blue-600 hover:underline">Edit</button>
-                                    <button class="text-red-600 hover:underline">Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3">3</td>
-                                <td class="px-4 py-3">TikTok</td>
-                                <td class="px-4 py-3">
-                                    <img src="https://via.placeholder.com/40" alt="TikTok Account"
-                                        class="w-10 h-10 rounded object-cover">
-                                </td>
-                                <td class="px-4 py-3">₦60,000</td>
-                                <td class="px-4 py-3">
-                                    <span
-                                        class="inline-block px-2 py-1 text-xs font-medium bg-red-100 text-red-700 rounded-full">Sold
-                                        Out</span>
-                                </td>
-                                <td class="px-4 py-3 space-x-2">
-                                    <button class="text-blue-600 hover:underline">Edit</button>
-                                    <button class="text-red-600 hover:underline">Delete</button>
-                                </td>
-                            </tr>
+                            <div id="loadingIndicator"
+                                class="flex flex-row items-center justify-center gap-2 py-6 text-gray-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="animate-spin h-8 w-8" fill="none"
+                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                                </svg>
+                                <span>Loading accounts...</span>
+                            </div>
                         </tbody>
                     </table>
                 </div>
@@ -663,6 +610,7 @@
     <script src="../js/userprofile.js"></script>
     <script src="../js/utils.js"></script>
     <script src="../js/admin.js"></script>
+    <script src="../js/admin/accounts.js"></script>
 </body>
 
 </html>

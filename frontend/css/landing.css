@@ -29,7 +29,7 @@
 }
 
 body {
-  font-family: "Poppins", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   color: var(--text-color);
   line-height: 1.5;
   overflow-x: hidden;
@@ -667,6 +667,7 @@ img {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }

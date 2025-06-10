@@ -15,16 +15,29 @@ document.addEventListener("DOMContentLoaded", () => {
     })
   }
 
-  const showCustomAlert = (message, type = "error") => {
-    const alertBox = document.getElementById("customAlert")
-    if (alertBox) {
-      alertBox.textContent = message
-      alertBox.className = `custom-alert ${type}`
-      alertBox.classList.remove("hidden")
-      setTimeout(() => alertBox.classList.add("hidden"), 3000)
+  function showCustomAlert(message, type = "success") {
+    const alertBox = document.getElementById("customAlert");
+    const alertMsg = document.getElementById("customAlertMessage");
+
+    // Reset classes
+    alertBox.className = "fixed bottom-6 right-6 z-50 px-4 py-3 rounded shadow-lg transition duration-300";
+
+    // Style based on type
+    if (type === "success") {
+      alertBox.classList.add("bg-green-100", "text-green-800");
+    } else if (type === "error") {
+      alertBox.classList.add("bg-red-100", "text-red-800");
     } else {
-      alert(message) // fallback
+      alertBox.classList.add("bg-gray-100", "text-gray-800");
     }
+
+    alertMsg.textContent = message;
+    alertBox.classList.remove("hidden");
+
+    // Auto-hide after 3 seconds
+    setTimeout(() => {
+      alertBox.classList.add("hidden");
+    }, 3000);
   }
 
   // ========================
@@ -129,12 +142,12 @@ document.addEventListener("DOMContentLoaded", () => {
           showCustomAlert("Login successful!", "success")
 
           setTimeout(() => {
-           if(data.user.role === "admin"){
-             window.location.href = "./admin.html"
-           }else{
-             window.location.href = "./dashboard.html"
-           }
-           
+            if (data.user.role === "admin") {
+              window.location.href = "./admin.html"
+            } else {
+              window.location.href = "./dashboard.html"
+            }
+
           }, 1000)
         } else {
           showError("loginEmail", data.message || "Login failed.")
