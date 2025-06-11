@@ -6,14 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard - BAMZY MEDIA</title>
 
+
+    <!--google fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Space Grotesk -->
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
 
     <!--font awesome cdn-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <style>
         body {
             font-family: 'Space Grotesk', sans-serif;
@@ -53,7 +58,7 @@
 
                 <div>
                     <p>Welcome, <span id="userName" class="font-semibold"></span></p>
-                    <p class="text-sm text-gray-500">Balance: $<span id="userBalance">0.00</span></p>
+                    <p class="text-sm text-gray-500">Balance: <span id="userBalance">0.00</span></p>
                 </div>
             </div>
             <nav class="flex-grow p-4 space-y-4">
@@ -118,7 +123,7 @@
                             d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
                     </svg>
 
-                    Messages
+                    Notifications
                     <span id="unreadCount"
                         class="ml-auto bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full hidden">0</span>
                 </a>
@@ -141,7 +146,7 @@
             <!-- Header -->
             <header class=" flex md:flex justify-between items-center mb-6">
                 <div class="relative">
-                    <input type="text" placeholder="Search accounts..."
+                    <input type="text" id="accountSearch" placeholder="Search by name, price, or description"
                         class="pl-10 pr-4 py-2 rounded-md border border-gray-300 focus:outline-none w-full md:w-[60vw]">
                     <!-- Search Icon -->
                     <svg xmlns="http://www.w3.org/2000/svg"
@@ -155,12 +160,12 @@
                 <div class="flex gap-4 items-center">
                     <a href="cart.html" class="relative">
                         <!-- Bell Icon (notifications) -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <path
-                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 00-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                         </svg>
+
                         <span id="headerCartCount"
                             class="absolute -top-2 -right-2 text-xs bg-blue-600 text-white px-1 rounded-full">0</span>
                     </a>
@@ -259,127 +264,7 @@
             <section>
                 <h2 class="text-2xl font-semibold mb-4">Available Accounts</h2>
                 <div id="showcaseContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                    <!-- Showcase items replicated 11 times -->
-                    <div class="showcase-item bg-white rounded-lg shadow hover:shadow-lg transition p-4 flex flex-col">
-                        <img src="../images/showcase1.jpg" alt="Featured Account 2"
-                            class="rounded-md mb-4 w-full h-48 object-cover">
-                        <div class="showcase-content flex flex-col flex-grow">
-                            <div
-                                class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-white text-xs font-semibold bg-blue-500 max-w-max">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path d="M..." />
-                                </svg>
-                                TikTok
-                            </div>
-                            <h3 class="text-lg font-semibold mb-1">Dance & Entertainment</h3>
-                            <p class="text-gray-600 mb-4">101K+ Followers</p>
-                            <div class="price text-yellow-600 font-bold text-lg mt-auto">₦110,000</div>
-                        </div>
-                    </div>
-                    <!-- Duplicate above item 10 more times, change platform badge colors and names accordingly -->
-                    <div class="showcase-item bg-white rounded-lg shadow hover:shadow-lg transition p-4 flex flex-col">
-                        <img src="../images/showcase3.jpg" alt="Featured Account 3"
-                            class="rounded-md mb-4 w-full h-48 object-cover">
-                        <div class="showcase-content flex flex-col flex-grow">
-                            <div
-                                class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-white text-xs font-semibold bg-blue-500 max-w-max">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path d="M..." />
-                                </svg>
-                                Twitter
-                            </div>
-                            <h3 class="text-lg font-semibold mb-1">Tech & Gaming</h3>
-                            <p class="text-gray-600 mb-4">335k+ Followers</p>
-                            <div class="price text-yellow-600 font-bold text-lg mt-auto">₦350,000</div>
-                        </div>
-                    </div>
-                    <div class="showcase-item bg-white rounded-lg shadow hover:shadow-lg transition p-4 flex flex-col">
-                        <img src="../images/showcase3.jpg" alt="Featured Account 3"
-                            class="rounded-md mb-4 w-full h-48 object-cover">
-                        <div class="showcase-content flex flex-col flex-grow">
-                            <div
-                                class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-white text-xs font-semibold bg-blue-500 max-w-max">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path d="M..." />
-                                </svg>
-                                Twitter
-                            </div>
-                            <h3 class="text-lg font-semibold mb-1">Tech & Gaming</h3>
-                            <p class="text-gray-600 mb-4">335k+ Followers</p>
-                            <div class="price text-yellow-600 font-bold text-lg mt-auto">₦350,000</div>
-                        </div>
-                    </div>
-                    <div class="showcase-item bg-white rounded-lg shadow hover:shadow-lg transition p-4 flex flex-col">
-                        <img src="../images/showcase3.jpg" alt="Featured Account 3"
-                            class="rounded-md mb-4 w-full h-48 object-cover">
-                        <div class="showcase-content flex flex-col flex-grow">
-                            <div
-                                class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-white text-xs font-semibold bg-blue-500 max-w-max">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path d="M..." />
-                                </svg>
-                                Twitter
-                            </div>
-                            <h3 class="text-lg font-semibold mb-1">Tech & Gaming</h3>
-                            <p class="text-gray-600 mb-4">335k+ Followers</p>
-                            <div class="price text-yellow-600 font-bold text-lg mt-auto">₦350,000</div>
-                        </div>
-                    </div>
-                    <div class="showcase-item bg-white rounded-lg shadow hover:shadow-lg transition p-4 flex flex-col">
-                        <img src="../images/showcase3.jpg" alt="Featured Account 3"
-                            class="rounded-md mb-4 w-full h-48 object-cover">
-                        <div class="showcase-content flex flex-col flex-grow">
-                            <div
-                                class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-white text-xs font-semibold bg-blue-500 max-w-max">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path d="M..." />
-                                </svg>
-                                Twitter
-                            </div>
-                            <h3 class="text-lg font-semibold mb-1">Tech & Gaming</h3>
-                            <p class="text-gray-600 mb-4">335k+ Followers</p>
-                            <div class="price text-yellow-600 font-bold text-lg mt-auto">₦350,000</div>
-                        </div>
-                    </div>
-                    <div class="showcase-item bg-white rounded-lg shadow hover:shadow-lg transition p-4 flex flex-col">
-                        <img src="../images/showcase3.jpg" alt="Featured Account 3"
-                            class="rounded-md mb-4 w-full h-48 object-cover">
-                        <div class="showcase-content flex flex-col flex-grow">
-                            <div
-                                class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-white text-xs font-semibold bg-blue-500 max-w-max">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path d="M..." />
-                                </svg>
-                                Twitter
-                            </div>
-                            <h3 class="text-lg font-semibold mb-1">Tech & Gaming</h3>
-                            <p class="text-gray-600 mb-4">335k+ Followers</p>
-                            <div class="price  font-bold text-lg mt-auto">₦350,000</div>
-                        </div>
-                    </div>
-                    <div class="showcase-item bg-white rounded-lg shadow hover:shadow-lg transition p-4 flex flex-col">
-                        <img src="../images/showcase2.jpg" alt="Featured Account 3"
-                            class="rounded-md mb-4 w-full h-48 object-cover">
-                        <div class="showcase-content flex flex-col flex-grow">
-                            <div
-                                class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-white text-xs font-semibold bg-blue-500 max-w-max">
-                                <i class="fab fa-tiktok"></i>
-                                TikTok
-                            </div>
-
-
-                            <h3 class="text-lg font-semibold mb-1">Tech & Gaming</h3>
-                            <p class="text-gray-600 mb-4">335k+ Followers</p>
-                            <div class="price  font-bold text-lg mt-auto">₦350,000</div>
-                        </div>
-                    </div>
-
+                    <!--accounts will be generated with js-->
                 </div>
 
                 <button id="seeMoreBtn"
@@ -387,11 +272,6 @@
                     See More
                 </button>
     </div>
-
-
-
-
-
     </section>
     </main>
     </div>
@@ -433,11 +313,16 @@
     </div>
 
     <!-- Account Modal -->
-    <div id="accountModal" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg p-6 w-full max-w-2xl relative">
-            <button class="absolute top-3 right-3 text-gray-600 text-lg"
-                onclick="document.getElementById('accountModal').classList.add('hidden')">&times;</button>
-            <div id="accountDetails">
+    <div id="accountModal" class="hidden   fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 mx-2 md:m-0  w-full max-w-2xl relative">
+            <button id="closeAccountModal" class="absolute top-3 right-3 text-gray-600 text-lg"
+                onclick="document.getElementById('accountModal').classList.add('hidden')"><svg
+                    xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24"
+                    stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <div id="accountDetails" class="mt-10 md:mt-0 ">
                 <!-- Account details dynamically rendered -->
             </div>
         </div>
@@ -446,12 +331,14 @@
         class="fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded shadow hidden">
         <span id="logoutAlertMessage"></span>
     </div>
-    
 
-    <script src="../js/dashboard.js"></script>
-    <script src="../js/auth.js"></script>
-    <script src="../js/userprofile.js"></script>
-    <script src="../js/utils.js"></script>
+
+    <script defer src="../js/protected/protected.js"></script>
+    <script defer type="module" src="../js/dashboard.js"></script>
+    <script defer src="../js/auth.js"></script>
+    <script defer src="../js/userprofile.js"></script>
+    <script defer src="../js/cart.js"></script>
+    <script defer src="../js/utils.js"></script>
     <script>
 
 

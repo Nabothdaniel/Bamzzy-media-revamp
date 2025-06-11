@@ -29,6 +29,10 @@ const Account = sequelize.define('Account', {
     type: DataTypes.TEXT,
     allowNull: false,
   },
+  followers: {
+  type: DataTypes.INTEGER, // or STRING if it's stored as text
+  allowNull: true
+},
   howToUse: {
     type: DataTypes.TEXT,
     allowNull: false,
@@ -38,6 +42,10 @@ const Account = sequelize.define('Account', {
     allowNull: true,
     defaultValue: 'available',
   },
+  isSold: {
+  type: DataTypes.BOOLEAN,
+  defaultValue: false
+},
   adminId: {
     type: DataTypes.INTEGER,
     allowNull: false,

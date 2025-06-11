@@ -8,6 +8,7 @@ import { authRoute } from './src/routes/auth.js'
 import { accountRoute } from './src/routes/account.js'
 import { adminrouter } from './src/routes/adminRoutes.js'
 import sequelize from "./src/utils/database.js";
+import { cartRoute } from "./src/routes/cartRoute.js";
 
 dotenv.config();
 
@@ -33,7 +34,7 @@ sequelize.authenticate()
   .catch(err => console.error('❌ DB connection failed:', err));
 
 // Serve uploaded images statically
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'src/uploads')));
 app.use(bodyParser.json({ limit: "50mb" }))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static(path.join(__dirname, ".")))
@@ -44,6 +45,7 @@ app.use(express.static(path.join(__dirname, ".")))
 app.use('/api/v1/auth', authRoute)
 app.use('/api/v1/accounts', accountRoute);
 app.use('/api/v1/admin', adminrouter);
+app.use('/api/v1/cart', cartRoute);
 
 
 

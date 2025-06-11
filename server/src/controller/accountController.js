@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import sharp from 'sharp';
 import { fileURLToPath } from 'url';
-
+import { Op } from "sequelize";
 import { Account } from '../models/Account.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -22,6 +22,8 @@ if (!fs.existsSync(UPLOAD_DIR)) {
 const createAccount = async (req, res) => {
     const {
         platform,
+        category,
+        followers,
         price,
         loginDetails,
         description,
@@ -33,10 +35,10 @@ const createAccount = async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ success: false, message: 'Image file is required.' });
     }
-    if (!platform || price == null || !loginDetails || !description || !howToUse) {
+    if (!platform || !category || !followers || price == null || !loginDetails || !description || !howToUse) {
         return res.status(400).json({
             success: false,
-            message: 'platform, price, loginDetails, description and howToUse are required.',
+            message: 'platform, category,followers, price, loginDetails, description and howToUse are required.',
         });
     }
 
@@ -55,12 +57,14 @@ const createAccount = async (req, res) => {
             .toFile(filepath);
 
         // 3) Build URL path (served via express.static)
-        const imageUrl = `/uploads/${filename}`;
+        const imageUrl = `src/uploads/${filename}`;
 
         // 4) Create account document
         const account = await Account.create({
             platform: platform.trim(),
             image: imageUrl,
+            category,
+            followers: parseFloat(followers),
             price: parseFloat(price),
             loginDetails,
             description,
@@ -82,42 +86,153 @@ const createAccount = async (req, res) => {
     }
 };
 
-//@desc     get all accounts by admin
-//@route    GET /api/v1/accounts
-//@role     get all accounts
-const getAccounts = async (req, res) => {
-    const accounts = readDataFile(ACCOUNTS_FILE)
+const updateAccount = async (req, res) => {
+    let transaction;
+    try {
+        const { accountId } = req.params;
+        const {
+            platform,
+            category,
+            followers,
+            price,
+            loginDetails,
+            description,
+            howToUse,
+            status,
+        } = req.body;
 
-    // Remove login details for non-admin users
-    let filteredAccounts = accounts
-    if (req.user.role !== "admin") {
-        filteredAccounts = accounts.map((account) => {
-            const { loginDetails, ...accountData } = account
-            return accountData
-        })
+        // Start transaction
+        transaction = await sequelize.transaction();
+
+        // Validate account exists
+        const account = await Account.findByPk(accountId, { transaction });
+        if (!account) {
+            await transaction.rollback();
+            return res.status(404).json({
+                success: false,
+                message: 'Account not found'
+            });
+        }
+
+        // Store old image path if exists
+        const oldImagePath = account.image
+            ? path.join(UPLOAD_DIR, path.basename(account.image))
+            : null;
+
+        // Prepare update data
+        const updateData = {
+            ...(platform && { platform: platform.trim() }),
+            ...(category && { category }),
+            ...(followers && { followers: parseFloat(followers) }),
+            ...(price && { price: parseFloat(price) }),
+            ...(loginDetails && { loginDetails }),
+            ...(description && { description }),
+            ...(howToUse && { howToUse }),
+            ...(status && { status }),
+        };
+
+        // Handle image upload if present
+        if (req.file) {
+            if (!req.file.mimetype.startsWith('image/')) {
+                await transaction.rollback();
+                return res.status(400).json({
+                    success: false,
+                    message: 'Only image files are allowed.'
+                });
+            }
+
+            // Generate filename and path
+            const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}-${req.file.originalname.replace(/\s+/g, '_')}`;
+            const filepath = path.join(UPLOAD_DIR, filename);
+
+            // Process image with sharp
+            await sharp(req.file.buffer)
+                .resize({ width: 800 })
+                .jpeg({ quality: 80 })
+                .toFile(filepath);
+
+            // Add new image to update data
+            updateData.image = `src/uploads/${filename}`;
+        }
+
+        // Validate at least one field is being updated
+        if (Object.keys(updateData).length === 0 && !req.file) {
+            await transaction.rollback();
+            return res.status(400).json({
+                success: false,
+                message: 'No valid fields provided for update'
+            });
+        }
+
+        // Perform the update
+        await account.update(updateData, { transaction });
+
+        // Delete old image file if it exists and was replaced
+        if (oldImagePath && req.file) {
+            try {
+                await fs.unlink(oldImagePath);
+                console.log(`Successfully deleted old image: ${oldImagePath}`);
+            } catch (err) {
+                console.error(`Error deleting old image (${oldImagePath}):`, err);
+                // Don't fail the request if deletion fails
+            }
+        }
+
+        // Commit transaction
+        await transaction.commit();
+
+        // Fetch the updated account with fresh data
+        const updatedAccount = await Account.findByPk(accountId);
+
+        return res.status(200).json({
+            success: true,
+            message: 'Account updated successfully',
+            account: updatedAccount
+        });
+
+    } catch (error) {
+        // Rollback transaction if it was started
+        if (transaction) await transaction.rollback();
+
+        console.error('Error updating account:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Internal server error',
+            error: error.message
+        });
     }
+};
 
-    return res.json({ success: true, accounts: filteredAccounts })
-}
+
 
 // GET /api/v1/accounts
 const getPublicAccountsForUser = async (req, res) => {
     try {
+        const { since } = req.query; // optional query param like ?since=timestamp
+
+        const whereClause = since
+            ? {
+                updatedAt: {
+                    [Op.gt]: new Date(since),
+                },
+            }
+            : {};
+
         const accounts = await Account.findAll({
+            where: whereClause,
             attributes: {
-                exclude: ['loginDetails'], // exclude sensitive fields
+                exclude: ['loginDetails'], // Exclude sensitive info
             },
+            order: [['updatedAt', 'DESC']],
             raw: true,
         });
 
-    
-
-        return res.json({ success: true, accounts});
+        return res.json({ success: true, accounts });
     } catch (err) {
         console.error('User Get Error:', err);
         return res.status(500).json({ success: false, message: 'Server error' });
     }
-};
+}
 
 // GET /api/v1/accounts/admin
 const getAllAccountsForAdmin = async (req, res) => {
@@ -174,21 +289,63 @@ const getAccountById = (req, res) => {
 
 
 const deleteAccount = async (req, res) => {
+    let transaction;
     try {
         const { id } = req.params;
 
-        const deleted = await Account.findByIdAndDelete(id);
+        // Start transaction
+        transaction = await sequelize.transaction();
 
-        if (!deleted) {
-            return res.status(404).json({ success: false, message: 'Account not found' });
+        // Find account including the image path
+        const account = await Account.findByPk(id, { transaction });
+
+        if (!account) {
+            await transaction.rollback();
+            return res.status(404).json({
+                success: false,
+                message: 'Account not found'
+            });
         }
 
-        return res.json({ success: true, message: 'Account deleted successfully' });
+        // Store image path before deletion
+        const imagePath = account.image
+            ? path.join(UPLOAD_DIR, path.basename(account.image))
+            : null;
+
+        // Delete the account record
+        await account.destroy({ transaction });
+
+        // Delete associated image file if it exists
+        if (imagePath) {
+            try {
+                await fs.unlink(imagePath);
+                console.log(`Deleted account image: ${imagePath}`);
+            } catch (err) {
+                console.error(`Error deleting account image (${imagePath}):`, err);
+                // Continue even if image deletion fails
+            }
+        }
+
+        // Commit transaction
+        await transaction.commit();
+
+        return res.status(200).json({
+            success: true,
+            message: 'Account deleted successfully'
+        });
+
     } catch (err) {
-        console.error('Delete error:', err);
-        return res.status(500).json({ success: false, message: 'Failed to delete account' });
+        // Rollback transaction if it was started
+        if (transaction) await transaction.rollback();
+
+        console.error('Delete account error:', err);
+        return res.status(500).json({
+            success: false,
+            message: 'Failed to delete account',
+            error: process.env.NODE_ENV === 'development' ? err.message : undefined
+        });
     }
 };
 
 
-export { createAccount, getAllAccountsForAdmin, getAccounts, getPublicAccountsForUser }
+export { createAccount, getAllAccountsForAdmin,deleteAccount, updateAccount, getPublicAccountsForUser }

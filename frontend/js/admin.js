@@ -4,9 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const modal = document.getElementById('createAccountModal');
   const backdrop = document.getElementById('modalBackdrop');
 
-  const editModal = document.getElementById('editAccountModal');
-  const closeEditBtn = document.getElementById('closeEditModalBtn');
-  const openEditBtn = document.getElementById('openEditModalBtn');  // Fixed typo here
+ 
 
   const form = document.getElementById('socialMediaForm');
   const customAlert = document.getElementById('customAlert');
@@ -28,22 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
     backdrop.classList.add('hidden');
   });
 
-  // Open and close edit account modal
-  function openEditModal() {
-    editModal.classList.remove('hidden');
-    setTimeout(() => {
-      editModal.children[0].classList.remove('translate-y-full', 'opacity-0');
-      editModal.children[0].classList.add('translate-y-0', 'opacity-100');
-    }, 50);
-  }
-
-  function closeEditModal() {
-    editModal.classList.add('hidden');
-  }
-
-  openEditBtn.addEventListener('click', openEditModal);
-  closeEditBtn.addEventListener('click', closeEditModal);
-
   // Custom alert utility
   function showCustomAlert(message, duration = 3000) {
     customAlert.textContent = message;
@@ -57,6 +39,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 300);
     }, duration);
   }
+
+  function getSessionData() {
+    try {
+      return JSON.parse(window.name || '{}');
+    } catch {
+      return {};
+    }
+  }
+
 
   // Form submit handler
   form.addEventListener('submit', async (e) => {
@@ -74,10 +65,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     formData.set('image', imageInput.files[0]);
+    console.log(formData);
 
     loader.classList.remove('hidden');
+    
+   const sessionData = getSessionData();
+    const token = sessionData.token;
 
-    const token = localStorage.getItem('token');
+    console.log(token)
     if (!token) {
       loader.classList.add('hidden');
       showCustomAlert('You are not authenticated. Please log in.');
@@ -89,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
-          // Note: Do NOT set 'Content-Type' header with FormData — browser does it automatically
         },
         body: formData,
       });

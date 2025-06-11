@@ -96,10 +96,10 @@
 <body class="bg-gray-100 font-sans text-gray-900">
     <div class="flex h-screen overflow-hidden">
         <!-- Sidebar -->
-        <div class="w-64 bg-gray-900 text-white flex-shrink-0 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out fixed h-full z-10"
+        <div class="w-64 bg-white  flex-shrink-0 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out fixed h-full z-10"
             id="sidebar">
-            <div class="p-4 border-b border-gray-800">
-                <div class="flex justify-between items-center">
+            <div class="p-4 border-b ">
+                <div class="flex justify-between py-3 items-center">
                     <h2 class="text-xl font-bold">BAMZY MEDIA</h2>
                     <button id="closeSidebar" class="md:hidden text-gray-400 hover:text-white">
                         <i class="fas fa-times"></i>
@@ -107,58 +107,96 @@
                 </div>
             </div>
 
-            <div class="p-4 border-b border-gray-800">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
-                        <i class="fas fa-user text-white"></i>
-                    </div>
-                    <div>
-                        <h3 id="userName" class="font-medium">Loading...</h3>
-                        <p id="userBalance" class="text-sm text-gray-400">Balance: ₦0</p>
-                    </div>
+            <div class="p-4 border-b  flex items-center gap-4">
+                <div id="userAvatar"
+                    class="bg-gray-200 w-12 h-12 rounded-full flex items-center justify-center text-xl text-white font-bold">
+                    <!-- Content will be inserted dynamically -->
+                </div>
+
+                <div>
+                    <p class="text-black">Welcome, <span id="userName" class="font-semibold"></span></p>
+                    <p class="text-sm text-gray-500">Balance: <span id="userBalance">0.00</span></p>
                 </div>
             </div>
 
-            <nav class="p-4">
-                <ul class="space-y-2">
-                    <li>
-                        <a href="dashboard.html"
-                            class="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white">
-                            <i class="fas fa-home w-5"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="cart.html"
-                            class="flex items-center space-x-3 px-3 py-2 rounded-lg bg-gray-800 text-white">
-                            <i class="fas fa-shopping-cart w-5"></i>
-                            <span>Cart</span>
-                            <span id="cartCount" class="badge bg-blue-600 text-white ml-auto">0</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="purchases.html"
-                            class="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white">
-                            <i class="fas fa-history w-5"></i>
-                            <span>Purchase History</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" id="fundAccount"
-                            class="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white">
-                            <i class="fas fa-wallet w-5"></i>
-                            <span>Fund Account</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" id="logout"
-                            class="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white">
-                            <i class="fas fa-sign-out-alt w-5"></i>
-                            <span>Logout</span>
-                        </a>
-                    </li>
-                </ul>
+            <nav class="flex-grow p-4 space-y-4">
+                <a href="dashboard.html"
+                    class="flex items-center gap-3 text-blue-600 font-semibold  rounded-lg px-3 py-2 transition hover:bg-blue-100 hover:text-blue-700">
+                    <!-- Home Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path
+                            d="M3 9.75L12 3l9 6.75v10.5A2.25 2.25 0 0118.75 22.5h-13.5A2.25 2.25 0 013 20.25v-10.5z" />
+                        <path d="M9 22.5v-7.5h6v7.5" />
+                    </svg>
+                    Dashboard
+                </a>
+
+                <a href="cart.html"
+                    class="flex items-center gap-3 text-gray-700 bg-blue-50 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
+                    <!-- Shopping Cart Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                    </svg>
+
+                    Cart
+                    <span id="cartCount"
+                        class="ml-auto bg-blue-100 text-blue-600 text-xs px-2 py-1 rounded-full">0</span>
+                </a>
+
+                <a href="purchases.html"
+                    class="flex items-center gap-3 text-gray-700 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
+                    <!-- History Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+
+                    </svg>
+                    Purchase History
+                </a>
+
+                <a href="#" id="fundAccount"
+                    class="flex items-center gap-3 text-gray-700 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
+                    <!-- Wallet Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+
+                    Fund Account
+                </a>
+
+                <a href="messages.html"
+                    class="flex items-center gap-3 text-gray-700 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
+                    <!-- Envelope Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                    </svg>
+
+                    Notifications
+                    <span id="unreadCount"
+                        class="ml-auto bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full hidden">0</span>
+                </a>
+
+                <a href="#" id="logout"
+                    class="flex items-center gap-3 text-red-500 rounded-lg px-3 py-2 transition hover:bg-red-50 hover:text-red-600 active:bg-red-100">
+                    <!-- Logout Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-6 0v-1m6-10V5a3 3 0 00-6 0v1" />
+                    </svg>
+                    Logout
+                </a>
             </nav>
+
         </div>
 
         <!-- Main Content -->
@@ -234,17 +272,7 @@
                                         </div>
                                     </div>
                                     <div class="flex items-center space-x-4">
-                                        <div class="flex items-center border border-gray-300 rounded-lg">
-                                            <button class="quantity-btn px-3 py-1 text-gray-600 hover:bg-gray-100"
-                                                data-action="decrease">
-                                                <i class="fas fa-minus"></i>
-                                            </button>
-                                            <span class="quantity px-3 py-1 text-center w-12">1</span>
-                                            <button class="quantity-btn px-3 py-1 text-gray-600 hover:bg-gray-100"
-                                                data-action="increase">
-                                                <i class="fas fa-plus"></i>
-                                            </button>
-                                        </div>
+
                                         <button class="remove-btn p-2 text-gray-500 hover:text-red-500">
                                             <i class="fas fa-trash"></i>
                                         </button>
@@ -380,283 +408,9 @@
         </div>
     </div>
 
-    <script>
-        // Mock data - in a real app, this would come from your backend
-        const mockUser = {
-            name: "John Doe",
-            balance: 15000,
-            cart: [
-                {
-                    id: "acc1",
-                    name: "Instagram Account",
-                    platform: "Instagram",
-                    followers: "10k",
-                    price: 5000,
-                    image: "https://via.placeholder.com/100?text=IG"
-                },
-                {
-                    id: "acc2",
-                    name: "Twitter Account",
-                    platform: "Twitter",
-                    followers: "5k",
-                    price: 3000,
-                    image: "https://via.placeholder.com/100?text=TW"
-                }
-            ]
-        };
-
-        // DOM Elements
-        const sidebar = document.getElementById('sidebar');
-        const toggleSidebar = document.getElementById('toggleSidebar');
-        const closeSidebar = document.getElementById('closeSidebar');
-        const cartItemsContainer = document.getElementById('cartItems');
-        const emptyCartElement = document.getElementById('emptyCart');
-        const cartItemTemplate = document.getElementById('cartItemTemplate');
-        const totalItemsElement = document.getElementById('totalItems');
-        const totalPriceElement = document.getElementById('totalPrice');
-        const cartUserBalanceElement = document.getElementById('cartUserBalance');
-        const checkoutButton = document.getElementById('checkoutButton');
-        const insufficientFundsElement = document.getElementById('insufficientFunds');
-        const fundFromCartButton = document.getElementById('fundFromCart');
-        const userNameElement = document.getElementById('userName');
-        const userBalanceElement = document.getElementById('userBalance');
-        const cartCountElement = document.getElementById('cartCount');
-        const fundModal = document.getElementById('fundModal');
-        const fundAccountButton = document.getElementById('fundAccount');
-        const closeModalButtons = document.querySelectorAll('.close');
-        const sendFundRequestButton = document.getElementById('sendFundRequest');
-        const checkoutSuccessModal = document.getElementById('checkoutSuccessModal');
-        const viewPurchasesBtn = document.getElementById('viewPurchasesBtn');
-        const continueShoppingBtn = document.getElementById('continueShopping');
-
-        // State
-        let user = {
-            name: '',
-            balance: 0,
-            cart: []
-        };
-
-        // Initialize the app
-        function init() {
-            // Load user data (in a real app, this would be an API call)
-            setTimeout(() => {
-                user = {
-                    ...mockUser,
-                    cart: [...mockUser.cart]
-                };
-                updateUserInfo();
-                renderCart();
-            }, 800);
-
-            // Setup event listeners
-            setupEventListeners();
-        }
-
-        // Update user information in the UI
-        function updateUserInfo() {
-            userNameElement.textContent = user.name;
-            userBalanceElement.textContent = `Balance: ₦${user.balance.toLocaleString()}`;
-            cartUserBalanceElement.textContent = `₦${user.balance.toLocaleString()}`;
-            cartCountElement.textContent = user.cart.length;
-        }
-
-        // Render the cart items
-        function renderCart() {
-            if (user.cart.length === 0) {
-                cartItemsContainer.innerHTML = '';
-                emptyCartElement.classList.remove('hidden');
-                totalItemsElement.textContent = '0';
-                totalPriceElement.textContent = '₦0';
-                checkoutButton.disabled = true;
-                return;
-            }
-
-            emptyCartElement.classList.add('hidden');
-            cartItemsContainer.innerHTML = '';
-
-            let totalItems = 0;
-            let totalPrice = 0;
-
-            user.cart.forEach(item => {
-                totalItems += 1;
-                totalPrice += item.price;
-
-                const cartItem = cartItemTemplate.cloneNode(true);
-                cartItem.classList.remove('hidden');
-                cartItem.setAttribute('data-id', item.id);
-
-                cartItem.querySelector('#itemImage').src = item.image;
-                cartItem.querySelector('#itemName').textContent = item.name;
-                cartItem.querySelector('#itemDetails').textContent = `Platform: ${item.platform} | Followers: ${item.followers}`;
-                cartItem.querySelector('#itemPrice').textContent = `₦${item.price.toLocaleString()}`;
-
-                // Quantity buttons
-                const decreaseBtn = cartItem.querySelector('[data-action="decrease"]');
-                const increaseBtn = cartItem.querySelector('[data-action="increase"]');
-                const quantityElement = cartItem.querySelector('.quantity');
-                const removeBtn = cartItem.querySelector('.remove-btn');
-
-                decreaseBtn.addEventListener('click', () => {
-                    // In a real app, you would update the quantity in the cart
-                    // For this demo, we'll just remove the item if quantity is 1
-                    const currentQuantity = parseInt(quantityElement.textContent);
-                    if (currentQuantity > 1) {
-                        quantityElement.textContent = currentQuantity - 1;
-                    } else {
-                        removeFromCart(item.id);
-                    }
-                    updateCartSummary();
-                });
-
-                increaseBtn.addEventListener('click', () => {
-                    const currentQuantity = parseInt(quantityElement.textContent);
-                    quantityElement.textContent = currentQuantity + 1;
-                    updateCartSummary();
-                });
-
-                removeBtn.addEventListener('click', () => {
-                    removeFromCart(item.id);
-                });
-
-                cartItemsContainer.appendChild(cartItem);
-            });
-
-            totalItemsElement.textContent = totalItems;
-            totalPriceElement.textContent = `₦${totalPrice.toLocaleString()}`;
-
-            // Check if user has enough balance
-            checkoutButton.disabled = false;
-            if (user.balance < totalPrice) {
-                checkoutButton.disabled = true;
-                insufficientFundsElement.classList.remove('hidden');
-            } else {
-                insufficientFundsElement.classList.add('hidden');
-            }
-        }
-
-        // Remove item from cart
-        function removeFromCart(itemId) {
-            user.cart = user.cart.filter(item => item.id !== itemId);
-            cartCountElement.textContent = user.cart.length;
-            renderCart();
-        }
-
-        // Update cart summary
-        function updateCartSummary() {
-            let totalItems = 0;
-            let totalPrice = 0;
-
-            document.querySelectorAll('.cart-item').forEach(item => {
-                const quantity = parseInt(item.querySelector('.quantity').textContent);
-                const price = parseInt(item.querySelector('#itemPrice').textContent.replace(/[^\d]/g, ''));
-
-                totalItems += quantity;
-                totalPrice += price * quantity;
-            });
-
-            totalItemsElement.textContent = totalItems;
-            totalPriceElement.textContent = `₦${totalPrice.toLocaleString()}`;
-
-            // Check if user has enough balance
-            checkoutButton.disabled = false;
-            if (user.balance < totalPrice) {
-                checkoutButton.disabled = true;
-                insufficientFundsElement.classList.remove('hidden');
-            } else {
-                insufficientFundsElement.classList.add('hidden');
-            }
-        }
-
-        // Setup event listeners
-        function setupEventListeners() {
-            // Sidebar toggle
-            toggleSidebar.addEventListener('click', () => {
-                sidebar.classList.toggle('-translate-x-full');
-            });
-
-            closeSidebar.addEventListener('click', () => {
-                sidebar.classList.add('-translate-x-full');
-            });
-
-            // Checkout button
-            checkoutButton.addEventListener('click', () => {
-                // In a real app, this would make an API call to process the payment
-                // For this demo, we'll just show the success modal
-                checkoutSuccessModal.classList.add('active');
-                checkoutSuccessModal.classList.remove('opacity-0', 'invisible');
-                checkoutSuccessModal.querySelector('.modal-content').classList.remove('opacity-0');
-
-                // Clear the cart after successful checkout
-                user.cart = [];
-                cartCountElement.textContent = '0';
-                renderCart();
-            });
-
-            // Fund account buttons
-            fundAccountButton.addEventListener('click', (e) => {
-                e.preventDefault();
-                showFundModal();
-            });
-
-            fundFromCartButton.addEventListener('click', (e) => {
-                e.preventDefault();
-                showFundModal();
-            });
-
-            // Modal controls
-            closeModalButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    fundModal.classList.remove('active');
-                    fundModal.classList.add('opacity-0', 'invisible');
-                    checkoutSuccessModal.classList.remove('active');
-                    checkoutSuccessModal.classList.add('opacity-0', 'invisible');
-                });
-            });
-
-            // Send fund request
-            sendFundRequestButton.addEventListener('click', () => {
-                const amount = parseInt(document.getElementById('fundAmount').value);
-                if (isNaN(amount) || amount < 1000) {
-                    alert('Please enter a valid amount (minimum ₦1000)');
-                    return;
-                }
-
-                // In a real app, this would send a request to your backend
-                alert(`Fund request for ₦${amount.toLocaleString()} has been sent to admin. They will contact you shortly.`);
-
-                fundModal.classList.remove('active');
-                fundModal.classList.add('opacity-0', 'invisible');
-            });
-
-            // Success modal buttons
-            viewPurchasesBtn.addEventListener('click', () => {
-                window.location.href = 'purchases.html';
-            });
-
-            continueShoppingBtn.addEventListener('click', () => {
-                window.location.href = 'dashboard.html';
-                checkoutSuccessModal.classList.remove('active');
-                checkoutSuccessModal.classList.add('opacity-0', 'invisible');
-            });
-
-            // Logout button
-            document.getElementById('logout').addEventListener('click', (e) => {
-                e.preventDefault();
-                // In a real app, this would make an API call to logout
-                window.location.href = 'login.html';
-            });
-        }
-
-        // Show fund modal
-        function showFundModal() {
-            fundModal.classList.add('active');
-            fundModal.classList.remove('opacity-0', 'invisible');
-            document.getElementById('fundAmount').focus();
-        }
-
-        // Initialize the app
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
+    <script src="../js/userprofile.js"></script>
+    <script src="../js/cart.js"></script>
+    <script src="../js/utils.js"></script>
 </body>
 
 </html>
