@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class='h-full'>
+
 
 <head>
     <meta charset="UTF-8" />
@@ -26,7 +27,7 @@
     </style>
 </head>
 
-<body class="bg-gray-100 text-gray-800">
+<body class="h-full overflow-hidden bg-gray-100   text-gray-800">
 
     <!-- Mobile Nav -->
     <div class="md:hidden flex justify-between items-center px-4 py-3 bg-white shadow">
@@ -42,7 +43,7 @@
         </button>
     </div>
 
-    <div class="flex h-screen overflow-hidden">
+    <div class=" flex h-full">
 
         <!-- Sidebar -->
         <aside id="sidebar"
@@ -62,9 +63,9 @@
                 </div>
             </div>
             <nav class="flex-grow p-4 space-y-4">
-                <a href="dashboard.html"
-                    class="flex items-center gap-3 text-blue-600 font-semibold bg-blue-50 rounded-lg px-3 py-2 transition hover:bg-blue-100 hover:text-blue-700">
-                    <!-- Home Icon -->
+                <a href="./dashboard.html"
+                    class="flex items-center gap-3 text-gray-700 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
+
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none"
                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
@@ -101,16 +102,14 @@
                     </svg>
                     Purchase History
                 </a>
-
                 <a href="./fund.html"
-                    class="flex items-center gap-3 text-gray-700 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
+                    class="flex items-center gap-3 text-blue-600 font-semibold bg-blue-50 rounded-lg px-3 py-2 transition hover:bg-blue-100 hover:text-blue-700">
                     <!-- Wallet Icon -->
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>
-
                     Fund Account
                 </a>
 
@@ -142,33 +141,11 @@
         </aside>
 
         <!-- Main Content -->
-        <main class='flex-1 w-full p-6 overflow-y-auto md:ml-3'>
+        <main class='w-full h-screen overflow-y-auto w-full ml:2'>
             <!-- Header -->
-            <header class=" flex md:flex justify-between items-center mb-6">
-                <div class="relative">
-                    <input type="text" id="accountSearch" placeholder="Search by name, price, or description"
-                        class="pl-10 pr-4 py-2 rounded-md border border-gray-300 focus:outline-none w-full md:w-[60vw]">
-                    <!-- Search Icon -->
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5 text-gray-400 absolute top-1/2 left-3 -translate-y-1/2" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="7" />
-                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                    </svg>
-                </div>
+            <header class=" md:bg-white  p-3 flex md:flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-semibold">Fund Account</h1>
                 <div class="flex gap-4 items-center">
-                    <a href="cart.html" class="relative">
-                        <!-- Bell Icon (notifications) -->
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="size-6">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                        </svg>
-
-                        <span id="headerCartCount"
-                            class="absolute -top-2 -right-2 text-xs bg-blue-600 text-white px-1 rounded-full">0</span>
-                    </a>
                     <a href="messages.html" class="relative">
                         <!-- Envelope Icon -->
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -183,8 +160,30 @@
                 </div>
             </header>
 
-            <div class="max-w-xl mx-auto mt-20 p-6 bg-white rounded-2xl shadow-xl">
+            <div class="max-w-xl md:mx-auto mx-5 mb-20 mt-5 p-6 bg-white rounded-2xl shadow-xl">
                 <h1 class="text-2xl font-bold text-center mb-6">Fund Your Account</h1>
+
+                <!-- User Input Form -->
+                <div id="userInfoForm" class="mb-6">
+                    <h2 class="text-xl font-semibold mb-3">Enter Your Details</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="userNameInput" class="block text-sm font-medium text-gray-700">Name</label>
+                            <input type="text" id="userNameInput" class="w-full mt-1 p-2 border rounded-lg" required />
+                        </div>
+                        <div>
+                            <label for="userEmailInput" class="block text-sm font-medium text-gray-700">Email</label>
+                            <input type="email" id="userEmailInput" class="w-full mt-1 p-2 border rounded-lg"
+                                required />
+                        </div>
+                        <div>
+                            <label for="userPhoneInput" class="block text-sm font-medium text-gray-700">Phone
+                                Number</label>
+                            <input type="tel" id="userPhoneInput" class="w-full mt-1 p-2 border rounded-lg" required />
+                        </div>
+                    </div>
+                </div>
+
 
                 <!-- Create Virtual Account Section -->
                 <div id="virtualAccountSection" class="mb-6">
@@ -206,7 +205,10 @@
                         your bank app. Your balance will be updated automatically after confirmation.</p>
                     <p class="text-sm text-gray-600">Make sure to use your registered name to avoid delays.</p>
                 </div>
+
             </div>
+
+
         </main>
 
     </div>
@@ -223,11 +225,41 @@
     <script defer src="../js/cart.js"></script>
     <script defer src="../js/utils.js"></script>
     <script>
+        const createAccountBtn = document.getElementById('createAccountBtn');
+        const accountInfo = document.getElementById('accountInfo');
+        const accountNumberEl = document.getElementById('accountNumber');
+        const fundingInstructions = document.getElementById('fundingInstructions');
 
+        async function createVirtualAccount(userName, userEmail, userPhone) {
+            try {
+                const response = await fetch('http://localhost:5000/api/v1/fund/create-virtual-account', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${JSON.parse(window.name).token}`
+                    },
+                    body: JSON.stringify({
+                        name: userName,
+                        email: userEmail,
+                        phoneNumber: userPhone
+                    })
+                });
 
-        // Social links - toggle active button styles
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Failed to create virtual account');
+                }
+
+                return data.data; // your backend should return the account details here
+            } catch (err) {
+                console.error('❌ Error creating virtual account:', err.message);
+                alert('❌ Failed to create virtual account. Please try again.');
+            }
+        }
 
     </script>
+
 </body>
 
 </html>

@@ -49,7 +49,8 @@ const getCart = async (req, res) => {
 const removeFromCart = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { accountId } = req.params;
+    const accountId = req.params.id;
+
 
     const deleted = await Cart.destroy({
       where: {

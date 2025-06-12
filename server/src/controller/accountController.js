@@ -31,10 +31,7 @@ const createAccount = async (req, res) => {
         status,
     } = req.body;
 
-    // 1) Validate fields + file
-    if (!req.file) {
-        return res.status(400).json({ success: false, message: 'Image file is required.' });
-    }
+
     if (!platform || !category || !followers || price == null || !loginDetails || !description || !howToUse) {
         return res.status(400).json({
             success: false,
@@ -42,27 +39,12 @@ const createAccount = async (req, res) => {
         });
     }
 
-    if (!req.file.mimetype.startsWith('image/')) {
-        return res.status(400).json({ success: false, message: 'Only image files are allowed.' });
-    }
+
 
     try {
-        const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}-${req.file.originalname.replace(/\s+/g, '_')}`;
-
-        const filepath = path.join(UPLOAD_DIR, filename);
-
-        await sharp(req.file.buffer)
-            .resize({ width: 800 })       // optional: max width
-            .jpeg({ quality: 80 })        // compress to 80% quality
-            .toFile(filepath);
-
-        // 3) Build URL path (served via express.static)
-        const imageUrl = `src/uploads/${filename}`;
-
         // 4) Create account document
         const account = await Account.create({
             platform: platform.trim(),
-            image: imageUrl,
             category,
             followers: parseFloat(followers),
             price: parseFloat(price),
@@ -114,10 +96,7 @@ const updateAccount = async (req, res) => {
             });
         }
 
-        // Store old image path if exists
-        const oldImagePath = account.image
-            ? path.join(UPLOAD_DIR, path.basename(account.image))
-            : null;
+
 
         // Prepare update data
         const updateData = {
@@ -130,39 +109,6 @@ const updateAccount = async (req, res) => {
             ...(howToUse && { howToUse }),
             ...(status && { status }),
         };
-
-        // Handle image upload if present
-        if (req.file) {
-            if (!req.file.mimetype.startsWith('image/')) {
-                await transaction.rollback();
-                return res.status(400).json({
-                    success: false,
-                    message: 'Only image files are allowed.'
-                });
-            }
-
-            // Generate filename and path
-            const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}-${req.file.originalname.replace(/\s+/g, '_')}`;
-            const filepath = path.join(UPLOAD_DIR, filename);
-
-            // Process image with sharp
-            await sharp(req.file.buffer)
-                .resize({ width: 800 })
-                .jpeg({ quality: 80 })
-                .toFile(filepath);
-
-            // Add new image to update data
-            updateData.image = `src/uploads/${filename}`;
-        }
-
-        // Validate at least one field is being updated
-        if (Object.keys(updateData).length === 0 && !req.file) {
-            await transaction.rollback();
-            return res.status(400).json({
-                success: false,
-                message: 'No valid fields provided for update'
-            });
-        }
 
         // Perform the update
         await account.update(updateData, { transaction });
@@ -348,4 +294,4 @@ const deleteAccount = async (req, res) => {
 };
 
 
-export { createAccount, getAllAccountsForAdmin,deleteAccount, updateAccount, getPublicAccountsForUser }
+export { createAccount, getAllAccountsForAdmin, deleteAccount, updateAccount, getPublicAccountsForUser }

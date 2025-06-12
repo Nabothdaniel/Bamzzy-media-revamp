@@ -39,7 +39,8 @@ async function fetchUserProfile() {
     if (!response.ok) throw new Error("Failed to fetch user profile");
 
     const data = await response.json();
-    const user = data.user;
+    const  user = data.user;
+
 
     // Update session with new user info
     setSessionData({ ...session, user });
@@ -54,15 +55,22 @@ async function fetchUserProfile() {
 function renderAvatar(user) {
   const container = document.getElementById("userAvatar");
   const userNameSpan = document.getElementById("userName");
+  const userBalance = document.getElementById("userBalance");
 
-  if (!container || !userNameSpan) return;
+
+
+  if (!container || !userNameSpan || !userBalance) return;
 
   container.innerHTML = "";
 
   const name = user?.name || "";
+  const balance = parseFloat(user?.balance);
   const avatarUrl = user?.avatarUrl || "";
 
   userNameSpan.textContent = name || "User";
+  userBalance.textContent = isNaN(balance)
+    ? "₦0.00"
+    : `₦${balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}`; // ✅ Proper formatting
 
   if (avatarUrl) {
     container.className = "w-12 h-12 rounded-full overflow-hidden flex items-center justify-center";
@@ -87,6 +95,7 @@ function renderAvatar(user) {
     `;
   }
 }
+
 
 document.addEventListener("DOMContentLoaded", async () => {
   let session = getSessionData();

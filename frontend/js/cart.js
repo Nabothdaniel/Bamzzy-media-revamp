@@ -15,20 +15,43 @@ function getAuthHeaders() {
   };
 }
 
-// DOM Elements (no changes here)
+function showCustomAlert(message, type = "success") {
+  const alertBox = document.getElementById("customAlert");
+  const alertMsg = document.getElementById("customAlertMessage");
+
+  alertBox.className = "fixed bottom-6 right-6 z-50 px-4 py-3 rounded shadow-lg transition duration-300";
+
+  if (type === "success") {
+    alertBox.classList.add("bg-green-100", "text-green-800");
+  } else if (type === "error") {
+    alertBox.classList.add("bg-red-100", "text-red-800");
+  } else {
+    alertBox.classList.add("bg-gray-100", "text-gray-800");
+  }
+
+  alertMsg.textContent = message;
+  alertBox.classList.remove("hidden");
+
+  setTimeout(() => {
+    alertBox.classList.add("hidden");
+  }, 3000);
+}
+
+
+
+// DOM Elements
 const cartItemsContainer = document.getElementById('cartItems');
 const emptyCartElement = document.getElementById('emptyCart');
 const cartItemTemplate = document.getElementById('cartItemTemplate');
 const totalItemsElement = document.getElementById('totalItems');
 const totalPriceElement = document.getElementById('totalPrice');
 const cartUserBalanceElement = document.getElementById('cartUserBalance');
+const userBalance = document.getElementById('userBalance');
 const checkoutButton = document.getElementById('checkoutButton');
 const insufficientFundsElement = document.getElementById('insufficientFunds');
 const fundFromCartButton = document.getElementById('fundFromCart');
-const userNameElement = document.getElementById('userName');
 const cartCountElement = document.getElementById('cartCount');
 const fundModal = document.getElementById('fundModal');
-const fundAccountButton = document.getElementById('fundAccount');
 const closeModalButtons = document.querySelectorAll('.close');
 const sendFundRequestButton = document.getElementById('sendFundRequest');
 const checkoutSuccessModal = document.getElementById('checkoutSuccessModal');
@@ -42,13 +65,41 @@ let user = {
   cart: []
 };
 
-// Initialize the app
-function init() {
-  fetchCartData();
-  setupEventListeners();
+async function init() {
+  try {
+    await Promise.all([
+      fetchUserBalance(),
+      fetchCartData()
+    ]);
+
+    updateUserInfo();
+    renderCart();
+    updateCartSummary();
+  } catch (err) {
+    console.error('Initialization error:', err);
+  }
 }
 
-// Fetch user and cart data from backend
+async function fetchUserBalance() {
+  try {
+    const res = await fetch('http://localhost:5000/api/v1/auth/profile', {
+      method: 'GET',
+      headers: getAuthHeaders()
+    });
+
+    if (!res.ok) throw new Error('Failed to fetch user balance');
+
+    const data = await res.json();
+    const balance = parseFloat(data.user?.balance) || 0;
+
+    user.balance = balance; // ✅ Store balance in user state
+
+    cartUserBalanceElement.textContent = `₦${balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+  } catch (err) {
+    console.error('Error fetching user balance:', err.message);
+  }
+}
+
 async function fetchCartData() {
   try {
     const response = await fetch('http://localhost:5000/api/v1/cart/get', {
@@ -58,23 +109,14 @@ async function fetchCartData() {
     if (!response.ok) throw new Error('Failed to fetch cart data');
 
     const data = await response.json();
-
-    user = {
-      name: data.user?.name || '',
-      balance: data.user?.balance || 0,
-      cart: data.cart || []
-    };
-
-    updateUserInfo();
-    renderCart();
+    user.cart = data.cart || [];
   } catch (err) {
-    console.error('Error loading cart data:', err);
+    console.error('Error loading cart data:', err.message);
   }
 }
 
 function updateUserInfo() {
-  userNameElement.textContent = user.name;
-  cartUserBalanceElement.textContent = `₦${user.balance.toLocaleString()}`;
+  cartUserBalanceElement.textContent = `₦${user.balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
   cartCountElement.textContent = user.cart.length;
 }
 
@@ -105,103 +147,21 @@ function renderCart() {
     const cartItem = cartItemTemplate.cloneNode(true);
     cartItem.classList.remove('hidden');
     cartItem.classList.add('cart-item');
-    cartItem.setAttribute('data-id', item.id);
+    cartItem.setAttribute('data-id', item.accountId);
 
     cartItem.querySelector('#itemImage').src = `http://localhost:5000/${account.image}` || '';
-
     cartItem.querySelector('#itemName').textContent = `Account ID: ${item.accountId}`;
     cartItem.querySelector('#itemDetails').textContent = `Platform: ${account.platform || 'N/A'} | Followers: ${account.followers || 'N/A'}`;
     cartItem.querySelector('#itemPrice').textContent = `₦${price.toLocaleString()}`;
 
-    const quantityElement = cartItem.querySelector('.quantity');
-    quantityElement.textContent = quantity;
-
-    const decreaseBtn = cartItem.querySelector('[data-action="decrease"]');
-    const increaseBtn = cartItem.querySelector('[data-action="increase"]');
-    const removeBtn = cartItem.querySelector('.remove-btn');
-
-    decreaseBtn.addEventListener('click', () => {
-      let currentQuantity = parseInt(quantityElement.textContent);
-      if (currentQuantity > 1) {
-        quantityElement.textContent = currentQuantity - 1;
-        item.quantity = currentQuantity - 1;
-      } else {
-        removeFromCart(item.id);
-      }
-      updateCartSummary();
-    });
-
-    increaseBtn.addEventListener('click', () => {
-      let currentQuantity = parseInt(quantityElement.textContent);
-      quantityElement.textContent = currentQuantity + 1;
-      item.quantity = currentQuantity + 1;
-      updateCartSummary();
-    });
-
-    removeBtn.addEventListener('click', () => {
-      removeFromCart(item.id);
-    });
-
-    cartItemsContainer.appendChild(cartItem);
-  });
-
-  totalItemsElement.textContent = totalItems;
-  totalPriceElement.textContent = `₦${totalPrice.toLocaleString()}`;
-  checkoutButton.disabled = user.balance < totalPrice;
-  insufficientFundsElement.classList.toggle('hidden', user.balance >= totalPrice);
-}
-
-function renderCart() {
-  if (user.cart.length === 0) {
-    cartItemsContainer.innerHTML = '';
-    emptyCartElement.classList.remove('hidden');
-    totalItemsElement.textContent = '0';
-    totalPriceElement.textContent = '₦0';
-    checkoutButton.disabled = true;
-    return;
-  }
-
-  emptyCartElement.classList.add('hidden');
-  cartItemsContainer.innerHTML = '';
-
-  let totalItems = 0;
-  let totalPrice = 0;
-
-  user.cart.forEach(item => {
-    const account = item.Account || {};
-    const price = parseFloat(account.price) || 0;
-    const quantity = item.quantity || 1;
-
-    totalItems += quantity;
-    totalPrice += price * quantity;
-
-    const cartItem = cartItemTemplate.cloneNode(true);
-    cartItem.classList.remove('hidden');
-    cartItem.classList.add('cart-item');
-    cartItem.setAttribute('data-id', item.id);
-
-    cartItem.querySelector('#itemImage').src = `http://localhost:5000/${account.image}` || '';
-
-    cartItem.querySelector('#itemName').textContent = `Account ID: ${item.accountId}`;
-    cartItem.querySelector('#itemDetails').textContent = `Platform: ${account.platform || 'N/A'} | Followers: ${account.followers || 'N/A'}`;
-    cartItem.querySelector('#itemPrice').textContent = `₦${price.toLocaleString()}`;
-
-    // Optional: Show quantity as static number (if desired)
     const quantityElement = cartItem.querySelector('.quantity');
     if (quantityElement) {
       quantityElement.textContent = quantity;
     }
 
-    // Remove increment/decrement button logic
-    const decreaseBtn = cartItem.querySelector('[data-action="decrease"]');
-    const increaseBtn = cartItem.querySelector('[data-action="increase"]');
-    if (decreaseBtn) decreaseBtn.remove();
-    if (increaseBtn) increaseBtn.remove();
-
-    // Keep only the remove button
     const removeBtn = cartItem.querySelector('.remove-btn');
     removeBtn.addEventListener('click', () => {
-      removeFromCart(item.id);
+      removeFromCart(item.accountId);
     });
 
     cartItemsContainer.appendChild(cartItem);
@@ -213,13 +173,133 @@ function renderCart() {
   insufficientFundsElement.classList.toggle('hidden', user.balance >= totalPrice);
 }
 
+function updateCartSummary() {
+  let totalItems = 0;
+  let totalPrice = 0;
+
+  user.cart.forEach(item => {
+    const price = parseFloat(item.Account?.price) || 0;
+    const quantity = item.quantity || 1;
+
+    totalItems += quantity;
+    totalPrice += price * quantity;
+  });
+
+  totalItemsElement.textContent = totalItems;
+  totalPriceElement.textContent = `₦${totalPrice.toLocaleString()}`;
+  checkoutButton.disabled = user.balance < totalPrice;
+  insufficientFundsElement.classList.toggle('hidden', user.balance >= totalPrice);
+}
+
+async function removeFromCart(accountId) {
+  try {
+    const response = await fetch(`http://localhost:5000/api/v1/cart/delete/${accountId}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders()
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || 'Failed to remove item');
+    }
+
+    const element = document.querySelector(`[data-id="${accountId}"]`);
+    if (element) element.remove();
+
+    user.cart = user.cart.filter(item => item.accountId !== accountId);
+
+    updateUserInfo();
+    updateCartSummary();
+
+    console.log('✅ Removed:', result.message);
+  } catch (error) {
+    console.error('❌ Error removing cart item:', error.message);
+  }
+}
+
+async function handleCheckout() {
+  let totalPrice = 0;
+
+  // 1. Calculate total price
+  user.cart.forEach(item => {
+    const price = parseFloat(item.Account?.price) || 0;
+    const quantity = item.quantity || 1;
+    totalPrice += price * quantity;
+  });
+
+  if (user.balance < totalPrice) {
+    alert('Insufficient balance.');
+    return;
+  }
+
+  try {
+    // 2. Deduct balance and update backend
+    const newBalance = user.balance - totalPrice;
+
+    const balanceUpdateRes = await fetch('http://localhost:5000/api/v1/auth/update-balance', {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ balance: newBalance })
+    });
+
+    if (!balanceUpdateRes.ok) throw new Error('Failed to update balance');
+
+    user.balance = newBalance;
+
+    // 3. Create transaction entries
+    const transactions = user.cart.map(item => ({
+      transactionId: generateTransactionId(),
+      platform: item.Account?.platform || 'Unknown',
+      accountType: item.Account?.type || 'General',
+      price: parseFloat(item.Account?.price) || 0,
+      status: 'Delivered',
+      date: new Date().toISOString().split('T')[0]
+    }));
+
+    // Send all transactions to backend
+    const transactionRes = await fetch('http://localhost:5000/api/v1/transactions', {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ transactions })
+    });
+
+    if (!transactionRes.ok) throw new Error('Failed to record transactions');
+
+    // 4. Show success modal and optionally clear cart
+    checkoutSuccessModal.classList.add('active');
+    checkoutSuccessModal.classList.remove('opacity-0', 'invisible');
+
+    // Clear cart (optional, depending on your logic)
+    user.cart = [];
+    renderCart();
+    updateUserInfo();
+    updateCartSummary();
+
+  } catch (err) {
+    console.error('Checkout error:', err.message);
+    alert('Something went wrong during checkout.');
+  }
+}
+
+function generateTransactionId(length = 10) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
 
 
-fundAccountButton.addEventListener('click', (e) => {
-  e.preventDefault();
-  showFundModal();
-});
 
+function showFundModal() {
+  fundModal.classList.add('active');
+  fundModal.classList.remove('opacity-0', 'invisible');
+  document.getElementById('fundAmount').focus();
+}
+
+// Modal + Button Handlers
 fundFromCartButton.addEventListener('click', (e) => {
   e.preventDefault();
   showFundModal();
@@ -260,30 +340,5 @@ document.getElementById('logout').addEventListener('click', (e) => {
   window.location.href = 'login.html';
 });
 
-function updateCartSummary() {
-  let totalItems = 0;
-  let totalPrice = 0;
-
-  document.querySelectorAll('.cart-item').forEach(item => {
-    const quantity = parseInt(item.querySelector('.quantity').textContent);
-    const priceText = item.querySelector('#itemPrice').textContent;
-    const price = parseFloat(priceText.replace(/[^\d.]/g, '')) || 0;
-
-    totalItems += quantity;
-    totalPrice += price * quantity;
-  });
-
-  totalItemsElement.textContent = totalItems;
-  totalPriceElement.textContent = `₦${totalPrice.toLocaleString()}`;
-  checkoutButton.disabled = user.balance < totalPrice;
-  insufficientFundsElement.classList.toggle('hidden', user.balance >= totalPrice);
-}
-
-
-function showFundModal() {
-  fundModal.classList.add('active');
-  fundModal.classList.remove('opacity-0', 'invisible');
-  document.getElementById('fundAmount').focus();
-}
-
+// Boot
 document.addEventListener('DOMContentLoaded', init);

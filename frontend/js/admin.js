@@ -57,22 +57,14 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('Submitting form...');
     console.log([...formData.entries()]);
 
-    const imageInput = document.getElementById('imageUpload');
 
-    if (!imageInput.files.length) {
-      showCustomAlert('Please select an image.');
-      return;
-    }
-
-    formData.set('image', imageInput.files[0]);
-    console.log(formData);
+   
 
     loader.classList.remove('hidden');
     
    const sessionData = getSessionData();
     const token = sessionData.token;
 
-    console.log(token)
     if (!token) {
       loader.classList.add('hidden');
       showCustomAlert('You are not authenticated. Please log in.');

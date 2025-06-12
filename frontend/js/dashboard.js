@@ -325,6 +325,10 @@ document.addEventListener('DOMContentLoaded', () => {
   </svg>
   Added
 `;
+        document.getElementById("cartCount").textContent = data.cart?.length || 0;
+        document.getElementById("headerCartCount").textContent = data.cart?.length || 0;
+        
+        updateCartCount();
 
         showCustomAlert("Account added to cart!", "success");
       } else {
@@ -343,23 +347,22 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function updateCartCount() {
-  const session = getSessionData();
+    const session = getSessionData();
 
-  const response = await fetch('http://localhost:5000/api/v1/cart/get', {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${session.token || ''}`
-    }
-  });
+    const response = await fetch('http://localhost:5000/api/v1/cart/get', {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.token || ''}`
+      }
+    });
 
-  const data = await response.json();
-  console.log(data)
-  document.getElementById("cartCount").textContent = data.cart?.length || 0;
-  document.getElementById("headerCartCount").textContent = data.cart?.length || 0;
-}
+    const data = await response.json();
+    document.getElementById("cartCount").textContent = data.cart?.length || 0;
+    document.getElementById("headerCartCount").textContent = data.cart?.length || 0;
+  }
 
-updateCartCount();
 
+   updateCartCount();
 
   fetchAndDisplayAccounts();
 });

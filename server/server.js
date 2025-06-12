@@ -9,6 +9,7 @@ import { accountRoute } from './src/routes/account.js'
 import { adminrouter } from './src/routes/adminRoutes.js'
 import sequelize from "./src/utils/database.js";
 import { cartRoute } from "./src/routes/cartRoute.js";
+import { fundRoutes } from "./src/routes/fundRoute.js";
 
 dotenv.config();
 
@@ -46,6 +47,7 @@ app.use('/api/v1/auth', authRoute)
 app.use('/api/v1/accounts', accountRoute);
 app.use('/api/v1/admin', adminrouter);
 app.use('/api/v1/cart', cartRoute);
+app.use('/api/v1/fund', fundRoutes);
 
 
 

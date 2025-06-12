@@ -2,8 +2,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const tableBody = document.querySelector("#accountsTableBody");
     const loadingIndicator = document.getElementById("loadingIndicator");
 
+
+    function getSessionData() {
+        try {
+            return JSON.parse(window.name || '{}');
+        } catch {
+            return {};
+        }
+    }
+
     const apiEndpoint = "http://localhost:5000/api/v1/accounts/admin-accounts";
-    const token = localStorage.getItem("token");
+    const sessionData = getSessionData();
+    const token = sessionData.token;
 
     // Show loading spinner
     loadingIndicator.style.display = "flex";
@@ -95,7 +105,8 @@ document.getElementById("closeEditModalBtn").addEventListener("click", () => {
 document.getElementById("editAccountForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const token = localStorage.getItem("token");
+    const sessionData = getSessionData();
+    const token = sessionData.token;
     const accountId = document.getElementById("editAccountId").value;
 
     const form = e.target;

@@ -7,12 +7,12 @@
     <title>Admin Dashboard - BAMZY MEDIA</title>
 
 
-     <!-- Space Grotesk -->
+    <!-- Space Grotesk -->
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
 
     <!-- Tailwind CSS -->
 
-   
+
     <!--font awesome cdn-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
@@ -90,9 +90,16 @@
                     <!-- Content will be inserted dynamically -->
                 </div>
 
-                <div class="my-2">
-                    <p class="mb-4">Welcome, <span id="userName" class="font-semibold"></span></p>
-                    <span class="bg-blue-600 px-2 py-[.2rem] font-semibold text-white rounded-md shadow-sm">Admin</span>
+                <div>
+                    <div>
+                        <p>Welcome, <span id="userName" class="font-semibold"></span></p>
+                        <p class="text-sm text-gray-500">Balance: <span id="userBalance">0.00</span></p>
+                    </div>
+                    <div class="my-2">
+
+                        <span
+                            class="bg-blue-600 px-2 py-[.2rem] font-semibold text-white rounded-md shadow-sm">Admin</span>
+                    </div>
                 </div>
             </div>
             <nav class="flex-grow p-4 space-y-4">
@@ -333,17 +340,6 @@
                                     required class="w-full p-2 border border-gray-300 rounded resize-y
            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
            text-gray-700"></textarea>
-                            </div>
-
-                            <div>
-                                <label for="imageUpload" class="block text-sm font-medium text-gray-700 mb-1">Upload
-                                    Image</label>
-                                <input type="file" id="imageUpload" name="image" accept="image/*" class="w-full p-2 border border-gray-300 rounded cursor-pointer
-           file:border-0
-           file:bg-blue-600 file:text-white file:px-4 file:py-2
-           file:rounded file:mr-4
-           hover:file:bg-blue-700
-           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             </div>
 
                             <button type="submit"
@@ -611,7 +607,7 @@
     </div>
     <script src="../js/protected/protected.js"></script>
     <script src="../js/admin.js"></script>
-    <script type="module" src="../js/dashboard.js"></script>
+    <script src="../js/dashboard.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/userprofile.js"></script>
     <script src="../js/utils.js"></script>

@@ -88,7 +88,7 @@ const loginUser = async (req, res) => {
 const userProfile = async (req, res) => {
   try {
     const user = await User.findByPk(req.user.id, {
-      attributes: ['id', 'name', 'email', 'role', 'createdAt', 'updatedAt'],
+      attributes: ['id', 'name', 'email', 'balance', 'role', 'createdAt', 'updatedAt'],
     });
 
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
@@ -97,6 +97,35 @@ const userProfile = async (req, res) => {
   } catch (error) {
     console.error('User profile error:', error);
     res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+
+
+const updateBalance = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { balance } = req.body;
+
+    if (typeof balance !== 'number' || balance < 0) {
+      return res.status(400).json({ message: 'Invalid balance value' });
+    }
+
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.balance = balance;
+    await user.save();
+
+    res.status(200).json({
+      message: 'Balance updated successfully',
+      balance: user.balance
+    });
+  } catch (error) {
+    console.error('🔴 Balance update error:', error.message);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
 
@@ -154,6 +183,7 @@ export {
   registerUser,
   loginUser,
   userProfile,
+  updateBalance,
   deleteUser,
   logoutUser,
   updatePassword,
