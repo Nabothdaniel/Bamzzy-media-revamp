@@ -2,7 +2,9 @@ import dotenv from 'dotenv';
 import axios from 'axios';
 dotenv.config();
 
-import { VirtualAccount } from '../models/Virtualaccounts.js';
+import { VirtualAccount } from '../models/VirtualAccounts.js';
+import User from '../models/User.js';
+import Message from '../models/Message.js';
 
 const createVirtualAccount = async (req, res) => {
     const { name, email, phoneNumber } = req.body;
@@ -87,20 +89,35 @@ const handlePaymentPointWebhook = async (req, res) => {
     }
 
     try {
-        const userId = metadata?.userId; // assuming you stored userId in metadata when creating the virtual account
-
+        const userId = metadata?.userId;
         const user = await User.findByPk(userId);
         if (!user) return res.status(404).json({ error: 'User not found' });
 
-        // Update balance
+        // Update user balance
         user.balance += parseFloat(amount_paid);
         await user.save();
 
-        return res.status(200).json({ message: 'Balance updated successfully' });
+        // Create message
+        const now = new Date();
+        const timestamp = now.toISOString().slice(0, 16).replace('T', ' '); // e.g. 2025-06-09 11:20
+        const formattedAmount = Number(amount_paid).toLocaleString('en-NG', {
+            style: 'currency',
+            currency: 'NGN',
+            minimumFractionDigits: 0
+        });
+
+        await Message.create({
+            userId: user.id,
+            title: `fund ${timestamp}`,
+            content: `Your account was funded with ${formattedAmount}.`
+        });
+
+        return res.status(200).json({ message: 'Balance and message updated successfully' });
+
     } catch (error) {
         console.error('Webhook processing error:', error);
         return res.status(500).json({ error: 'Server error' });
     }
 };
 
-export { createVirtualAccount, getVirtualAccount,handlePaymentPointWebhook };
+export { createVirtualAccount, getVirtualAccount, handlePaymentPointWebhook };
