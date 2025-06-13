@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" class='h-full'>
 
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard - BAMZY MEDIA</title>
-
+    <title>Fund - BAMZY MEDIA</title>
 
     <!--google fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
@@ -14,8 +12,6 @@
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Space Grotesk -->
 
     <!--font awesome cdn-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -27,7 +23,7 @@
     </style>
 </head>
 
-<body class="h-full overflow-hidden bg-gray-100   text-gray-800">
+<body class="h-full overflow-hidden bg-gray-100 text-gray-800">
 
     <!-- Mobile Nav -->
     <div class="md:hidden flex justify-between items-center px-4 py-3 bg-white shadow">
@@ -43,7 +39,7 @@
         </button>
     </div>
 
-    <div class=" flex h-full">
+    <div class="flex h-full">
 
         <!-- Sidebar -->
         <aside id="sidebar"
@@ -56,7 +52,6 @@
                     class="bg-gray-200 w-12 h-12 rounded-full flex items-center justify-center text-xl text-white font-bold">
                     <!-- Content will be inserted dynamically -->
                 </div>
-
                 <div>
                     <p>Welcome, <span id="userName" class="font-semibold"></span></p>
                     <p class="text-sm text-gray-500">Balance: <span id="userBalance">0.00</span></p>
@@ -65,7 +60,6 @@
             <nav class="flex-grow p-4 space-y-4">
                 <a href="./dashboard.html"
                     class="flex items-center gap-3 text-gray-700 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
-
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none"
                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
@@ -75,36 +69,28 @@
                     </svg>
                     Dashboard
                 </a>
-
                 <a href="cart.html"
                     class="flex items-center gap-3 text-gray-700 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
-                    <!-- Shopping Cart Icon -->
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                     </svg>
-
                     Cart
                     <span id="cartCount"
                         class="ml-auto bg-blue-100 text-blue-600 text-xs px-2 py-1 rounded-full">0</span>
                 </a>
-
                 <a href="purchases.html"
                     class="flex items-center gap-3 text-gray-700 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
-                    <!-- History Icon -->
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>
-
-                    </svg>
                     Purchase History
                 </a>
                 <a href="./fund.html"
                     class="flex items-center gap-3 text-blue-600 font-semibold bg-blue-50 rounded-lg px-3 py-2 transition hover:bg-blue-100 hover:text-blue-700">
-                    <!-- Wallet Icon -->
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -112,24 +98,19 @@
                     </svg>
                     Fund Account
                 </a>
-
                 <a href="messages.html"
                     class="flex items-center gap-3 text-gray-700 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
-                    <!-- Envelope Icon -->
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
                     </svg>
-
                     Notifications
                     <span id="unreadCount"
                         class="ml-auto bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full hidden">0</span>
                 </a>
-
                 <a href="#" id="logout"
                     class="flex items-center gap-3 text-red-500 rounded-lg px-3 py-2 transition hover:bg-red-50 hover:text-red-600 active:bg-red-100">
-                    <!-- Logout Icon -->
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-6 0v-1m6-10V5a3 3 0 00-6 0v1" />
@@ -137,23 +118,20 @@
                     Logout
                 </a>
             </nav>
-
         </aside>
 
         <!-- Main Content -->
         <main class='w-full h-screen overflow-y-auto w-full ml:2'>
             <!-- Header -->
-            <header class=" md:bg-white  p-3 flex md:flex justify-between items-center mb-6">
+            <header class="md:bg-white p-3 flex md:flex justify-between items-center mb-6">
                 <h1 class="text-2xl font-semibold">Fund Account</h1>
                 <div class="flex gap-4 items-center">
                     <a href="messages.html" class="relative">
-                        <!-- Envelope Icon -->
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
                         </svg>
-
                         <span id="headerUnreadCount"
                             class="absolute -top-2 -right-2 text-xs bg-red-600 text-white px-1 rounded-full hidden">0</span>
                     </a>
@@ -184,7 +162,6 @@
                     </div>
                 </div>
 
-
                 <!-- Create Virtual Account Section -->
                 <div id="virtualAccountSection" class="mb-6">
                     <p class="text-gray-700 text-sm mb-2">Click the button below to generate your virtual account
@@ -192,9 +169,32 @@
                     <button id="createAccountBtn"
                         class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">Create
                         Virtual Account</button>
-                    <div id="accountInfo" class="hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-                        <p class="text-sm text-gray-600">Account Number:</p>
-                        <p id="accountNumber" class="text-lg font-semibold text-green-800"></p>
+                    <div id="accountInfo"
+                        class="hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-lg flex flex-col gap-2">
+                        <div>
+                            <div>
+                                <p class="text-sm text-gray-600">Account Name:</p>
+                                <p id="accountName" class="text-lg font-semibold text-green-800 inline"></p>
+                            </div>
+                        </div>
+                        <div class="inline-flex items-center gap-2">
+                            <div>
+                                <p class="text-sm text-gray-600">Account Number:</p>
+                                <p id="accountNumber" class="text-lg font-semibold text-green-800 inline"></p>
+                            </div>
+                            <button id="copyAccountBtn" title="Copy Account Number"
+                                class="ml-2 p-2 rounded hover:bg-green-100 focus:outline-none">
+                                <i class="fas fa-clipboard"></i>
+                            </button>
+                            <span id="copySuccess" class="text-green-600 text-xs ml-2 hidden">Copied!</span>
+                        </div>
+                        <div>
+                            <div>
+                                <p class="text-sm text-gray-600">Bank Name:</p>
+                                <p id="bankName" class="text-lg font-semibold text-green-800 inline"></p>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
 
@@ -205,61 +205,28 @@
                         your bank app. Your balance will be updated automatically after confirmation.</p>
                     <p class="text-sm text-gray-600">Make sure to use your registered name to avoid delays.</p>
                 </div>
-
             </div>
-
-
         </main>
-
     </div>
-    <div id="logoutAlert"
-        class="fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded shadow hidden">
-        <span id="logoutAlertMessage"></span>
+    <div id="customAlert"
+        class="hidden fixed bottom-6 right-6 z-50 px-4 py-3 rounded shadow-lg transition duration-300">
+        <span id="customAlertMessage"></span>
     </div>
 
 
+    <script defer src="../js/protected/protected.js"></script>
+    <script defer src='../js/fund/fund.js'></script>
+    <script defer type="module" src="../js/dashboard.js"></script>
+    <script defer src="../js/auth.js"></script>
+    <script defer src="../js/userprofile.js"></script>
+    <script defer src="../js/cart.js"></script>
+    <script defer src="../js/utils.js"></script>
     <script defer src="../js/protected/protected.js"></script>
     <script defer type="module" src="../js/dashboard.js"></script>
     <script defer src="../js/auth.js"></script>
     <script defer src="../js/userprofile.js"></script>
     <script defer src="../js/cart.js"></script>
     <script defer src="../js/utils.js"></script>
-    <script>
-        const createAccountBtn = document.getElementById('createAccountBtn');
-        const accountInfo = document.getElementById('accountInfo');
-        const accountNumberEl = document.getElementById('accountNumber');
-        const fundingInstructions = document.getElementById('fundingInstructions');
-
-        async function createVirtualAccount(userName, userEmail, userPhone) {
-            try {
-                const response = await fetch('http://localhost:5000/api/v1/fund/create-virtual-account', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${JSON.parse(window.name).token}`
-                    },
-                    body: JSON.stringify({
-                        name: userName,
-                        email: userEmail,
-                        phoneNumber: userPhone
-                    })
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.message || 'Failed to create virtual account');
-                }
-
-                return data.data; // your backend should return the account details here
-            } catch (err) {
-                console.error('❌ Error creating virtual account:', err.message);
-                alert('❌ Failed to create virtual account. Please try again.');
-            }
-        }
-
-    </script>
-
 </body>
 
 </html>

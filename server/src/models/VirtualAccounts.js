@@ -1,13 +1,17 @@
 import { DataTypes } from 'sequelize';
+import sequelize from '../utils/database.js';
 
-const VirtualAccount = (sequelize) => {
-  const Account = sequelize.define('VirtualAccount', {
+  const VirtualAccount = sequelize.define('VirtualAccount', {
     accountNumber: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
     },
     bankName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    accountName: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -28,18 +32,16 @@ const VirtualAccount = (sequelize) => {
       allowNull: false,
     },
   }, {
-    tableName: 'VirtualAccounts',
+    tableName: 'virtualaccounts',
   });
 
-  Account.associate = (models) => {
-    Account.belongsTo(models.User, {
+  VirtualAccount.associate = (models) => {
+    VirtualAccount.belongsTo(models.User, {
       foreignKey: 'userId',
       as: 'user',
       onDelete: 'CASCADE',
     });
   };
 
-  return Account;
-};
 
 export  {VirtualAccount};

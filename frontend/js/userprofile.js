@@ -39,7 +39,7 @@ async function fetchUserProfile() {
     if (!response.ok) throw new Error("Failed to fetch user profile");
 
     const data = await response.json();
-    const  user = data.user;
+    let  user = data.user;
 
 
     // Update session with new user info

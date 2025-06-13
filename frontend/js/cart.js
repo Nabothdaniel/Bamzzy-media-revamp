@@ -1,3 +1,26 @@
+
+
+// DOM Elements
+let cartItemsContainer = document.getElementById('cartItems');
+const emptyCartElement = document.getElementById('emptyCart');
+const cartItemTemplate = document.getElementById('cartItemTemplate');
+const totalItemsElement = document.getElementById('totalItems');
+const totalPriceElement = document.getElementById('totalPrice');
+const cartUserBalanceElement = document.getElementById('cartUserBalance');
+const userBalance = document.getElementById('userBalance');
+const checkoutButton = document.getElementById('checkoutButton');
+const insufficientFundsElement = document.getElementById('insufficientFunds');
+const fundFromCartButton = document.getElementById('fundFromCart');
+const cartCountElement = document.getElementById('cartCount');
+const fundModal = document.getElementById('fundModal');
+const closeModalButtons = document.querySelectorAll('.close');
+const sendFundRequestButton = document.getElementById('sendFundRequest');
+const checkoutSuccessModal = document.getElementById('checkoutSuccessModal');
+const viewPurchasesBtn = document.getElementById('viewPurchasesBtn');
+const continueShoppingBtn = document.getElementById('continueShopping');
+
+
+
 // Utilities
 function getSessionData() {
   try {
@@ -39,31 +62,12 @@ function showCustomAlert(message, type = "success") {
 
 
 
-// DOM Elements
-const cartItemsContainer = document.getElementById('cartItems');
-const emptyCartElement = document.getElementById('emptyCart');
-const cartItemTemplate = document.getElementById('cartItemTemplate');
-const totalItemsElement = document.getElementById('totalItems');
-const totalPriceElement = document.getElementById('totalPrice');
-const cartUserBalanceElement = document.getElementById('cartUserBalance');
-const userBalance = document.getElementById('userBalance');
-const checkoutButton = document.getElementById('checkoutButton');
-const insufficientFundsElement = document.getElementById('insufficientFunds');
-const fundFromCartButton = document.getElementById('fundFromCart');
-const cartCountElement = document.getElementById('cartCount');
-const fundModal = document.getElementById('fundModal');
-const closeModalButtons = document.querySelectorAll('.close');
-const sendFundRequestButton = document.getElementById('sendFundRequest');
-const checkoutSuccessModal = document.getElementById('checkoutSuccessModal');
-const viewPurchasesBtn = document.getElementById('viewPurchasesBtn');
-const continueShoppingBtn = document.getElementById('continueShopping');
-
-// State
-let user = {
+window.user = window.user || {
   name: '',
   balance: 0,
   cart: []
 };
+
 
 async function init() {
   try {
