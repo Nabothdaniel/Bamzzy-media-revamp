@@ -10,32 +10,72 @@
     <link rel="stylesheet" href="css/index.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
         rel="stylesheet" />
+
+    <!--google fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Space Grotesk -->
+
+    <!--font awesome cdn-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
 <body>
     <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="logo">
-                <img src="../images/logo.png" alt="BAMZY MEDIA Logo" class="logo-img">
-                <h1>BAMZY MEDIA</h1>
+    <!-- Tailwind Navbar with Heroicons and FontAwesome -->
+    <nav class="bg-white border-b shadow-sm fixed top-0 w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <img src="../images/logo.png" alt="BAMZY MEDIA Logo" class="h-10 w-auto" />
+                    <h1 class="text-xl font-bold text-gray-800">BAMZY MEDIA</h1>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8">
+                    <a href="#features" class="text-gray-700 hover:text-blue-600 font-medium">Features</a>
+                    <a href="#how-it-works" class="text-gray-700 hover:text-blue-600 font-medium">How It Works</a>
+                    <a href="#testimonials" class="text-gray-700 hover:text-blue-600 font-medium">Testimonials</a>
+                    <a href="#pricing" class="text-gray-700 hover:text-blue-600 font-medium">Pricing</a>
+                </div>
+
+                <!-- Auth Buttons -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="login.html"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded hover:bg-gray-100">Login</a>
+                    <a href="signup.html"
+                        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700">Sign
+                        Up</a>
+                </div>
+
+                <!-- Hamburger Menu -->
+                <button id="mobileMenuToggle" class="md:hidden focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-gray-800" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
             </div>
-            <div class="nav-links">
-                <ul>
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#how-it-works">How It Works</a></li>
-                    <li><a href="#testimonials">Testimonials</a></li>
-                    <li><a href="#pricing">Pricing</a></li>
-                </ul>
-            </div>
-            <div class="auth-buttons">
-                <a href="login.html" class="btn btn-outline">Login</a>
-                <a href="signup.html" class="btn btn-primary">Sign Up</a>
-            </div>
-            <div class="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="md:hidden hidden px-4 pb-4 bg-white border-t shadow">
+            <a href="#features" class="block py-2 text-gray-700 hover:text-blue-600">Features</a>
+            <a href="#how-it-works" class="block py-2 text-gray-700 hover:text-blue-600">How It Works</a>
+            <a href="#testimonials" class="block py-2 text-gray-700 hover:text-blue-600">Testimonials</a>
+            <a href="#pricing" class="block py-2 text-gray-700 hover:text-blue-600">Pricing</a>
+            <div class="mt-3 space-y-2">
+                <a href="login.html"
+                    class="block text-center py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded hover:bg-gray-100">Login</a>
+                <a href="signup.html"
+                    class="block text-center py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700">Sign
+                    Up</a>
             </div>
         </div>
     </nav>

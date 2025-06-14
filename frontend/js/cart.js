@@ -236,7 +236,7 @@ async function removeFromCart(accountId) {
     user.cart = user.cart.filter(item => item.accountId !== accountId);
 
     updateUserInfo();
-    updateCartSummary();
+    updateCartSummary()
 
     console.log('✅ Removed:', result.message);
   } catch (error) {
@@ -307,6 +307,27 @@ async function handleCheckout() {
     alert('Something went wrong during checkout.');
   }
 }
+
+function updateCartSummary() {
+  let totalItems = 0;
+  let totalPrice = 0;
+
+  user.cart.forEach(item => {
+    const quantity = item.quantity || 1;
+    const price = parseFloat(item.Account?.price) || 0;
+
+    totalItems += quantity;
+    totalPrice += price * quantity;
+  });
+
+  totalItemsElement.textContent = totalItems;
+  totalPriceElement.textContent = `₦${totalPrice.toLocaleString()}`;
+
+  // Update button state and insufficient funds message
+  checkoutButton.disabled = user.balance < totalPrice;
+  insufficientFundsElement.classList.toggle('hidden', user.balance >= totalPrice);
+}
+
 
 function generateTransactionId(length = 10) {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';

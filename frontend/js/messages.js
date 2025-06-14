@@ -4,11 +4,17 @@
 async function fetchMessages() {
     const session = JSON.parse(window.name || '{}');
     const token = session.token;
+    const loader = document.getElementById('messageLoader');
+    const container = document.getElementById('notificationsContainer');
 
     if (!token) {
         console.error("Token not found.");
         return;
     }
+
+    // Show loader
+    if (loader) loader.classList.remove('hidden');
+    if (container) container.innerHTML = ""; // Clear content while loading
 
     try {
         const res = await fetch("http://localhost:5000/api/v1/message/messages", {
@@ -25,17 +31,19 @@ async function fetchMessages() {
         const response = await res.json();
         const messages = response.data || [];
 
-        renderMessages(messages); // Render full messages
-        updateUnreadBadge(messages); // Also update count
+        renderMessages(messages);           // Render message list
+        updateUnreadBadge(messages);        // Update unread badge
 
     } catch (error) {
         console.error("Error loading messages:", error);
-        const container = document.getElementById('notificationsContainer');
         if (container) {
             container.innerHTML = `
-        <p class="text-red-500 text-center">Failed to load notifications.</p>
-      `;
+                <p class="text-red-500 text-center">Failed to load notifications.</p>
+            `;
         }
+    } finally {
+        // Always hide loader
+        if (loader) loader.classList.add('hidden');
     }
 }
 
@@ -97,17 +105,17 @@ function renderMessages(messages) {
         return;
     }
 
-    messages.forEach(({ type, content, createdAt }) => {
-        const bg = type === 'fund' ? 'bg-green-50' : 'bg-blue-50';
-        const border = type === 'fund' ? 'border-green-300' : 'border-blue-300';
-        const iconColor = type === 'fund' ? 'text-green-500' : 'text-blue-500';
+    messages.forEach(({ title, content, createdAt }) => {
+        const bg = title === 'fund' ? 'bg-green-50' : 'bg-blue-50';
+        const border = title === 'fund' ? 'border-green-300' : 'border-blue-300';
+        const iconColor = title === 'fund' ? 'text-green-500' : 'text-blue-500';
 
         const item = document.createElement('div');
         item.className = `p-4 rounded-lg border ${bg} ${border} shadow-sm`;
 
         item.innerHTML = `
-      <div class="flex justify-between items-center mb-2">
-        <span class="text-sm font-semibold capitalize ${iconColor}">${type}</span>
+      <div class="flex justify-between items-center my-2">
+        <span class="text-sm font-semibold capitalize ${iconColor}">${title}</span>
         <span class="text-xs text-gray-500">${formatDate(createdAt)}</span>
       </div>
       <p class="text-sm">${content}</p>
