@@ -121,7 +121,7 @@ async function fetchCartData() {
 
 function updateUserInfo() {
   cartUserBalanceElement.textContent = `₦${user.balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
-  cartCountElement.textContent = user.cart.length;
+  cartCountElement.textContent = Array.isArray(user.cart) ? user.cart.length : 0;
 }
 
 function renderCart() {
@@ -158,11 +158,25 @@ function renderCart() {
     cartItem.querySelector('#itemDetails').textContent = `Platform: ${account.platform || 'N/A'} | Followers: ${account.followers || 'N/A'}`;
     cartItem.querySelector('#itemPrice').textContent = `₦${price.toLocaleString()}`;
 
+    // Quantity
     const quantityElement = cartItem.querySelector('.quantity');
     if (quantityElement) {
       quantityElement.textContent = quantity;
     }
 
+    // Increase and Decrease buttons
+    const increaseBtn = cartItem.querySelector('.increase-btn');
+    const decreaseBtn = cartItem.querySelector('.decrease-btn');
+
+    if (increaseBtn) {
+      increaseBtn.addEventListener('click', () => increaseQuantity(item.accountId));
+    }
+
+    if (decreaseBtn) {
+      decreaseBtn.addEventListener('click', () => decreaseQuantity(item.accountId));
+    }
+
+    // Remove button
     const removeBtn = cartItem.querySelector('.remove-btn');
     removeBtn.addEventListener('click', () => {
       removeFromCart(item.accountId);
@@ -177,23 +191,31 @@ function renderCart() {
   insufficientFundsElement.classList.toggle('hidden', user.balance >= totalPrice);
 }
 
-function updateCartSummary() {
-  let totalItems = 0;
-  let totalPrice = 0;
+async function updateQuantityOnServer(accountId, quantity) {
+  try {
+    const res = await fetch('http://localhost:5000/api/v1/cart/update', {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ accountId, quantity })
+    });
 
-  user.cart.forEach(item => {
-    const price = parseFloat(item.Account?.price) || 0;
-    const quantity = item.quantity || 1;
+    const data = await res.json();
 
-    totalItems += quantity;
-    totalPrice += price * quantity;
-  });
+    if (!res.ok || !data.success) {
+      throw new Error(data.message || 'Failed to update quantity');
+    }
 
-  totalItemsElement.textContent = totalItems;
-  totalPriceElement.textContent = `₦${totalPrice.toLocaleString()}`;
-  checkoutButton.disabled = user.balance < totalPrice;
-  insufficientFundsElement.classList.toggle('hidden', user.balance >= totalPrice);
+    await fetchCartData();     // refresh the latest cart
+    renderCart();              // re-render UI
+    updateUserInfo();
+    updateCartSummary();
+  } catch (err) {
+    console.error('Update quantity failed:', err.message);
+    showCustomAlert('Failed to update quantity', 'error');
+  }
 }
+
+
 
 async function removeFromCart(accountId) {
   try {
@@ -295,19 +317,25 @@ function generateTransactionId(length = 10) {
   return result;
 }
 
+function increaseQuantity(accountId) {
+  const item = user.cart.find(i => i.accountId === accountId);
+  if (!item) return;
 
-
-function showFundModal() {
-  fundModal.classList.add('active');
-  fundModal.classList.remove('opacity-0', 'invisible');
-  document.getElementById('fundAmount').focus();
+  const newQty = (item.quantity || 1) + 1;
+  updateQuantityOnServer(accountId, newQty);
 }
 
-// Modal + Button Handlers
-fundFromCartButton.addEventListener('click', (e) => {
-  e.preventDefault();
-  showFundModal();
-});
+function decreaseQuantity(accountId) {
+  const item = user.cart.find(i => i.accountId === accountId);
+  if (!item || item.quantity <= 1) {
+    showCustomAlert("Minimum quantity is 1", "error");
+    return;
+  }
+
+  const newQty = item.quantity - 1;
+  updateQuantityOnServer(accountId, newQty);
+}
+
 
 closeModalButtons.forEach(button => {
   button.addEventListener('click', () => {
@@ -318,19 +346,10 @@ closeModalButtons.forEach(button => {
   });
 });
 
-sendFundRequestButton.addEventListener('click', () => {
-  const amount = parseInt(document.getElementById('fundAmount').value);
-  if (isNaN(amount) || amount < 1000) {
-    alert('Please enter a valid amount (minimum ₦1000)');
-    return;
-  }
-  alert(`Fund request for ₦${amount.toLocaleString()} has been sent to admin. They will contact you shortly.`);
-  fundModal.classList.remove('active');
-  fundModal.classList.add('opacity-0', 'invisible');
-});
+
 
 viewPurchasesBtn.addEventListener('click', () => {
-  window.location.href = 'purchases.html';
+  window.location.href = './purchasedaccount.html';
 });
 
 continueShoppingBtn.addEventListener('click', () => {

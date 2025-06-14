@@ -62,7 +62,8 @@
                 </div>
             </div>
             <nav class="flex-grow p-4 space-y-4">
-                <a href="./dashboard.html" class="flex items-center gap-3 text-gray-700 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
+                <a href="./dashboard.html"
+                    class="flex items-center gap-3 text-gray-700 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
 
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none"
                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -101,7 +102,7 @@
                     Purchase History
                 </a>
                 <a href="./fund.html"
-                    class="flex items-center gap-3 text-blue-600 font-semibold bg-blue-50 rounded-lg px-3 py-2 transition hover:bg-blue-100 hover:text-blue-700">
+                    class="flex items-center gap-3 text-gray-700 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
                     <!-- Wallet Icon -->
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
@@ -112,7 +113,7 @@
                 </a>
 
                 <a href="messages.html"
-                    class="flex items-center gap-3 text-gray-700 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
+                    class="flex items-center gap-3 text-blue-600 font-semibold bg-blue-50 rounded-lg px-3 py-2 transition hover:bg-blue-100 hover:text-blue-700">
                     <!-- Envelope Icon -->
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
@@ -122,7 +123,7 @@
 
                     Notifications
                     <span id="unreadCount"
-                        class="ml-auto bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full hidden">0</span>
+                        class="ml-auto bg-blue-100 text-blue-600 text-xs px-2 py-1 rounded-full ">0</span>
                 </a>
 
                 <a href="#" id="logout"
@@ -139,9 +140,20 @@
         </aside>
 
         <main class="flex-1 p-6 overflow-y-auto">
-            <div class="max-w-4xl mx-auto">
-                <h1 class="text-3xl font-bold mb-6 text-gray-800">Notifications</h1>
+            <div class="max-w-7xl mx-auto">
+                <div class="flex justify-between items-center mb-5">
+                    <h1 class="text-3xl font-bold text-gray-800">Notifications</h1>
 
+                    <button id="markRead"
+                        class="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke-width="1.5" stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                        </svg>
+
+                        Mark as read
+                    </button>
+                </div>
                 <div id="notificationsContainer" class="space-y-4">
                     <!-- Notifications will be injected here -->
                 </div>
@@ -156,55 +168,11 @@
 
 
     <script defer src="../js/protected/protected.js"></script>
+    <script defer src="../js/messages.js"></script>
     <script defer type="module" src="../js/dashboard.js"></script>
     <script defer src="../js/auth.js"></script>
     <script defer src="../js/userprofile.js"></script>
     <script defer src="../js/utils.js"></script>
-    <script>
-        // Example static notifications (replace with your dynamic data source)
-        const notifications = [
-            {
-                type: 'purchase',
-                message: 'You purchased 5,000MB data for ₦1,500.',
-                timestamp: '2025-06-10 14:30'
-            },
-            {
-                type: 'fund',
-                message: 'Your account was funded with ₦10,000.',
-                timestamp: '2025-06-09 11:20'
-            },
-            {
-                type: 'purchase',
-                message: 'You purchased airtime worth ₦2,000.',
-                timestamp: '2025-06-08 17:45'
-            }
-        ];
-
-        const container = document.getElementById('notificationsContainer');
-
-        if (notifications.length === 0) {
-            container.innerHTML = `<p class="text-gray-500 text-center">No notifications yet.</p>`;
-        } else {
-            notifications.forEach(({ type, message, timestamp }) => {
-                const bg = type === 'fund' ? 'bg-green-50' : 'bg-blue-50';
-                const border = type === 'fund' ? 'border-green-300' : 'border-blue-300';
-                const iconColor = type === 'fund' ? 'text-green-500' : 'text-blue-500';
-
-                const item = document.createElement('div');
-                item.className = `p-4 rounded-lg border ${bg} ${border} shadow-sm`;
-
-                item.innerHTML = `
-          <div class="flex justify-between items-center mb-2">
-            <span class="text-sm font-semibold capitalize ${iconColor}">${type}</span>
-            <span class="text-xs text-gray-500">${timestamp}</span>
-          </div>
-          <p class="text-sm">${message}</p>
-        `;
-
-                container.appendChild(item);
-            });
-        }
-    </script>
 </body>
 
 </html>

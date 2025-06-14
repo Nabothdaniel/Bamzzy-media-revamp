@@ -10,6 +10,7 @@ import { adminrouter } from './src/routes/adminRoutes.js'
 import sequelize from "./src/utils/database.js";
 import { cartRoute } from "./src/routes/cartRoute.js";
 import { fundRoutes } from "./src/routes/fundRoute.js";
+import { messageRoutes } from "./src/routes/MessageRoutes.js";
 
 dotenv.config();
 
@@ -22,7 +23,14 @@ const PORT = process.env.PORT || 5000
 
 
 // Middleware
-app.use(express.json());
+app.use(
+  express.json({
+    verify: (req, res, buf) => {
+      req.rawBody = buf.toString();
+    },
+  })
+);
+
 app.use(cors({
   origin: "http://127.0.0.1:5500", // allow Live Server origin
   credentials: true
@@ -48,6 +56,7 @@ app.use('/api/v1/accounts', accountRoute);
 app.use('/api/v1/admin', adminrouter);
 app.use('/api/v1/cart', cartRoute);
 app.use('/api/v1/fund', fundRoutes);
+app.use('/api/v1/message', messageRoutes);
 
 
 

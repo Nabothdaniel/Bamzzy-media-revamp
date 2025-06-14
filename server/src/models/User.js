@@ -20,9 +20,10 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-   balance: {
-    type: DataTypes.INTEGER,
-    allowNull:false,
+  balance: {
+    type: DataTypes.DECIMAL(12, 2),
+    allowNull: false,
+    defaultValue: 0.00,
   },
   role: {
     type: DataTypes.ENUM('user', 'admin'),

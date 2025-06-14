@@ -39,8 +39,7 @@ async function fetchUserProfile() {
     if (!response.ok) throw new Error("Failed to fetch user profile");
 
     const data = await response.json();
-    let  user = data.user;
-
+    const user = data.user;
 
     // Update session with new user info
     setSessionData({ ...session, user });
@@ -57,26 +56,22 @@ function renderAvatar(user) {
   const userNameSpan = document.getElementById("userName");
   const userBalance = document.getElementById("userBalance");
 
-
-
   if (!container || !userNameSpan || !userBalance) return;
 
   container.innerHTML = "";
 
-  const name = user?.name || "";
-  const balance = parseFloat(user?.balance);
+  const name = user?.name || "User";
+  const balance = parseFloat(user?.balance || 0);
   const avatarUrl = user?.avatarUrl || "";
 
-  userNameSpan.textContent = name || "User";
-  userBalance.textContent = isNaN(balance)
-    ? "₦0.00"
-    : `₦${balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}`; // ✅ Proper formatting
+  userNameSpan.textContent = name;
+  userBalance.textContent = `₦${balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
 
   if (avatarUrl) {
     container.className = "w-12 h-12 rounded-full overflow-hidden flex items-center justify-center";
     const img = document.createElement("img");
     img.src = avatarUrl;
-    img.alt = name || "User avatar";
+    img.alt = name;
     img.className = "w-full h-full object-cover";
     container.appendChild(img);
   } else if (name.length > 0) {
@@ -96,6 +91,19 @@ function renderAvatar(user) {
   }
 }
 
+// Polling to detect balance updates
+let lastKnownBalance = null;
+
+async function pollForBalanceChange() {
+  const updatedUser = await fetchUserProfile();
+  if (!updatedUser) return;
+
+  const newBalance = parseFloat(updatedUser.balance);
+  if (lastKnownBalance !== null && newBalance !== lastKnownBalance) {
+    location.reload(); // Force reload on balance change
+  }
+  lastKnownBalance = newBalance;
+}
 
 document.addEventListener("DOMContentLoaded", async () => {
   let session = getSessionData();
@@ -105,5 +113,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     user = await fetchUserProfile();
   }
 
-  if (user) renderAvatar(user);
+  renderAvatar(user);
+
+  if (user) {
+    lastKnownBalance = parseFloat(user.balance);
+  }
+
+  setInterval(pollForBalanceChange, 10000); 
 });

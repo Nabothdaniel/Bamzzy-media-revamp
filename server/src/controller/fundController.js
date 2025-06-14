@@ -1,6 +1,10 @@
 import dotenv from 'dotenv';
-import axios from 'axios';
 dotenv.config();
+
+
+import axios from 'axios';
+import crypto from 'crypto';
+
 
 import { VirtualAccount } from '../models/VirtualAccounts.js';
 import User from '../models/User.js';
@@ -69,55 +73,84 @@ const getVirtualAccount = async (req, res) => {
 };
 
 const handlePaymentPointWebhook = async (req, res) => {
-    const signature = req.headers['paymentpoint-signature'];
-    const rawBody = JSON.stringify(req.body);
-    const secret = process.env.WEBHOOK_SECRET;
-
-    const calculatedSignature = crypto
-        .createHmac('sha256', secret)
-        .update(rawBody)
-        .digest('hex');
-
-    if (signature !== calculatedSignature) {
-        return res.status(400).json({ error: 'Invalid signature' });
-    }
-
-    const { transaction_id, amount_paid, transaction_status, metadata } = req.body;
-
-    if (transaction_status !== 'successful') {
-        return res.status(200).json({ message: 'Transaction not successful, ignored.' });
-    }
-
     try {
-        const userId = metadata?.userId;
-        const user = await User.findByPk(userId);
-        if (!user) return res.status(404).json({ error: 'User not found' });
+        const signature = req.headers['paymentpoint-signature'];
+        const rawBody = req.rawBody;
+        const secret = process.env.PAYMENTPOINT_SECRET;
 
-        // Update user balance
-        user.balance += parseFloat(amount_paid);
-        await user.save();
+        if (!secret) {
+            return res.status(500).json({ error: 'Server secret not configured' });
+        }
 
-        // Create message
-        const now = new Date();
-        const timestamp = now.toISOString().slice(0, 16).replace('T', ' '); // e.g. 2025-06-09 11:20
-        const formattedAmount = Number(amount_paid).toLocaleString('en-NG', {
+        const calculatedSignature = crypto
+            .createHmac('sha256', secret)
+            .update(rawBody)
+            .digest('hex');
+
+        if (signature !== calculatedSignature) {
+            return res.status(400).json({ error: 'Invalid signature' });
+        }
+
+        const {
+            transaction_id,
+            amount_paid,
+            transaction_status,
+            receiver,
+            timestamp
+        } = req.body;
+
+        console.log(transaction_id)
+        const receiverAcctNo = receiver?.account_number;
+        if (!receiverAcctNo) {
+            return res.status(400).json({ error: 'Missing receiver account number' });
+        }
+
+        const virtualAcct = await VirtualAccount.findOne({ where: { accountNumber: receiverAcctNo } });
+        if (!virtualAcct) {
+            return res.status(404).json({ error: 'Virtual account not found' });
+        }
+
+        const user = await User.findByPk(virtualAcct.userId);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const now = timestamp ? new Date(timestamp) : new Date();
+        const formattedTime = now.toISOString().slice(0, 16).replace('T', ' ');
+        const formattedAmount = Number(user.balance).toLocaleString('en-NG', {
             style: 'currency',
             currency: 'NGN',
-            minimumFractionDigits: 0
+            minimumFractionDigits: 2,
         });
 
-        await Message.create({
-            userId: user.id,
-            title: `fund ${timestamp}`,
-            content: `Your account was funded with ${formattedAmount}.`
-        });
 
-        return res.status(200).json({ message: 'Balance and message updated successfully' });
+        if (transaction_status === 'success') {
+            // Fund user account
+            user.balance = Number(user.balance) + Number(amount_paid);
+            await user.save();
 
+            await Message.create({
+                userId: user.id,
+                title: `fund ${formattedTime}`,
+                content: `Your account was funded with ${amount_paid}.`
+            });
+
+            return res.status(200).json({ message: 'Balance and message updated successfully' });
+        } else {
+            // Log failed transaction
+            await Message.create({
+                userId: user.id,
+                title: `failed fund ${formattedTime}`,
+                content: `A funding attempt of ${amount_paid} failed.`
+            });
+
+            return res.status(200).json({ message: 'Failed transaction logged.' });
+        }
     } catch (error) {
         console.error('Webhook processing error:', error);
         return res.status(500).json({ error: 'Server error' });
     }
 };
+
 
 export { createVirtualAccount, getVirtualAccount, handlePaymentPointWebhook };

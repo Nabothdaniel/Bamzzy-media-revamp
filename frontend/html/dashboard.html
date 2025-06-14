@@ -125,8 +125,7 @@
                     </svg>
 
                     Notifications
-                    <span id="unreadCount"
-                        class="ml-auto bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full hidden">0</span>
+
                 </a>
 
                 <a href="#" id="logout"
@@ -171,17 +170,19 @@
                         <span id="headerCartCount"
                             class="absolute -top-2 -right-2 text-xs bg-blue-600 text-white px-1 rounded-full">0</span>
                     </a>
-                    <a href="messages.html" class="relative">
+                    <a href="messages.html" class="relative ">
                         <!-- Envelope Icon -->
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="size-6">
+                            stroke="currentColor" class="w-6 h-6 text-gray-700">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
                         </svg>
 
-                        <span id="headerUnreadCount"
-                            class="absolute -top-2 -right-2 text-xs bg-red-600 text-white px-1 rounded-full hidden">0</span>
+                        <!-- Unread Badge -->
+                        <span id="unreadCount"
+                            class="ml-auto bg-blue-200 absolute bottom-3 left-2 text-blue-600 text-xs px-2 py-1 rounded-full">0</span>
                     </a>
+
                 </div>
             </header>
 
@@ -336,15 +337,17 @@
 
 
     <script defer src="../js/protected/protected.js"></script>
+    <script src="../js/utils/unreadcount.js"></script>
     <script defer type="module" src="../js/dashboard.js"></script>
     <script defer src="../js/auth.js"></script>
     <script defer src="../js/userprofile.js"></script>
     <script defer src="../js/utils.js"></script>
     <script>
-
-
-        // Social links - toggle active button styles
-
+        document.addEventListener("DOMContentLoaded", () => {
+            if (window.updateUnreadCount) {
+                window.updateUnreadCount();
+            }
+        });
     </script>
 </body>
 
