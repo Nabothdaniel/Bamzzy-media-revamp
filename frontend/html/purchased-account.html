@@ -149,116 +149,158 @@
         </aside>
 
         <!-- Main Content -->
-        <!-- Main Content -->
-        <main class='flex-1 w-full ml:2'>
-            <!-- Header -->
-            <header class="md:bg-white p-3 flex md:flex justify-between items-center mb-6">
-                <h1 class="text-2xl font-semibold">Social Media Purchase History</h1>
-                <div class="flex gap-4 items-center">
-                    <a href="messages.html" class="relative">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="size-6">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
-                        </svg>
-                        <span id="headerUnreadCount"
-                            class="absolute -top-2 -right-2 text-xs bg-red-600 text-white px-1 rounded-full hidden">0</span>
-                    </a>
-                </div>
-            </header>
 
-            <div class="max-w-5xl md:mx-auto mx-5 my-16 p-6 bg-white rounded-2xl shadow-xl">
-                <h1 class="text-2xl font-bold text-center mb-6">Your Social Media Purchases</h1>
+        <!-- Main Content Wrapper -->
+        <div class="flex-1 bg-gray-100">
+            <!-- Place your <main> here or wrap content inside this -->
 
-                <div class="w-full overflow-x-auto border rounded-lg">
-                    <table class="min-w-full text-sm text-left whitespace-nowrap">
-                        <thead>
-                            <tr class="bg-gray-100 text-gray-700">
-                                <th class="py-3 px-4">Platform</th>
-                                <th class="py-3 px-4">Price (₦)</th>
-                                <th class="py-3 px-4">Date</th>
-                                <th class="py-3 px-4">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="purchaseHistoryTable" class="text-gray-600">
-                            <!-- JS will inject rows here -->
-                        </tbody>
-                    </table>
+
+            <main class="p-4 max-w-8xl mx-auto">
+                <header class="bg-white p-4 rounded-lg shadow flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-semibold text-gray-800">Your Social Media Purchases</h1>
+                </header>
+
+                <!-- Spinner -->
+                <div id="loadingSpinner" class="my-10 flex justify-center">
+                    <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-blue-500 border-opacity-75"></div>
                 </div>
 
-        </main>
+                <!-- Purchase Card Container -->
+                <div id="purchaseCardContainer" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
+                    <!-- Cards will be injected here -->
+                </div>
 
-    </div>
-    <div id="logoutAlert"
-        class="fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded shadow hidden">
-        <span id="logoutAlertMessage"></span>
-    </div>
+                <!-- Empty or Error Message -->
+                <div id="emptyStateMessage" class="text-center text-gray-500 mt-10 hidden">
+                    <!-- Message will be injected -->
+                </div>
+            </main>
+
+            <!-- Modal -->
+            <div id="accountModal"
+                class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex items-center justify-center">
+                <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
+                    <button id="closeModal"
+                        class="absolute top-2 right-2 text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+                    <h2 class="text-xl font-bold text-blue-600 mb-4">Account Details</h2>
+                    <div class="space-y-3">
+                        <div><strong>Platform:</strong> <span id="modalPlatform"></span></div>
+                        <div><strong>Username/Email:</strong> <span id="modalUsername"></span> <button
+                                onclick="copyToClipboard('modalUsername')"
+                                class="ml-2 text-blue-500 text-sm hover:underline">Copy</button></div>
+                        <div><strong>Password:</strong> <span id="modalPassword"></span> <button
+                                onclick="copyToClipboard('modalPassword')"
+                                class="ml-2 text-blue-500 text-sm hover:underline">Copy</button></div>
+                    </div>
+                </div>
+            </div>
 
 
-    <script defer src="../js/protected/protected.js"></script>
-    <script defer type="module" src="../js/dashboard.js"></script>
-    <script defer src="../js/auth.js"></script>
-    <script defer src="../js/cart.js"></script>
-    <script defer src="../js/userprofile.js"></script>
-    <script defer src="../js/utils.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", async () => {
-            const session = JSON.parse(window.name || "{}");
-            const token = session?.token;
+            <!-- Alert Box -->
+            <div id="logoutAlert"
+                class="fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded shadow hidden">
+                <span id="logoutAlertMessage"></span>
+            </div>
 
-            const purchaseTable = document.getElementById("purchaseHistoryTable");
+            <!-- Scripts -->
+            <script defer src="../js/protected/protected.js"></script>
+            <script defer type="module" src="../js/dashboard.js"></script>
+            <script defer src="../js/auth.js"></script>
+            <script defer src="../js/cart.js"></script>
+            <script defer src="../js/userprofile.js"></script>
+            <script defer src="../js/utils.js"></script>
 
-            if (!token) {
-                purchaseTable.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-red-500">User not authenticated.</td></tr>`;
-                return;
-            }
+            <!-- Purchase Script -->
+            <script>
+                document.addEventListener("DOMContentLoaded", async () => {
+                    const session = JSON.parse(window.name || "{}");
+                    const token = session?.token;
 
-            // Show loading state
-            purchaseTable.innerHTML = `<tr><td colspan="5" class="text-center py-4">Fetching purchases...</td></tr>`;
+                    const spinner = document.getElementById("loadingSpinner");
+                    const cardContainer = document.getElementById("purchaseCardContainer");
+                    const emptyMessage = document.getElementById("emptyStateMessage");
 
-            try {
-                const response = await fetch("http://localhost:5000/api/v1/transactions/get-transaction", {
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`
+                    const modal = document.getElementById("accountModal");
+                    const closeModal = document.getElementById("closeModal");
+
+                    const modalPlatform = document.getElementById("modalPlatform");
+                    const modalUsername = document.getElementById("modalUsername");
+                    const modalPassword = document.getElementById("modalPassword");
+
+                    closeModal.addEventListener("click", () => modal.classList.add("hidden"));
+
+                    if (!token) {
+                        spinner.style.display = "none";
+                        emptyMessage.textContent = "User not authenticated.";
+                        emptyMessage.classList.remove("hidden");
+                        return;
+                    }
+
+                    try {
+                        const res = await fetch("http://localhost:5000/api/v1/transactions/get-transaction", {
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${token}`,
+                            },
+                        });
+
+                        if (!res.ok) throw new Error("Failed to fetch transactions");
+
+                        const data = await res.json();
+                        const accounts = data.accounts;
+
+                        spinner.style.display = "none";
+
+                        if (!accounts || accounts.length === 0) {
+                            emptyMessage.textContent = "No purchases found.";
+                            emptyMessage.classList.remove("hidden");
+                            return;
+                        }
+
+                        cardContainer.classList.remove("hidden");
+
+                        accounts.forEach(account => {
+                            const [username, password] = account.loginDetails?.split(/[:|]/) || ["N/A", "N/A"];
+
+                            const card = document.createElement("div");
+                            card.className = "bg-white border border-gray-200 rounded-xl p-5 shadow hover:shadow-lg transition cursor-pointer";
+
+                            card.innerHTML = `
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="bg-blue-100 text-blue-600 p-2 rounded-full">
+                            <i class="fas fa-user-circle text-xl"></i>
+                        </div>
+                        <div class="text-lg font-semibold capitalize text-gray-800">${account.platform}</div>
+                    </div>
+                    <div class="text-gray-600 text-sm mb-1">Price: <span class="text-gray-800 font-medium">₦${Number(account.price).toLocaleString()}</span></div>
+                    <div class="text-gray-600 text-sm mb-1">Purchased: <span class="text-gray-800">${new Date(account.createdAt).toLocaleDateString()}</span></div>
+                    <div class="text-green-600 font-semibold mt-2">Status: Delivered</div>
+                `;
+
+                            card.addEventListener("click", () => {
+                                modalPlatform.textContent = account.platform;
+                                modalUsername.textContent = username;
+                                modalPassword.textContent = password;
+                                modal.classList.remove("hidden");
+                            });
+
+                            cardContainer.appendChild(card);
+                        });
+                    } catch (err) {
+                        console.error("Fetch error:", err);
+                        spinner.style.display = "none";
+                        emptyMessage.textContent = "Error loading purchase history.";
+                        emptyMessage.classList.remove("hidden");
                     }
                 });
 
-                if (!response.ok) throw new Error("Failed to fetch transactions");
-
-                const result = await response.json();
-
-                const accounts = result.accounts;
-
-                // Check for empty purchases
-                if (!accounts || accounts.length === 0) {
-                    purchaseTable.innerHTML = `<tr><td colspan="5" class="text-center py-4">No purchases found.</td></tr>`;
-                    return;
+                function copyToClipboard(id) {
+                    const text = document.getElementById(id).textContent;
+                    navigator.clipboard.writeText(text)
+                        .then(() => alert("Copied to clipboard!"))
+                        .catch(err => alert("Failed to copy!"));
                 }
-
-                // Clear the table and populate with rows
-                purchaseTable.innerHTML = "";
-
-                accounts.forEach(item => {
-                    const row = document.createElement("tr");
-                    row.classList.add("border-b");
-
-                    row.innerHTML = `
-        <td class="py-3 px-4 capitalize">${item.platform}</td>
-        <td class="py-3 px-4">₦${Number(item.price).toLocaleString()}</td>
-        <td class="py-3 px-4">${new Date(item.createdAt).toISOString().split("T")[0]}</td>
-        <td class="py-3 px-4 text-green-600 font-medium">Delivered</td>
-      `;
-
-                    purchaseTable.appendChild(row);
-                });
-            } catch (error) {
-                console.error("Error loading purchase history:", error);
-                purchaseTable.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-red-500">Failed to load purchases.</td></tr>`;
-            }
-        });
-
-    </script>
+            </script>
 </body>
 
 </html>

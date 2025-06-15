@@ -1,20 +1,39 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../utils/database.js';
 import User from './User.js';
-import {Account} from './Account.js';
+import { Account } from './Account.js';
 
-class Cart extends Model {}
+class Cart extends Model { }
 
 Cart.init({
+  userId: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  accountId: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
   quantity: {
     type: DataTypes.INTEGER,
     defaultValue: 1,
     allowNull: false
+  },
+  isSold: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
   }
 }, {
   sequelize,
-  modelName: 'Cart'
+  modelName: 'Cart',
+  indexes: [
+    {
+      unique: true,
+      fields: ['userId', 'accountId']
+    }
+  ]
 });
+
 
 // Associations
 User.hasMany(Cart, { foreignKey: 'userId', onDelete: 'CASCADE' });

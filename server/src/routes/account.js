@@ -9,17 +9,11 @@ import { createAccount, getAllAccountsForAdmin, getPublicAccountsForUser } from 
 
 const router = express.Router();
 
-// Multer memory storage
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: 2 * 1024 * 1024 },
-});
 
 router.post(
   '/create-account',
   authenticateToken,
   isAdmin,
-  upload.single('image'),
   createAccount
 );
 

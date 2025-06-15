@@ -2,19 +2,10 @@
 
 import fs from 'fs';
 import path from 'path';
-import sharp from 'sharp';
-import { fileURLToPath } from 'url';
 import { Op } from "sequelize";
 import { Account } from '../models/Account.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const UPLOAD_DIR = path.join(__dirname, '../uploads');
 
-// Ensure uploads directory exists
-if (!fs.existsSync(UPLOAD_DIR)) {
-    fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-}
 
 // @desc    Create a new social-media account
 // @route   POST /api/accounts
@@ -154,21 +145,22 @@ const updateAccount = async (req, res) => {
 // GET /api/v1/accounts
 const getPublicAccountsForUser = async (req, res) => {
     try {
-        const { since } = req.query; // optional query param like ?since=timestamp
+        const { since } = req.query;
 
-        const whereClause = since
-            ? {
-                updatedAt: {
-                    [Op.gt]: new Date(since),
-                },
+        const whereClause = {
+            isSold: false // Exclude sold accounts
+        };
+
+        if (since) {
+            const sinceDate = new Date(since);
+            if (!isNaN(sinceDate)) {
+                whereClause.updatedAt = { [Op.gt]: sinceDate };
             }
-            : {};
+        }
 
         const accounts = await Account.findAll({
             where: whereClause,
-            attributes: {
-                exclude: ['loginDetails'], // Exclude sensitive info
-            },
+            attributes: { exclude: ['loginDetails'] },
             order: [['updatedAt', 'DESC']],
             raw: true,
         });
@@ -178,7 +170,7 @@ const getPublicAccountsForUser = async (req, res) => {
         console.error('User Get Error:', err);
         return res.status(500).json({ success: false, message: 'Server error' });
     }
-}
+};
 
 // GET /api/v1/accounts/admin
 const getAllAccountsForAdmin = async (req, res) => {

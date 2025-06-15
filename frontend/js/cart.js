@@ -8,7 +8,6 @@ const totalItemsElement = document.getElementById('totalItems');
 const totalPriceElement = document.getElementById('totalPrice');
 const cartUserBalanceElement = document.getElementById('cartUserBalance');
 const userBalance = document.getElementById('userBalance');
-const checkoutButton = document.getElementById('checkoutButton');
 const insufficientFundsElement = document.getElementById('insufficientFunds');
 const fundFromCartButton = document.getElementById('fundFromCart');
 const cartCountElement = document.getElementById('cartCount');
@@ -125,6 +124,7 @@ function updateUserInfo() {
 }
 
 function renderCart() {
+
   if (user.cart.length === 0) {
     cartItemsContainer.innerHTML = '';
     emptyCartElement.classList.remove('hidden');
@@ -230,13 +230,15 @@ async function removeFromCart(accountId) {
       throw new Error(result.message || 'Failed to remove item');
     }
 
+    // Remove the DOM element
     const element = document.querySelector(`[data-id="${accountId}"]`);
     if (element) element.remove();
 
-    user.cart = user.cart.filter(item => item.accountId !== accountId);
+    // ✅ Update the user cart with the new one from backend
+    user.cart = result.cart;
 
     updateUserInfo();
-    updateCartSummary()
+    updateCartSummary();
 
     console.log('✅ Removed:', result.message);
   } catch (error) {
@@ -244,10 +246,13 @@ async function removeFromCart(accountId) {
   }
 }
 
+
 async function handleCheckout() {
+  const loader = document.getElementById('checkoutLoader');
+  loader.classList.remove('hidden'); // Show loader
+
   let totalPrice = 0;
 
-  // 1. Calculate total price
   user.cart.forEach(item => {
     const price = parseFloat(item.Account?.price) || 0;
     const quantity = item.quantity || 1;
@@ -256,59 +261,50 @@ async function handleCheckout() {
 
   if (user.balance < totalPrice) {
     alert('Insufficient balance.');
+    loader.classList.add('hidden');
     return;
   }
 
   try {
-    // 2. Deduct balance and update backend
-    const newBalance = user.balance - totalPrice;
-
-    const balanceUpdateRes = await fetch('http://localhost:5000/api/v1/auth/update-balance', {
-      method: 'PUT',
-      headers: getAuthHeaders(),
-      body: JSON.stringify({ balance: newBalance })
-    });
-
-    if (!balanceUpdateRes.ok) throw new Error('Failed to update balance');
-
-    user.balance = newBalance;
-
-    // 3. Create transaction entries
-    const transactions = user.cart.map(item => ({
-      transactionId: generateTransactionId(),
-      platform: item.Account?.platform || 'Unknown',
-      accountType: item.Account?.type || 'General',
-      price: parseFloat(item.Account?.price) || 0,
-      status: 'Delivered',
-      date: new Date().toISOString().split('T')[0]
-    }));
-
-    // Send all transactions to backend
-    const transactionRes = await fetch('http://localhost:5000/api/v1/transactions', {
+    // 1. Initiate single checkout request to backend
+    const checkoutRes = await fetch('http://localhost:5000/api/v1/transactions/create-transaction', {
       method: 'POST',
       headers: getAuthHeaders(),
-      body: JSON.stringify({ transactions })
+      body: JSON.stringify({ totalPrice })
     });
 
-    if (!transactionRes.ok) throw new Error('Failed to record transactions');
+    if (!checkoutRes.ok) {
+      const errorData = await checkoutRes.json();
+      throw new Error(errorData.message || 'Checkout failed');
+    }
 
-    // 4. Show success modal and optionally clear cart
+    // 2. Parse backend response
+    await checkoutRes.json();
+
+    // 3. Update local user state
+    user.balance -= totalPrice;
+
+    await fetchCartData();
+    renderCart();          // Clear cart visually
+    updateCartSummary();   // Update total count and disable buttons
+    updateUserInfo();
+
+    // 4. Show success modal
     checkoutSuccessModal.classList.add('active');
     checkoutSuccessModal.classList.remove('opacity-0', 'invisible');
 
-    // Clear cart (optional, depending on your logic)
-    user.cart = [];
-    renderCart();
-    updateUserInfo();
-    updateCartSummary();
-
   } catch (err) {
     console.error('Checkout error:', err.message);
-    alert('Something went wrong during checkout.');
+    alert('Something went wrong during checkout: ' + err.message);
+  } finally {
+    loader.classList.add('hidden'); // Always hide loader
   }
 }
 
+
 function updateCartSummary() {
+  if (!user || !user.cart) return;
+
   let totalItems = 0;
   let totalPrice = 0;
 
@@ -320,23 +316,17 @@ function updateCartSummary() {
     totalPrice += price * quantity;
   });
 
-  totalItemsElement.textContent = totalItems;
-  totalPriceElement.textContent = `₦${totalPrice.toLocaleString()}`;
-
-  // Update button state and insufficient funds message
-  checkoutButton.disabled = user.balance < totalPrice;
-  insufficientFundsElement.classList.toggle('hidden', user.balance >= totalPrice);
+  // Safely update DOM
+  if (totalItemsElement) totalItemsElement.textContent = totalItems;
+  if (totalPriceElement) totalPriceElement.textContent = `₦${totalPrice.toLocaleString()}`;
+  if (checkoutButton) checkoutButton.disabled = user.balance < totalPrice;
+  if (insufficientFundsElement)
+    insufficientFundsElement.classList.toggle('hidden', user.balance >= totalPrice);
 }
 
 
-function generateTransactionId(length = 10) {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let result = '';
-  for (let i = 0; i < length; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result;
-}
+
+
 
 function increaseQuantity(accountId) {
   const item = user.cart.find(i => i.accountId === accountId);
@@ -378,6 +368,13 @@ continueShoppingBtn.addEventListener('click', () => {
   checkoutSuccessModal.classList.remove('active');
   checkoutSuccessModal.classList.add('opacity-0', 'invisible');
 });
+
+const checkoutButton = document.getElementById('checkoutButton');
+
+if (checkoutButton) {
+  checkoutButton.addEventListener('click', handleCheckout);
+}
+
 
 document.getElementById('logout').addEventListener('click', (e) => {
   e.preventDefault();

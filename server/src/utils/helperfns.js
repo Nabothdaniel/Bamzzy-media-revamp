@@ -10,4 +10,8 @@ function hashPassword(password) {
   return crypto.createHash("sha256").update(password).digest("hex")
 }
 
-export { generateToken, hashPassword };
+function generateTransactionId() {
+  return Math.random().toString(36).substring(2, 10).toUpperCase();
+}
+
+export { generateToken, hashPassword,generateTransactionId };

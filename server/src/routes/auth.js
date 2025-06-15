@@ -12,7 +12,7 @@ router.get('/profile', authenticateToken, userProfile);
 router.delete('/delete', authenticateToken, deleteUser);
 router.post('/logout', authenticateToken, logoutUser);
 router.post('/reset-password', authenticateToken, updatePassword);
-router.post('/update-account', authenticateToken, updateBalance);
+router.put('/update-account', authenticateToken, updateBalance);
 
 
 export const authRoute = router;

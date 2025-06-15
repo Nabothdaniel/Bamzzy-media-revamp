@@ -21,21 +21,29 @@ const addToCart = async (req, res) => {
     }
 
     // Add to cart
-    const cart = await Cart.create({ userId, accountId });
-    return res.status(201).json({ success: true, message: 'Account added to cart.', cart });
+    await Cart.create({ userId, accountId });
+
+    // ✅ Return updated cart list
+    const updatedCart = await Cart.findAll({ where: { userId } });
+
+    return res.status(201).json({
+      success: true,
+      message: 'Account added to cart.',
+      cart: updatedCart
+    });
   } catch (err) {
     console.error('Add to Cart Error:', err);
     return res.status(500).json({ success: false, message: 'Server error while adding to cart.' });
   }
 };
 
-// Optional: Get cart items for use
+//get cart
 
 const getCart = async (req, res) => {
   try {
     const userId = req.user.id;
     const cartItems = await Cart.findAll({
-      where: { userId },
+      where: { userId, isSold: false },
       include: ['Account'] // If using Sequelize aliases or relationships
     });
 
@@ -76,6 +84,8 @@ const removeFromCart = async (req, res) => {
     const userId = req.user.id;
     const accountId = req.params.id;
 
+    console.log('➡️ Remove request for accountId:', req.params.id, 'from userId:', req.user.id);
+
 
     const deleted = await Cart.destroy({
       where: {
@@ -88,11 +98,18 @@ const removeFromCart = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Item not found in cart.' });
     }
 
-    return res.json({ success: true, message: 'Item removed from cart.' });
+    // Optionally include account details if frontend depends on it
+    const updatedCart = await Cart.findAll({
+      where: { userId },
+      include: [{ model: Account }]
+    });
+
+    return res.json({ success: true, message: 'Item removed successfully.', cart: updatedCart });
+
   } catch (err) {
     console.error('Remove from cart error:', err);
     return res.status(500).json({ success: false, message: 'Server error.' });
   }
 };
 
-export { addToCart, getCart, removeFromCart,updateCartQuantity }
+export { addToCart, getCart, removeFromCart, updateCartQuantity }

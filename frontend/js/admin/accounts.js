@@ -2,7 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const tableBody = document.querySelector("#accountsTableBody");
     const loadingIndicator = document.getElementById("loadingIndicator");
 
-
     function getSessionData() {
         try {
             return JSON.parse(window.name || '{}');
@@ -44,6 +43,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             accounts.forEach((account, index) => {
+                const isSold = account.isSold;
+
                 const row = document.createElement("tr");
                 row.innerHTML = `
                     <td class="px-4 py-3">${index + 1}</td>
@@ -51,20 +52,22 @@ document.addEventListener("DOMContentLoaded", () => {
                     <td class="px-4 py-3">₦${Number(account.price).toLocaleString()}</td>
                     <td class="px-4 py-3">
                         <span class="inline-block px-2 py-1 text-xs font-medium rounded-full
-                            ${account.status === 'available' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}">
-                            ${account.status}
+                            ${isSold ? 'bg-red-100 text-red-600' : account.status === 'available' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}">
+                            ${isSold ? 'Sold' : account.status}
                         </span>
                     </td>
                     <td class="px-4 py-3 space-x-2">
-                        <button class="text-blue-600 hover:underline" data-id="${account.id}">Edit</button>
-                        <button class="text-red-600 hover:underline" data-id="${account.id}">Delete</button>
+                        <button class="edit-btn text-blue-600 hover:underline" data-id="${account.id}" ${isSold ? 'disabled class="opacity-50 cursor-not-allowed"' : ''}>Edit</button>
+                        <button class="delete-btn text-red-600 hover:underline" data-id="${account.id}" ${isSold ? 'disabled class="opacity-50 cursor-not-allowed"' : ''}>Delete</button>
                     </td>
                 `;
                 tableBody.appendChild(row);
 
-                // Attach Edit button functionality
-                const editButton = row.querySelector("button.text-blue-600");
-                editButton.addEventListener("click", () => openEditModal(account));
+                // Attach Edit functionality only if not sold
+                if (!isSold) {
+                    const editButton = row.querySelector(".edit-btn");
+                    editButton.addEventListener("click", () => openEditModal(account));
+                }
             });
         })
         .catch(err => {
@@ -122,7 +125,6 @@ document.getElementById("editAccountForm").addEventListener("submit", async (e) 
     };
 
     const imageFile = formData.get("accountImage");
-
     const apiUrl = `http://localhost:5000/api/v1/accounts/${accountId}`;
 
     try {

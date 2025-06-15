@@ -319,15 +319,19 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await response.json();
 
       if (data.success) {
+        // ✅ Update in-memory cart with latest from backend
+        user.cart = data.cart;
+
         buttonElement.innerHTML = `
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="white" class="w-5 h-5 inline-block mr-1">
-    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-  </svg>
-  Added
-`;
-        document.getElementById("cartCount").textContent = data.cart?.length || 0;
-        document.getElementById("headerCartCount").textContent = data.cart?.length || 0;
-        
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="white" class="w-5 h-5 inline-block mr-1">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+        </svg>
+        Added
+      `;
+
+        // ✅ Update cart count in UI
+        document.getElementById("cartCount").textContent = user.cart.length;
+        document.getElementById("headerCartCount").textContent = user.cart.length;
         updateCartCount();
 
         showCustomAlert("Account added to cart!", "success");
@@ -346,6 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+
   async function updateCartCount() {
     const session = getSessionData();
 
@@ -362,7 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-   updateCartCount();
+  updateCartCount();
 
   fetchAndDisplayAccounts();
 });
