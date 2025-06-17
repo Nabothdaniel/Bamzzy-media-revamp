@@ -182,23 +182,39 @@ document.addEventListener('DOMContentLoaded', () => {
 `; break;
       }
 
-      const imageUrl = account.image?.trim()
-        ? `http://localhost:5000/${account.image}`
-        : "../images/default-account.jpg";
-
 
       card.innerHTML = `
-      <img src="${imageUrl}" alt="account image"
-        class="rounded-md mb-4 w-full h-48 object-cover" />
-      <div class="showcase-content flex flex-col flex-grow">
-        <div class="${badgeClass}">
-          ${icon}
-          ${account.platform}
-        </div>
-        <h3 class="text-lg font-semibold my-3">${account.description || 'Social Media Account'}</h3>
-        <p class="text-gray-600 mb-4">${account.followers || '0'} Followers</p>
-        <div class="price text-yellow-600 font-bold text-lg mt-auto">₦${account.price || '0'}</div>
-      </div>
+     <div tabindex="0"
+                    class="showcase-content flex flex-col flex-grow p-4 rounded-2xl border border-gray-200 hover:border-blue-500 focus:border-blue-500 focus:outline-none transition duration-300 space-y-3 cursor-pointer bg-white">
+                    <!-- Platform Badge -->
+                    <div
+                        class="inline-flex items-center gap-2 text-sm font-medium px-3 py-1 rounded-full bg-blue-100 text-blue-800 w-max">
+                        ${icon}
+                        <span>${account.platform}</span>
+                    </div>
+
+                    <!-- Category Title -->
+                    <h1 class="text-xl font-semibold text-gray-900">
+                        ${account.category || 'No Category'}
+                    </h1>
+
+                    <!-- Description -->
+                    <p class="text-sm text-gray-600 line-clamp-3">
+                        ${account.description || 'No description provided'}
+                    </p>
+
+                    <!-- Status Tag -->
+                    <span
+                        class="inline-block text-xs font-medium px-3 py-1 rounded-full border border-green-500 text-green-700 bg-green-50 w-max">
+                        ${account.status || ''}
+                    </span>
+
+                    <!-- Price -->
+                    <div class="text-lg font-bold text-yellow-600 mt-auto">
+                      <p><strong>Price:</strong> ₦${Number(account.price).toLocaleString()}</p>
+                    </div>
+                </div>
+
     `;
 
       card.addEventListener("click", () => showAccountModal(account));
@@ -234,19 +250,12 @@ document.addEventListener('DOMContentLoaded', () => {
 `; break;
     }
 
-    const imageUrl = account.image && typeof account.image === "string" && account.image.trim() !== ""
-      ? `http://localhost:5000/${account.image}`
-      : "../images/default-account.jpg";
+
 
     details.innerHTML = `
-      <div class="flex flex-col md:flex-row w-full gap-4">
-  <!-- Image -->
-  <div class="w-full md:w-1/2">
-    <img src="${imageUrl}" alt="${account.platform}" class="w-full h-48 object-cover rounded-md" />
-  </div>
-
+      <div class=" w-full">
   <!-- Account Details -->
-  <div class="w-full md:w-1/2 flex flex-col gap-2">
+  <div class="w-full  flex flex-col gap-2">
    <div class="${badgeClass}">  ${icon}   ${account.platform}</div>
     <p class="text-gray-700"><strong >Description:</strong>${account.description || "No description provided."}</p>
     <p><strong>Price:</strong> ₦${Number(account.price).toLocaleString()}</p>

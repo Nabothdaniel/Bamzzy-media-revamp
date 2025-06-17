@@ -46,7 +46,7 @@
 
         <!-- Sidebar -->
         <aside id="sidebar"
-            class="w-72 bg-white shadow-lg md:relative md:flex flex-col min-h-screen z-50 hidden md:block">
+            class="fixed inset-y-0 left-0 w-72 bg-white shadow-lg transform -translate-x-full md:translate-x-0 md:relative md:flex flex-col transition-transform duration-300 z-50">
             <div class="p-6 border-b">
                 <h2 class="text-xl font-bold hidden md:block">BAMZY MEDIA</h2>
             </div>
@@ -134,6 +134,8 @@
                     </svg>
                     Purchased Accounts
                 </a>
+
+
 
                 <a href="#" id="logout"
                     class="flex items-center gap-3 text-red-500 rounded-lg px-3 py-2 transition hover:bg-red-50 hover:text-red-600 active:bg-red-100">

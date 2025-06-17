@@ -6,16 +6,21 @@ import Transaction from '../models/Transaction.js'
 import { generateTransactionId } from '../utils/helperfns.js';
 
 
+import sequelize from '../utils/database.js'; // adjust the path to your Sequelize instance
+
 const createTransactions = async (req, res) => {
+  const t = await sequelize.transaction();
   try {
     const user = req.user;
 
     const cartItems = await Cart.findAll({
       where: { userId: user.id, isSold: false },
-      include: [{ model: Account }]
+      include: [{ model: Account }],
+      transaction: t
     });
 
     if (!cartItems.length) {
+      await t.rollback();
       return res.status(400).json({ message: 'Cart is empty or already sold.' });
     }
 
@@ -30,24 +35,13 @@ const createTransactions = async (req, res) => {
 
       totalPrice += price;
 
-      // Transaction record (keep all fields)
       transactionRecords.push({
-        id: transactionId,
+        transactionId,
         userId: user.id,
-        accountId: account.id,
-        platform: account.platform,
-        category: account.category,
-        price: price,
-        username: account.username,
-        password: account.password,
-        twoFactor: account.twoFactor,
-        mail: account.mail,
-        mailPassword: account.mailPassword,
-        description: account.description,
-        status: 'completed'
+        amount: price,
+        type: 'purchase'
       });
 
-      // Purchased account record (optional to expand further)
       purchasedAccounts.push({
         userId: user.id,
         transactionId,
@@ -60,38 +54,38 @@ const createTransactions = async (req, res) => {
         mailPassword: account.mailPassword,
         description: account.description,
         price,
-        status:"completed"
+        status: 'completed'
       });
 
-      // Mark account as sold
-      await Account.update({ isSold: true }, { where: { id: account.id } });
+      await Account.update({ isSold: true }, { where: { id: account.id }, transaction: t });
     }
 
-    // Check user balance
-    const userInstance = await User.findByPk(user.id);
+    const userInstance = await User.findByPk(user.id, { transaction: t });
+
     if (userInstance.balance < totalPrice) {
+      await t.rollback();
       return res.status(400).json({ message: 'Insufficient balance' });
     }
 
-    // Deduct balance and save
-    userInstance.balance -= totalPrice;
-    await userInstance.save();
+    await Transaction.bulkCreate(transactionRecords, { transaction: t });
+    await PurchasedAccount.bulkCreate(purchasedAccounts, { transaction: t });
 
-    // Create transaction & purchased account records
-    await Transaction.bulkCreate(transactionRecords);
-    await PurchasedAccount.bulkCreate(purchasedAccounts);
+    await Cart.update(
+      { isSold: true },
+      { where: { userId: user.id, isSold: false }, transaction: t }
+    );
 
-    // Mark all cart items as sold
-    await Cart.update({ isSold: true }, { where: { userId: user.id, isSold: false } });
-
-    // Remove sold items from cart
     const purchasedAccountIds = cartItems.map(item => item.accountId);
     await Cart.destroy({
-      where: {
-        userId: req.user.id,
-        accountId: purchasedAccountIds
-      }
+      where: { userId: user.id, accountId: purchasedAccountIds },
+      transaction: t
     });
+
+    // ✅ Deduct balance only after everything succeeds
+    userInstance.balance -= totalPrice;
+    await userInstance.save({ transaction: t });
+
+    await t.commit();
 
     return res.status(201).json({
       message: 'Transaction complete',
@@ -101,6 +95,7 @@ const createTransactions = async (req, res) => {
     });
 
   } catch (error) {
+    await t.rollback();
     console.error('Transaction Error:', error);
     res.status(500).json({ message: 'Transaction failed' });
   }

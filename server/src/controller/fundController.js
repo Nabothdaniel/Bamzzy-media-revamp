@@ -15,6 +15,13 @@ const createVirtualAccount = async (req, res) => {
     const userId = req.user.id;
 
     try {
+        // Check if user already has a virtual account
+        const existingVA = await VirtualAccount.findOne({ where: { userId } });
+        if (existingVA) {
+            return res.status(200).json({ message: 'Virtual account already exists', data: existingVA });
+        }
+
+        // Create virtual account from PaymentPoint API
         const response = await axios.post('https://api.paymentpoint.co/api/v1/createVirtualAccount', {
             name,
             email,
@@ -29,14 +36,14 @@ const createVirtualAccount = async (req, res) => {
             }
         });
 
-        const virtualAccount = response.data.bankAccounts?.[0]; // safely get first account
+        const virtualAccount = response.data.bankAccounts?.[0];
 
         if (!virtualAccount) {
             throw new Error("No virtual account returned from PaymentPoint");
         }
 
         // Save to your database
-        await VirtualAccount.create({
+        const savedVA = await VirtualAccount.create({
             userId,
             accountNumber: virtualAccount.accountNumber,
             accountName: virtualAccount.accountName,
@@ -45,30 +52,10 @@ const createVirtualAccount = async (req, res) => {
             provider: 'PaymentPoint'
         });
 
-        res.status(201).json({ data: virtualAccount });
+        res.status(201).json({ data: savedVA });
     } catch (err) {
         console.error('Error creating virtual account:', err.response?.data || err.message);
         res.status(500).json({ message: 'Failed to create virtual account' });
-    }
-}
-
-const getVirtualAccount = async (req, res) => {
-    const userId = req.user.id;
-
-    try {
-        const virtualAccount = await VirtualAccount.findOne({
-            where: { userId },
-            attributes: ['accountNumber', 'accountName', 'bankName', 'bankCode', 'provider'],
-        });
-
-        if (!virtualAccount) {
-            return res.status(404).json({ message: 'No virtual account found for this user' });
-        }
-
-        res.status(200).json({ data: virtualAccount });
-    } catch (err) {
-        console.error('Error fetching virtual account:', err);
-        res.status(500).json({ message: 'Failed to fetch virtual account' });
     }
 };
 
@@ -132,7 +119,7 @@ const handlePaymentPointWebhook = async (req, res) => {
             await Message.create({
                 userId: user.id,
                 title: `fund ${formattedTime}`,
-                content: `Your account was funded with ${amount_paid}.`
+                content: `Your account was funded with ${formattedAmount}.`
             });
 
             return res.status(200).json({ message: 'Balance and message updated successfully' });
@@ -141,7 +128,7 @@ const handlePaymentPointWebhook = async (req, res) => {
             await Message.create({
                 userId: user.id,
                 title: `failed fund ${formattedTime}`,
-                content: `A funding attempt of ${amount_paid} failed.`
+                content: `A funding attempt of ${formattedAmount} failed.`
             });
 
             return res.status(200).json({ message: 'Failed transaction logged.' });
@@ -151,6 +138,27 @@ const handlePaymentPointWebhook = async (req, res) => {
         return res.status(500).json({ error: 'Server error' });
     }
 };
+
+const getVirtualAccount = async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+        const virtualAccount = await VirtualAccount.findOne({
+            where: { userId },
+            attributes: ['accountNumber', 'accountName', 'bankName', 'bankCode', 'provider'],
+        });
+
+        if (!virtualAccount) {
+            return res.status(404).json({ message: 'No virtual account found for this user' });
+        }
+
+        res.status(200).json({ data: virtualAccount });
+    } catch (err) {
+        console.error('Error fetching virtual account:', err);
+        res.status(500).json({ message: 'Failed to fetch virtual account' });
+    }
+};
+
 
 
 export { createVirtualAccount, getVirtualAccount, handlePaymentPointWebhook };

@@ -360,7 +360,7 @@ closeModalButtons.forEach(button => {
 
 
 viewPurchasesBtn.addEventListener('click', () => {
-  window.location.href = './purchasedaccount.html';
+  window.location.href = './purchased-account.html';
 });
 
 continueShoppingBtn.addEventListener('click', () => {

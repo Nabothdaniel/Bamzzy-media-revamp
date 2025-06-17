@@ -42,14 +42,23 @@ const copySuccess = document.getElementById('copySuccess');
 // Fetch existing virtual account if available
 async function fetchVirtualAccount() {
     try {
+
         const session = getSessionData();
+        const token = session.token;
+
         const response = await fetch('http://localhost:5000/api/v1/fund/get-virtual-account', {
+            method: 'GET',
             headers: {
-                'Authorization': `Bearer ${session.token}`
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             }
         });
 
+
         const data = await response.json();
+
+        console.log(data)
+
 
         if (response.ok && data.data?.accountNumber) {
             showAccountInfo(data.data);
@@ -112,14 +121,24 @@ createAccountBtn.addEventListener('click', async () => {
         return;
     }
 
+    // 🔁 Disable button and show loading
+    createAccountBtn.disabled = true;
+    createAccountBtn.textContent = 'Creating virtual account...';
+
     const data = await createVirtualAccount(name, email, phone);
+
     if (data?.accountNumber) {
         showAccountInfo(data);
-        createAccountBtn.disabled = true;
         createAccountBtn.textContent = 'Virtual Account Created';
-        userInfoForm?.classList.add('hidden');
+    } else {
+        // 🔁 Re-enable if failed
+        createAccountBtn.disabled = false;
+        createAccountBtn.textContent = 'Create Virtual Account';
     }
+
+    userInfoForm?.classList.add('hidden');
 });
+
 
 copyAccountBtn?.addEventListener('click', () => {
     const number = accountNumberEl.textContent;
