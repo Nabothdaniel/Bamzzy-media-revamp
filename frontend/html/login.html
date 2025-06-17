@@ -44,7 +44,7 @@
       </div>
 
       <div class="mt-16 ">
-        <h2 class="text-3xl font-bold mb-4">Reset Your Password</h2>
+        <h2 class="text-3xl font-bold mb-4">Login to Account</h2>
         <p class="text-gray-300">Premium Social Media Accounts Marketplace</p>
         <ul class="mt-8 space-y-3 text-sm text-gray-300">
           <li class="flex items-center gap-2">
@@ -62,7 +62,8 @@
         </ul>
       </div>
 
-      <div class="text-sm text-gray-500 mt-12">&copy; 2025 BAMZY MEDIA. All rights reserved.</div>
+      <div class="text-sm text-gray-500 mt-12">&copy; <span id="date-span"></span> BAMZY MEDIA. All rights reserved.
+      </div>
     </div>
 
     <!-- RIGHT SIDE FORMS -->
@@ -118,7 +119,7 @@
 
         <div class="text-center mt-6 text-sm">
           <p>Don't have an account? <a href="./signup.html" class="text-blue-600 hover:underline">Register</a></p>
-          <a href="index.html" class="inline-flex items-center text-gray-500 hover:underline mt-2">
+          <a href="../index.html" class="inline-flex items-center text-gray-500 hover:underline mt-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24"
               stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -137,6 +138,9 @@
   </div>
 
   <script src="../js/auth.js"></script>
+  <script>
+    document.getElementById('date-span').innerHTML = new Date().getFullYear();
+  </script>
 </body>
 
 </html>

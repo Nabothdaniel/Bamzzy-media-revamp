@@ -1,37 +1,43 @@
 import { DataTypes } from 'sequelize';
+import sequelize from '../utils/database.js';
+import User from './User.js'; // Import User directly here
 
-const Transaction = (sequelize) => {
-  const TransactionModel = sequelize.define('transactions', {
-    transactionId: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true
-    },
-    platform: DataTypes.STRING,
-    accountType: DataTypes.STRING,
-    price: DataTypes.FLOAT,
-    status: {
-      type: DataTypes.STRING,
-      defaultValue: 'Delivered'
-    },
-    date: {
-      type: DataTypes.DATEONLY,
-      defaultValue: DataTypes.NOW
-    },
-    userId: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    }
-  });
+const Transaction = sequelize.define('Transaction', {
+  transactionId: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  userId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  price: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+  },
+  accountId: {
+    type: DataTypes.INTEGER, 
+    allowNull: true, 
+  },
+  type: {
+    type: DataTypes.STRING, // 'fund' or 'purchase'
+    allowNull: false,
+  },
+   status: {
+    type: DataTypes.STRING, // 'fund' or 'purchase'
+    allowNull: false,
+  },
+}, {
+  tableName: 'transactions',
+  timestamps: true,
+});
 
-  TransactionModel.associate = ({ User }) => {
-    TransactionModel.belongsTo(User, {
-      foreignKey: 'userId',
-      as: 'user'
-    });
-  };
-
-  return TransactionModel;
-};
+// ✅ Define association directly here (without needing models object)
+Transaction.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user',
+  onDelete: 'CASCADE',
+});
 
 export default Transaction;

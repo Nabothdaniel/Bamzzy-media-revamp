@@ -1,19 +1,9 @@
 import Cart from '../models/Cart.js';
 import User from '../models/User.js';
 import { Account } from '../models/Account.js';
-import PurchasedAccountFn from '../models/PurchasedAccount.js';
-import TransactionFn from '../models/Transaction.js';
+import PurchasedAccount from '../models/PurchasedAccount.js';
+import Transaction from '../models/Transaction.js'
 import { generateTransactionId } from '../utils/helperfns.js';
-import sequelize from '../utils/database.js';
-
-// Initialize models directly from their definition functions
-const Transaction = TransactionFn(sequelize);
-const PurchasedAccount = PurchasedAccountFn(sequelize);
-
-// 👇 Associate Transaction with User manually
-Transaction.associate({ User }); // Important!
-
-User.hasMany(Transaction, { foreignKey: 'userId', as: 'transactions' }); // Optional but useful
 
 
 const createTransactions = async (req, res) => {
@@ -40,51 +30,68 @@ const createTransactions = async (req, res) => {
 
       totalPrice += price;
 
+      // Transaction record (keep all fields)
       transactionRecords.push({
+        id: transactionId,
+        userId: user.id,
+        accountId: account.id,
+        platform: account.platform,
+        category: account.category,
+        price: price,
+        username: account.username,
+        password: account.password,
+        twoFactor: account.twoFactor,
+        mail: account.mail,
+        mailPassword: account.mailPassword,
+        description: account.description,
+        status: 'completed'
+      });
+
+      // Purchased account record (optional to expand further)
+      purchasedAccounts.push({
+        userId: user.id,
         transactionId,
         platform: account.platform,
-        accountType: account.type,
-        price,
-        status: 'Delivered',
-        date: new Date().toISOString().split('T')[0],
-        userId: user.id
-      });
-
-      purchasedAccounts.push({
-        platform: account.platform,
-        accountType: account.type,
-        login: account.loginDetails,
+        category: account.category,
+        username: account.username,
         password: account.password,
+        twoFactor: account.twoFactor,
+        mail: account.mail,
+        mailPassword: account.mailPassword,
+        description: account.description,
         price,
-        userId: user.id,
-        transactionId
+        status:"completed"
       });
 
+      // Mark account as sold
       await Account.update({ isSold: true }, { where: { id: account.id } });
     }
 
-    // ✅ Subtract from user balance in DB
+    // Check user balance
     const userInstance = await User.findByPk(user.id);
     if (userInstance.balance < totalPrice) {
       return res.status(400).json({ message: 'Insufficient balance' });
     }
 
+    // Deduct balance and save
     userInstance.balance -= totalPrice;
     await userInstance.save();
 
+    // Create transaction & purchased account records
     await Transaction.bulkCreate(transactionRecords);
     await PurchasedAccount.bulkCreate(purchasedAccounts);
+
+    // Mark all cart items as sold
     await Cart.update({ isSold: true }, { where: { userId: user.id, isSold: false } });
 
+    // Remove sold items from cart
     const purchasedAccountIds = cartItems.map(item => item.accountId);
-
     await Cart.destroy({
       where: {
         userId: req.user.id,
         accountId: purchasedAccountIds
       }
     });
-
 
     return res.status(201).json({
       message: 'Transaction complete',
@@ -98,6 +105,7 @@ const createTransactions = async (req, res) => {
     res.status(500).json({ message: 'Transaction failed' });
   }
 };
+
 
 const getPurchasedAccounts = async (req, res) => {
   try {
@@ -125,6 +133,7 @@ const getAllTransactions = async (req, res) => {
       },
       order: [['createdAt', 'DESC']]
     });
+
 
 
     return res.status(200).json({ success: true, transactions });

@@ -84,7 +84,6 @@ const removeFromCart = async (req, res) => {
     const userId = req.user.id;
     const accountId = req.params.id;
 
-    console.log('➡️ Remove request for accountId:', req.params.id, 'from userId:', req.user.id);
 
 
     const deleted = await Cart.destroy({

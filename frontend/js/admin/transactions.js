@@ -37,6 +37,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             transactions.forEach((txn, index) => {
 
+              console.log(txn)
+
                 const statusColors = {
                     Completed: "text-green-700 bg-green-100",
                     Pending: "text-yellow-700 bg-yellow-100",
@@ -49,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 row.innerHTML = `
           <td class="px-4 py-3">${txn.transactionId}</td>
           <td class="px-4 py-3">${txn.user.name || "Unknown"}</td>
-          <td class="px-4 py-3 capitalize">${'purchase'}</td>
+          <td class="px-4 py-3 capitalize">${txn.type}</td>
           <td class="px-4 py-3">₦${Number(txn.price).toLocaleString()}</td>
           <td class="px-4 py-3">${new Date(txn.createdAt).toLocaleDateString()}</td>
           <td class="px-4 py-3">

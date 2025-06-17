@@ -1,7 +1,7 @@
 // models/Account.js
 import { DataTypes } from 'sequelize';
-import sequelize  from '../utils/database.js';
-import  User  from './User.js';  // import User model
+import sequelize from '../utils/database.js';
+import User from './User.js'; // import User model
 
 const Account = sequelize.define('Account', {
   id: {
@@ -13,7 +13,7 @@ const Account = sequelize.define('Account', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  image: {
+  category: {
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -21,21 +21,29 @@ const Account = sequelize.define('Account', {
     type: DataTypes.FLOAT,
     allowNull: false,
   },
-  loginDetails: {
-    type: DataTypes.TEXT,
+  username: {
+    type: DataTypes.STRING,
     allowNull: false,
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  twoFactor: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  mail: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  mailPassword: {
+    type: DataTypes.STRING,
+    allowNull: true,
   },
   description: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-  },
-  followers: {
-  type: DataTypes.INTEGER, // or STRING if it's stored as text
-  allowNull: true
-},
-  howToUse: {
-    type: DataTypes.TEXT,
-    allowNull: false,
+    type: DataTypes.STRING,
+    allowNull: true,
   },
   status: {
     type: DataTypes.STRING,
@@ -43,9 +51,9 @@ const Account = sequelize.define('Account', {
     defaultValue: 'available',
   },
   isSold: {
-  type: DataTypes.BOOLEAN,
-  defaultValue: false
-},
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
   adminId: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -60,7 +68,9 @@ const Account = sequelize.define('Account', {
   timestamps: true,
 });
 
-// Associations
+
+// Association
 Account.belongsTo(User, { foreignKey: 'adminId', as: 'admin' });
 User.hasMany(Account, { foreignKey: 'adminId', as: 'accounts' });
+
 export { Account };

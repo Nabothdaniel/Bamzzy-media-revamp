@@ -10,6 +10,23 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    function showCustomAlert(message, type = "success") {
+        const alertBox = document.getElementById("customAlert");
+        alertBox.textContent = message;
+
+        alertBox.className =
+            `fixed top-5 right-5 z-50 px-4 py-3 rounded-lg shadow-lg text-white text-sm font-medium transition-opacity duration-300 ` +
+            (type === "success" ? "bg-green-600" : "bg-red-600");
+
+        alertBox.classList.remove("hidden");
+        alertBox.style.opacity = 1;
+
+        setTimeout(() => {
+            alertBox.style.opacity = 0;
+            setTimeout(() => alertBox.classList.add("hidden"), 300);
+        }, 3000);
+    }
+
     const apiEndpoint = "http://localhost:5000/api/v1/accounts/admin-accounts";
     const sessionData = getSessionData();
     const token = sessionData.token;
@@ -56,18 +73,12 @@ document.addEventListener("DOMContentLoaded", () => {
                             ${isSold ? 'Sold' : account.status}
                         </span>
                     </td>
-                    <td class="px-4 py-3 space-x-2">
-                        <button class="edit-btn text-blue-600 hover:underline" data-id="${account.id}" ${isSold ? 'disabled class="opacity-50 cursor-not-allowed"' : ''}>Edit</button>
-                        <button class="delete-btn text-red-600 hover:underline" data-id="${account.id}" ${isSold ? 'disabled class="opacity-50 cursor-not-allowed"' : ''}>Delete</button>
+                    <td class="px-4 py-3 text-red-600 hover:underline delete-btn cursor-pointer ${isSold ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}" data-id="${account.id}">
+                         Delete
                     </td>
+
                 `;
                 tableBody.appendChild(row);
-
-                // Attach Edit functionality only if not sold
-                if (!isSold) {
-                    const editButton = row.querySelector(".edit-btn");
-                    editButton.addEventListener("click", () => openEditModal(account));
-                }
             });
         })
         .catch(err => {
@@ -78,80 +89,43 @@ document.addEventListener("DOMContentLoaded", () => {
                     <td colspan="5" class="text-center text-red-500 py-6">Error loading accounts.</td>
                 </tr>`;
         });
-});
 
-// Open and populate the edit modal
-function openEditModal(account) {
-    const modal = document.getElementById("editAccountModal");
-    modal.classList.remove("hidden");
+    // Attach delete event listener
+    tableBody.addEventListener("click", async (e) => {
+        if (e.target.classList.contains("delete-btn")) {
+            const button = e.target;
+            const accountId = button.getAttribute("data-id");
 
-    document.getElementById("editAccountId").value = account.id;
-    document.getElementById("editPlatform").value = account.platform;
-    document.getElementById("editPrice").value = account.price;
-    document.getElementById("editLoginDetails").value = account.loginDetails;
-    document.getElementById("editDescription").value = account.description;
-    document.getElementById("editHowToUse").value = account.howToUse;
-    document.getElementById("editStatus").value = account.status;
+            if (!accountId) return;
+            button.textContent = "Deleting...";
+            button.disabled = true;
 
-    const preview = document.getElementById("editImagePreview");
-    preview.innerHTML = account.image
-        ? `<img src="http://localhost:5000${account.image}" alt="Account Image" class="w-20 h-20 object-cover rounded">`
-        : '';
-}
+            try {
+                const response = await fetch(`http://localhost:5000/api/v1/accounts/delete-account/${accountId}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
 
-// Close modal on close button
-document.getElementById("closeEditModalBtn").addEventListener("click", () => {
-    document.getElementById("editAccountModal").classList.add("hidden");
-});
+                const result = await response.json();
 
-// Submit edited data (PUT request)
-document.getElementById("editAccountForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
+                if (!response.ok) {
+                    throw new Error(result.message || "Failed to delete account");
+                }
 
-    const sessionData = getSessionData();
-    const token = sessionData.token;
-    const accountId = document.getElementById("editAccountId").value;
+                const row = button.closest("tr");
+                if (row) row.remove();
 
-    const form = e.target;
-    const formData = new FormData(form);
-
-    const data = {
-        platform: formData.get("platform"),
-        price: formData.get("price"),
-        loginDetails: formData.get("loginDetails"),
-        description: formData.get("description"),
-        howToUse: formData.get("howToUse"),
-        status: formData.get("status"),
-    };
-
-    const imageFile = formData.get("accountImage");
-    const apiUrl = `http://localhost:5000/api/v1/accounts/${accountId}`;
-
-    try {
-        const payload = new FormData();
-        Object.entries(data).forEach(([key, value]) => {
-            payload.append(key, value);
-        });
-
-        if (imageFile && imageFile.size > 0) {
-            payload.append("accountImage", imageFile);
+                showCustomAlert("✅ Account deleted successfully!", "success");
+            } catch (err) {
+                console.error("Delete error:", err);
+                showCustomAlert("❌ Error deleting account.", "error");
+            } finally {
+                button.textContent = "Delete";
+                button.disabled = false;
+            }
         }
-
-        const response = await fetch(apiUrl, {
-            method: "PUT",
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
-            body: payload
-        });
-
-        if (!response.ok) throw new Error("Update failed");
-
-        alert("Account updated successfully");
-        document.getElementById("editAccountModal").classList.add("hidden");
-        location.reload();
-    } catch (error) {
-        console.error("Update error:", error);
-        alert("Failed to update account. Please try again.");
-    }
+    });
 });

@@ -12,6 +12,8 @@ import { cartRoute } from "./src/routes/cartRoute.js";
 import { fundRoutes } from "./src/routes/fundRoute.js";
 import { messageRoutes } from "./src/routes/MessageRoutes.js";
 import { transactionRouter } from "./src/routes/transactions.js";
+import {platformRouter} from './src/routes/platform.js';
+import {categoryRouter} from './src/routes/categoryRoute.js'
 
 dotenv.config();
 
@@ -24,7 +26,6 @@ const PORT = process.env.PORT || 5000
 
 
 // Middleware
-sequelize.sync({ alter: true })
 app.use(
   express.json({
     verify: (req, res, buf) => {
@@ -60,6 +61,8 @@ app.use('/api/v1/cart', cartRoute);
 app.use('/api/v1/fund', fundRoutes);
 app.use('/api/v1/message', messageRoutes);
 app.use('/api/v1/transactions', transactionRouter);
+app.use('/api/v1/platforms', platformRouter);
+app.use('/api/v1/categories', categoryRouter);
 
 
 
