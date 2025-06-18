@@ -33,8 +33,10 @@ app.use(
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({
-  origin: ["http://127.0.0.1:5500","https://bamzzy-media-revamp.vercel.app","https://bamzymedia.com/"], // allow Live Server origin
-  credentials: true
+  origin: ["http://127.0.0.1:5500","https://bamzzy-media-revamp.vercel.app","https://bamzymedia.com"], // allow Live Server origin
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // ✅ optional but safer
+  allowedHeaders: ["Content-Type", "Authorization"], 
 }))
 
 //connect db
