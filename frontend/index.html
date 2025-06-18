@@ -23,6 +23,10 @@
     <!--font awesome cdn-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
         @keyframes slideDown {
             from {
                 opacity: 0;
@@ -57,7 +61,6 @@
                     <a href="#features" class="text-gray-700 hover:text-blue-600 font-medium">Features</a>
                     <a href="#how-it-works" class="text-gray-700 hover:text-blue-600 font-medium">How It Works</a>
                     <a href="#testimonials" class="text-gray-700 hover:text-blue-600 font-medium">Testimonials</a>
-                    <a href="#pricing" class="text-gray-700 hover:text-blue-600 font-medium">Pricing</a>
                 </div>
 
                 <!-- Auth Buttons -->
@@ -85,7 +88,6 @@
             <a href="#features" class="block py-2 text-gray-700 hover:text-blue-600">Features</a>
             <a href="#how-it-works" class="block py-2 text-gray-700 hover:text-blue-600">How It Works</a>
             <a href="#testimonials" class="block py-2 text-gray-700 hover:text-blue-600">Testimonials</a>
-            <a href="#pricing" class="block py-2 text-gray-700 hover:text-blue-600">Pricing</a>
             <div class="mt-3 space-y-2">
                 <a href="./html/login.html"
                     class="block text-center py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded hover:bg-gray-100">Login</a>
@@ -437,15 +439,21 @@
         const authButtons = document.querySelector('.auth-buttons');
         const dateSpan = document.querySelector('#date-span');
 
-        dateSpan.innerHTML = new Date().getFullYear();
+        // Set current year in the footer or wherever it's used
+        if (dateSpan) {
+            dateSpan.innerHTML = new Date().getFullYear();
+        }
 
-        hamburger.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            authButtons.classList.toggle('active');
-            hamburger.classList.toggle('active');
-        });
+        // Desktop hamburger (if used somewhere else)
+        if (hamburger) {
+            hamburger.addEventListener('click', () => {
+                navLinks?.classList.toggle('active');
+                authButtons?.classList.toggle('active');
+                hamburger.classList.toggle('active');
+            });
+        }
 
-        // Testimonial slider
+        // Testimonial slider logic
         const dots = document.querySelectorAll('.dot');
         const testimonials = document.querySelectorAll('.testimonial');
         let currentSlide = 0;
@@ -471,21 +479,23 @@
             });
         });
 
-        // Auto slide
         setInterval(() => {
             currentSlide = (currentSlide + 1) % testimonials.length;
             showSlide(currentSlide);
         }, 5000);
 
-        // Initialize first slide
         showSlide(currentSlide);
 
+        //  Mobile nav toggle
         const mobileMenuToggle = document.getElementById("mobileMenuToggle");
         const mobileMenu = document.getElementById("mobileMenu");
 
-        mobileMenuToggle.addEventListener("click", function () {
-            mobileMenu.classList.toggle("hidden");
-        });
+        if (mobileMenuToggle && mobileMenu) {
+            mobileMenuToggle.addEventListener("click", function () {
+                mobileMenu.classList.toggle("hidden");
+            });
+        }
+
     </script>
 </body>
 
