@@ -24,6 +24,10 @@ const Transaction = sequelize.define('Transaction', {
     type: DataTypes.STRING, // 'fund' or 'purchase'
     allowNull: false,
   },
+  platform: {
+    type: DataTypes.STRING, // 'fund' or 'purchase'
+    allowNull: true,
+  },
    status: {
     type: DataTypes.STRING, // 'fund' or 'purchase'
     allowNull: false,

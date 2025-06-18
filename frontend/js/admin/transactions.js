@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const data = await res.json();
             const transactions = data.transactions;
+            console.log(transactions)
 
             if (transactions.length === 0) {
                 tableBody.innerHTML = `

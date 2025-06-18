@@ -31,6 +31,7 @@ const createTransactions = async (req, res) => {
     for (const item of cartItems) {
       const account = item.Account;
       const price = parseFloat(account.price) || 0;
+      console.log(price)
       const transactionId = generateTransactionId();
 
       totalPrice += price;
@@ -38,9 +39,13 @@ const createTransactions = async (req, res) => {
       transactionRecords.push({
         transactionId,
         userId: user.id,
-        amount: price,
+        accountId: account.id,  
+        platform: account.platform,
+        price,
+        status: 'Delivered',    
         type: 'purchase'
       });
+
 
       purchasedAccounts.push({
         userId: user.id,

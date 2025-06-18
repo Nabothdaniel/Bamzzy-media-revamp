@@ -179,8 +179,13 @@
             <div id="accountModal"
                 class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                 <div class="bg-white rounded-xl p-6 w-full max-w-md relative">
-                    <button id="closeModal"
-                        class="absolute top-3 right-3 text-gray-600 hover:text-red-500 text-xl">&times;</button>
+                    <button id="closeModal" class="absolute top-3 right-3 text-gray-600 hover:text-red-500 text-xl">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
+
+                    </button>
                     <h2 class="text-lg font-semibold mb-4 text-gray-800">Account Details</h2>
 
                     <p><strong>Platform:</strong> <span id="modalPlatform" class="text-gray-700"></span></p>
@@ -189,6 +194,11 @@
                     <p><strong>Mail:</strong> <span id="modalMail" class="text-gray-700"></span></p>
                     <p><strong>Mail Password:</strong> <span id="modalMailPassword" class="text-gray-700"></span></p>
                     <p><strong>Two-Factor Enabled:</strong> <span id="modalTwoFactor" class="text-gray-700"></span></p>
+                    <button id="copyDetailsBtn"
+                        class="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition">
+                        Copy All Details
+                    </button>
+
                 </div>
             </div>
 
@@ -308,7 +318,7 @@
         <div class="text-gray-600 text-sm mb-1">Purchased: 
             <span class="text-gray-800">${new Date(account.createdAt).toLocaleDateString()}</span>
         </div>
-        <div class="text-green-600 font-semibold mt-2">Status: Delivered</div>
+        <div class=" font-semibold mt-2">Status: <span class='text-green-400'>Delivered</span></div>
     `;
 
                             card.addEventListener("click", () => {
@@ -318,6 +328,9 @@
                                 modalMail.textContent = account.mail || "N/A";
                                 modalMailPassword.textContent = account.mailPassword || "N/A";
                                 modalTwoFactor.textContent = account.twoFactor === "true" || account.twoFactor === true ? "Yes" : "No";
+
+                                // 👇 This is the line you were missing
+                                modal.classList.remove("hidden");
 
                             });
 
@@ -332,12 +345,41 @@
                     }
                 });
 
-                function copyToClipboard(id) {
-                    const text = document.getElementById(id).textContent;
-                    navigator.clipboard.writeText(text)
-                        .then(() => alert("Copied to clipboard!"))
-                        .catch(err => alert("Failed to copy!"));
-                }
+                const copyBtn = document.getElementById('copyDetailsBtn');
+
+                copyBtn.addEventListener('click', () => {
+                    const platform = document.getElementById('modalPlatform')?.textContent || '';
+                    const username = document.getElementById('modalUsername')?.textContent || '';
+                    const password = document.getElementById('modalPassword')?.textContent || '';
+                    const mail = document.getElementById('modalMail')?.textContent || '';
+                    const mailPassword = document.getElementById('modalMailPassword')?.textContent || '';
+                    const twoFactor = document.getElementById('modalTwoFactor')?.textContent || '';
+
+                    const textToCopy = `
+                Platform: ${platform}
+                Username: ${username}
+                Password: ${password}
+                Mail: ${mail}
+                Mail Password: ${mailPassword}
+                Two-Factor Enabled: ${twoFactor}
+                 `.trim();
+
+                    navigator.clipboard.writeText(textToCopy)
+                        .then(() => {
+                            const originalText = copyBtn.textContent;
+                            copyBtn.textContent = "Copied...";
+                            copyBtn.disabled = true;
+
+                            setTimeout(() => {
+                                copyBtn.textContent = originalText;
+                                copyBtn.disabled = false;
+                            }, 2000);
+                        })
+                        .catch(err => {
+                            console.error("Failed to copy text: ", err);
+                            alert("Failed to copy text.");
+                        });
+                });
             </script>
 </body>
 

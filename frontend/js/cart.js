@@ -153,9 +153,8 @@ function renderCart() {
     cartItem.classList.add('cart-item');
     cartItem.setAttribute('data-id', item.accountId);
 
-    cartItem.querySelector('#itemImage').src = `http://localhost:5000/${account.image}` || '';
     cartItem.querySelector('#itemName').textContent = `Account ID: ${item.accountId}`;
-    cartItem.querySelector('#itemDetails').textContent = `Platform: ${account.platform || 'N/A'} | Followers: ${account.followers || 'N/A'}`;
+    cartItem.querySelector('#itemDetails').textContent = `Platform: ${account.platform || 'N/A'} | Categories: ${account.category || 'N/A'}`;
     cartItem.querySelector('#itemPrice').textContent = `₦${price.toLocaleString()}`;
 
     // Quantity

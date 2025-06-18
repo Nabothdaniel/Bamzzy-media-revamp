@@ -39,4 +39,28 @@ const getMessages = async (req, res) => {
 };
 
 
-export {addMessage,getMessages }
+// controllers/messagesController.js
+ const markAllMessagesAsRead = async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    const [updatedCount] = await Message.update(
+      { isRead: true },
+      {
+        where: {
+          userId,
+          isRead: false, // Only update unread messages
+        },
+      }
+    );
+
+    return res.status(200).json({
+      message: `${updatedCount} message(s) marked as read`,
+    });
+  } catch (err) {
+    console.error("Failed to mark all messages as read:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export { addMessage, getMessages,markAllMessagesAsRead }

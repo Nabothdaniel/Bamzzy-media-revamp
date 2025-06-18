@@ -89,7 +89,8 @@ function updateUnreadBadge(messages) {
         unreadCountElement.textContent = unreadCount;
         unreadCountElement.classList.remove('hidden');
     } else {
-        unreadCountElement.classList.add('hidden');
+        unreadCountElement.textContent = '0';
+        unreadCountElement.classList.remove('hidden');
     }
 }
 
@@ -105,24 +106,88 @@ function renderMessages(messages) {
         return;
     }
 
-    messages.forEach(({ title, content, createdAt }) => {
+    messages.forEach(({ id, title, content, createdAt, isRead }) => {
         const bg = title === 'fund' ? 'bg-green-50' : 'bg-blue-50';
         const border = title === 'fund' ? 'border-green-300' : 'border-blue-300';
         const iconColor = title === 'fund' ? 'text-green-500' : 'text-blue-500';
+        const opacity = isRead ? 'opacity-70' : 'opacity-100';
 
         const item = document.createElement('div');
-        item.className = `p-4 rounded-lg border ${bg} ${border} shadow-sm`;
+        item.className = `p-4 rounded-lg border ${bg} ${border} shadow-sm ${opacity}`;
 
         item.innerHTML = `
-      <div class="flex justify-between items-center my-2">
-        <span class="text-sm font-semibold capitalize ${iconColor}">${title}</span>
-        <span class="text-xs text-gray-500">${formatDate(createdAt)}</span>
-      </div>
-      <p class="text-sm">${content}</p>
-    `;
+            <div class="flex justify-between items-center my-2">
+                <span class="text-sm font-semibold capitalize ${iconColor}">${title}</span>
+                <span class="text-xs text-gray-500">${formatDate(createdAt)}</span>
+            </div>
+            <p class="text-sm">${content}</p>
+        `;
+
+        // Attach click listener to the "mark as read" button
+        const button = item.querySelector("button");
+        if (button) {
+            button.addEventListener("click", () => {
+                const msgId = button.getAttribute("data-id");
+                markAllMessagesAsRead(msgId);
+            });
+        }
 
         container.appendChild(item);
     });
+}
+
+
+async function markAllMessagesAsRead() {
+    const session = JSON.parse(window.name || '{}');
+    const token = session.token;
+
+    const btn = document.getElementById("markAllReadBtn");
+    if (btn) {
+        btn.disabled = true;
+        btn.textContent = "Marking...";
+    }
+
+    try {
+        const res = await fetch("http://localhost:5000/api/v1/message/update-message", {
+            method: "PUT",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!res.ok) throw new Error("Failed to mark all messages as read");
+
+        const fetchRes = await fetch("http://localhost:5000/api/v1/message/messages", {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!fetchRes.ok) throw new Error("Failed to reload messages");
+
+        const response = await fetchRes.json();
+        const messages = response.data || [];
+
+        renderMessages(messages);             // Refresh UI
+        updateUnreadBadge(messages);          // Hide or reset badge
+
+        if (btn) {
+            btn.textContent = "All read";
+            setTimeout(() => {
+                btn.textContent = "Mark as read";
+                btn.disabled = false;
+            }, 1500);
+        }
+
+    } catch (err) {
+        console.error("Failed to mark all as read:", err);
+        if (btn) {
+            btn.disabled = false;
+            btn.textContent = "Mark as read";
+        }
+    }
 }
 
 // Format ISO string to readable date/time
@@ -142,6 +207,10 @@ function formatDate(isoString) {
 document.addEventListener("DOMContentLoaded", () => {
     fetchMessages(); // Only works if full container exists
     updateUnreadCount(); // Always works globally
+    const markAllBtn = document.getElementById('markAllReadBtn');
+    if (markAllBtn) {
+        markAllBtn.addEventListener('click', markAllMessagesAsRead);
+    }
 });
 
 // Export if needed

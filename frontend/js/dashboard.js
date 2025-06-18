@@ -257,9 +257,9 @@ document.addEventListener('DOMContentLoaded', () => {
   <!-- Account Details -->
   <div class="w-full  flex flex-col gap-2">
    <div class="${badgeClass}">  ${icon}   ${account.platform}</div>
+    <p><strong>Categories:</strong> ${account.category || "Not specified."}</p>
     <p class="text-gray-700"><strong >Description:</strong>${account.description || "No description provided."}</p>
     <p><strong>Price:</strong> ₦${Number(account.price).toLocaleString()}</p>
-    <p><strong>Followers:</strong> ${account.followers || "Not specified."}</p>
     <button
       class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
       data-id="${account.id}"

@@ -1,7 +1,8 @@
 import express from 'express'
-import { authenticateToken } from '../middleware/authenticateMiddlware.js';
 const router = express.Router();
 
+
+import { authenticateToken } from '../middleware/authenticateMiddlware.js';
 import { registerUser, loginUser, userProfile, deleteUser, logoutUser,updatePassword,updateBalance } from '../controller/authController.js'
 
 

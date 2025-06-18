@@ -2,7 +2,6 @@ import express from "express"
 import bodyParser from "body-parser"
 import path from "path"
 import cors from 'cors';
-import { fileURLToPath } from "url"
 import dotenv from "dotenv"
 import { authRoute } from './src/routes/auth.js'
 import { accountRoute } from './src/routes/account.js'
@@ -18,8 +17,6 @@ import {categoryRouter} from './src/routes/categoryRoute.js'
 dotenv.config();
 
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -64,11 +61,15 @@ app.use('/api/v1/transactions', transactionRouter);
 app.use('/api/v1/platforms', platformRouter);
 app.use('/api/v1/categories', categoryRouter);
 
+app.use('/',(req,res)=>{
+  res.status(200).json({msg:"server runing as expected"})
+})
+
 
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
-
-//Q3si6W86B;z#Op
+sequelize.sync().then(() => {
+  app.listen(PORT,'0.0.0.0' () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+});
