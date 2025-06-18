@@ -33,7 +33,7 @@ app.use(
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({
-  origin: ["http://127.0.0.1:5500","https://bamzzy-media-revamp.vercel.app"], // allow Live Server origin
+  origin: ["http://127.0.0.1:5500","https://bamzzy-media-revamp.vercel.app","https://bamzymedia.com/"], // allow Live Server origin
   credentials: true
 }))
 
