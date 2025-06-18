@@ -1,7 +1,11 @@
+
+ "https://bamzzy-media-revamp.onrender.com";
+
 const colors = [
   "bg-red-500", "bg-green-500", "bg-blue-500",
   "bg-yellow-500", "bg-purple-500", "bg-pink-500", "bg-indigo-500"
 ];
+
 
 function getColorForName(name) {
   if (!name) return "bg-gray-200";
@@ -28,7 +32,7 @@ async function fetchUserProfile() {
   if (!token) return null;
 
   try {
-    const response = await fetch("http://localhost:5000/api/v1/auth/profile", {
+    const response = await fetch(`https://bamzzy-media-revamp.onrender.com/api/v1/auth/profile`, {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
@@ -119,5 +123,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     lastKnownBalance = parseFloat(user.balance);
   }
 
-  setInterval(pollForBalanceChange, 10000); 
+  setInterval(pollForBalanceChange, 10000);
 });

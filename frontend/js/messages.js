@@ -6,6 +6,7 @@ async function fetchMessages() {
     const token = session.token;
     const loader = document.getElementById('messageLoader');
     const container = document.getElementById('notificationsContainer');
+    const BASE_URL = "https://bamzzy-media-revamp.onrender.com";
 
     if (!token) {
         console.error("Token not found.");
@@ -17,7 +18,7 @@ async function fetchMessages() {
     if (container) container.innerHTML = ""; // Clear content while loading
 
     try {
-        const res = await fetch("http://localhost:5000/api/v1/message/messages", {
+        const res = await fetch(`${BASE_URL}/api/v1/message/messages`, {
             headers: {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",
@@ -58,7 +59,7 @@ async function updateUnreadCount() {
     }
 
     try {
-        const res = await fetch("http://localhost:5000/api/v1/message/messages", {
+        const res = await fetch(`${BASE_URL}/api/v1/message/messages`, {
             headers: {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",
@@ -148,7 +149,7 @@ async function markAllMessagesAsRead() {
     }
 
     try {
-        const res = await fetch("http://localhost:5000/api/v1/message/update-message", {
+        const res = await fetch(`${BASE_URL}/api/v1/message/update-message`, {
             method: "PUT",
             headers: {
                 "Authorization": `Bearer ${token}`,
@@ -158,7 +159,7 @@ async function markAllMessagesAsRead() {
 
         if (!res.ok) throw new Error("Failed to mark all messages as read");
 
-        const fetchRes = await fetch("http://localhost:5000/api/v1/message/messages", {
+        const fetchRes = await fetch(`${BASE_URL}/api/v1/message/messages`, {
             headers: {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",

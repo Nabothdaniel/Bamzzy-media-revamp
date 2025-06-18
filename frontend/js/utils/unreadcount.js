@@ -2,10 +2,11 @@
 async function updateUnreadCount() {
   const session = JSON.parse(window.name || '{}');
   const token = session.token;
+    const BASE_URL = "https://bamzzy-media-revamp.onrender.com";
   if (!token) return;
 
   try {
-    const res = await fetch("http://localhost:5000/api/v1/message/messages", {
+    const res = await fetch(`${BASE_URL}/api/v1/message/messages`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",

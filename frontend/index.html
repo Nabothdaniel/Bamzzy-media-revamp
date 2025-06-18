@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BAMZY MEDIA - Premium Social Media Accounts Marketplace</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="../css/landing.css">
-    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="./css/landing.css">
+    <link rel="stylesheet" href="./css/index.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
         rel="stylesheet" />
 
@@ -22,17 +22,33 @@
 
     <!--font awesome cdn-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-slide-down {
+            animation: slideDown 0.3s ease-out forwards;
+        }
+    </style>
 </head>
 
 <body>
     <!-- Navigation -->
-    <!-- Tailwind Navbar with Heroicons and FontAwesome -->
     <nav class="bg-white border-b shadow-sm fixed top-0 w-full z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <!-- Logo -->
                 <div class="flex items-center space-x-3">
-                    <img src="../images/logo.png" alt="BAMZY MEDIA Logo" class="h-10 w-auto" />
+                    <img src="./images/logo.png" alt="BAMZY MEDIA Logo" class="h-10 w-10 rounded-full" />
                     <h1 class="text-xl font-bold text-gray-800">BAMZY MEDIA</h1>
                 </div>
 
@@ -107,7 +123,7 @@
                 </div>
             </div>
             <div class="hero-image">
-                <img src="../images/hero-image.png" alt="BAMZY MEDIA Hero Image">
+                <img src="./images/hero-image.png" alt="BAMZY MEDIA Hero Image">
             </div>
         </div>
     </section>
@@ -190,7 +206,7 @@
     <section id="how-it-works" class="how-it-works">
         <div class="container">
             <div class="section-header">
-                <h2>How It Works</h2>
+                <h2 class="text-center">How It Works</h2>
                 <p>Get started with BAMZY MEDIA in just a few simple steps</p>
             </div>
             <div class="steps">
@@ -227,7 +243,7 @@
             </div>
             <div class="showcase-grid">
                 <div class="showcase-item">
-                    <img src="../images/showcase1.jpg" alt="Featured Account 1">
+                    <img src="./images/showcase1.jpg" alt="Featured Account 1">
                     <div class="showcase-content">
                         <div class="platform-badge instagram">
                             <i class="fab fa-instagram"></i> Instagram
@@ -238,7 +254,7 @@
                     </div>
                 </div>
                 <div class="showcase-item">
-                    <img src="../images/showcase2.jpg" alt="Featured Account 2">
+                    <img src="./images/showcase2.jpg" alt="Featured Account 2">
                     <div class="showcase-content">
                         <div class="platform-badge tiktok">
                             <i class="fab fa-tiktok"></i> TikTok
@@ -249,7 +265,7 @@
                     </div>
                 </div>
                 <div class="showcase-item">
-                    <img src="../images/showcase3.jpg" alt="Featured Account 3">
+                    <img src="./images/showcase3.jpg" alt="Featured Account 3">
                     <div class="showcase-content">
                         <div class="platform-badge twitter">
                             <i class="fab fa-twitter"></i> Twitter
@@ -281,7 +297,7 @@
                     </div>
                     <div class="testimonial-author">
                         <div class="author-avatar">
-                            <img src="../images/testimonial1.jpg" alt="John D.">
+                            <img src="./images/testimonial1.jpg" alt="John D.">
                         </div>
                         <div class="author-info">
                             <h4>John D.</h4>
@@ -296,7 +312,7 @@
                     </div>
                     <div class="testimonial-author">
                         <div class="author-avatar">
-                            <img src="../images/testimonial2.jpg" alt="Sarah M.">
+                            <img src="./images/testimonial2.jpg" alt="Sarah M.">
                         </div>
                         <div class="author-info">
                             <h4>Sarah M.</h4>
@@ -311,7 +327,7 @@
                     </div>
                     <div class="testimonial-author">
                         <div class="author-avatar">
-                            <img src="../images/testimonial3.jpg" alt="Michael T.">
+                            <img src="./images/testimonial3.jpg" alt="Michael T.">
                         </div>
                         <div class="author-info">
                             <h4>Michael T.</h4>
@@ -416,7 +432,6 @@
     </footer>
 
     <script>
-        // Mobile menu toggle
         const hamburger = document.querySelector('.hamburger');
         const navLinks = document.querySelector('.nav-links');
         const authButtons = document.querySelector('.auth-buttons');

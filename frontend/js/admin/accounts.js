@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const tableBody = document.querySelector("#accountsTableBody");
     const loadingIndicator = document.getElementById("loadingIndicator");
+    const BASE_URL = "https://bamzzy-media-revamp.onrender.com";
 
     function getSessionData() {
         try {
@@ -27,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 3000);
     }
 
-    const apiEndpoint = "http://localhost:5000/api/v1/accounts/admin-accounts";
+    const apiEndpoint = `${BASE_URL}/api/v1/accounts/admin-accounts`;
     const sessionData = getSessionData();
     const token = sessionData.token;
 
@@ -101,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
             button.disabled = true;
 
             try {
-                const response = await fetch(`http://localhost:5000/api/v1/accounts/delete-account/${accountId}`, {
+                const response = await fetch(`${BASE_URL}/api/v1/accounts/delete-account/${accountId}`, {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",

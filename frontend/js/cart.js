@@ -17,6 +17,7 @@ const sendFundRequestButton = document.getElementById('sendFundRequest');
 const checkoutSuccessModal = document.getElementById('checkoutSuccessModal');
 const viewPurchasesBtn = document.getElementById('viewPurchasesBtn');
 const continueShoppingBtn = document.getElementById('continueShopping');
+  const BASE_URL = "https://bamzzy-media-revamp.onrender.com";
 
 
 
@@ -85,7 +86,7 @@ async function init() {
 
 async function fetchUserBalance() {
   try {
-    const res = await fetch('http://localhost:5000/api/v1/auth/profile', {
+    const res = await fetch(`${BASE_URL}/api/v1/auth/profile`, {
       method: 'GET',
       headers: getAuthHeaders()
     });
@@ -105,7 +106,7 @@ async function fetchUserBalance() {
 
 async function fetchCartData() {
   try {
-    const response = await fetch('http://localhost:5000/api/v1/cart/get', {
+    const response = await fetch(`${BASE_URL}/api/v1/cart/get`, {
       headers: getAuthHeaders()
     });
 
@@ -192,7 +193,7 @@ function renderCart() {
 
 async function updateQuantityOnServer(accountId, quantity) {
   try {
-    const res = await fetch('http://localhost:5000/api/v1/cart/update', {
+    const res = await fetch(`${BASE_URL}/api/v1/cart/update`, {
       method: 'PUT',
       headers: getAuthHeaders(),
       body: JSON.stringify({ accountId, quantity })
@@ -218,7 +219,7 @@ async function updateQuantityOnServer(accountId, quantity) {
 
 async function removeFromCart(accountId) {
   try {
-    const response = await fetch(`http://localhost:5000/api/v1/cart/delete/${accountId}`, {
+    const response = await fetch(`${BASE_URL}/api/v1/cart/delete/${accountId}`, {
       method: 'DELETE',
       headers: getAuthHeaders()
     });
@@ -266,7 +267,7 @@ async function handleCheckout() {
 
   try {
     // 1. Initiate single checkout request to backend
-    const checkoutRes = await fetch('http://localhost:5000/api/v1/transactions/create-transaction', {
+    const checkoutRes = await fetch(`${BASE_URL}/api/v1/transactions/create-transaction`, {
       method: 'POST',
       headers: getAuthHeaders(),
       body: JSON.stringify({ totalPrice })

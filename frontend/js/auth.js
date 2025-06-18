@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const signupForm = document.getElementById("signUpFormElement");
   const loginForm = document.getElementById("loginFormElement");
+  const BASE_URL = "https://bamzzy-media-revamp.onrender.com";
 
   const showError = (inputId, message) => {
     const errorDiv = document.getElementById(`${inputId}Error`);
@@ -94,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
       
 
       try {
-        const res = await fetch("http://localhost:5000/api/v1/auth/register", {
+        const res = await fetch(`${BASE_URL}/api/v1/auth/register`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, email, password }),
@@ -147,7 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (hasError) return;
       loginBtn.innerHTML = 'Log in.....'
       try {
-        const res = await fetch("http://localhost:5000/api/v1/auth/login", {
+        const res = await fetch(`${BASE_URL}/api/v1/auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password }),
@@ -190,7 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const { token } = getSessionData();
 
     try {
-      const response = await fetch("http://localhost:5000/api/v1/auth/logout", {
+      const response = await fetch(`${BASE_URL}/api/v1/auth/logout`, {
         method: "POST",
         credentials: "include",
         headers: {

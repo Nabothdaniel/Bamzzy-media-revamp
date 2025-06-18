@@ -1,5 +1,6 @@
 
 document.addEventListener('DOMContentLoaded', () => {
+    const BASE_URL = "https://bamzzy-media-revamp.onrender.com";
   let sessionData = {};
   try {
     sessionData = JSON.parse(window.name || '{}');
@@ -93,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const apiUrl = `http://localhost:5000/api/v1/accounts/user-accounts`;
+    const apiUrl = `${BASE_URL}/api/v1/accounts/user-accounts`;
 
     try {
       const response = await fetch(apiUrl, {
@@ -316,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
     buttonElement.textContent = "Adding to cart...";
 
     try {
-      const response = await fetch("http://localhost:5000/api/v1/cart/add", {
+      const response = await fetch(`${BASE_URL}/api/v1/cart/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -363,7 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
   async function updateCartCount() {
     const session = getSessionData();
 
-    const response = await fetch('http://localhost:5000/api/v1/cart/get', {
+    const response = await fetch(`${BASE_URL}/api/v1/cart/get`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${session.token || ''}`

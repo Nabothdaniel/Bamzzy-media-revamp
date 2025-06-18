@@ -203,12 +203,15 @@
     <script defer src="../js/cart.js"></script>
     <script defer src="../js/userprofile.js"></script>
     <script defer src="../js/utils.js"></script>
+
+
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
             const session = JSON.parse(window.name || "{}");
             const token = session?.token;
 
             const purchaseTable = document.getElementById("purchaseHistoryTable");
+              let BASE_URL = "https://bamzzy-media-revamp.onrender.com";
 
             if (!token) {
                 purchaseTable.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-red-500">User not authenticated.</td></tr>`;
@@ -219,7 +222,7 @@
             purchaseTable.innerHTML = `<tr><td colspan="5" class="text-center py-4">Fetching purchases...</td></tr>`;
 
             try {
-                const response = await fetch("http://localhost:5000/api/v1/transactions/get-transaction", {
+                const response = await fetch(`${BASE_URL}/api/v1/transactions/get-transaction`, {
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`

@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const singleEntry = document.getElementById("singleEntry");
   const bulkEntry = document.getElementById("bulkEntry");
   let currentMode = "single"; // default
+  const BASE_URL = "https://bamzzy-media-revamp.onrender.com";
 
 
   // ==== Utils ====
@@ -186,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/v1/accounts/create-account', {
+      const response = await fetch(`${BASE_URL}/api/v1/accounts/create-account`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -218,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==== Fetch Functions ====
   async function fetchPlatforms() {
     try {
-      const res = await fetch("http://localhost:5000/api/v1/platforms/get-platforms", {
+      const res = await fetch(`${BASE_URL}/api/v1/platforms/get-platforms`, {
         method: 'GET',
         headers: getAuthHeaders()
       });
@@ -237,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function fetchCategories() {
     try {
-      const res = await fetch("http://localhost:5000/api/v1/categories/get-categories", {
+      const res = await fetch(`${BASE_URL}/api/v1/categories/get-categories`, {
         method: "GET",
         headers: getAuthHeaders()
       });
@@ -256,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function fetchAdminStats() {
     try {
-      const res = await fetch("http://localhost:5000/api/v1/admin/get-admin-stats", {
+      const res = await fetch(`${BASE_URL}/api/v1/admin/get-admin-stats`, {
         method: "GET",
         headers: getAuthHeaders()
       });
@@ -279,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const name = newPlatformInput.value.trim();
     if (!name) return alert("Platform name required.");
     try {
-      const res = await fetch("http://localhost:5000/api/v1/platforms/add-platform", {
+      const res = await fetch(`${BASE_URL}/api/v1/platforms/add-platform`, {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify({ name })
@@ -302,7 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const name = newCategoryInput.value.trim();
     if (!name) return alert("Category name required.");
     try {
-      const res = await fetch("http://localhost:5000/api/v1/categories/create-category", {
+      const res = await fetch(`${BASE_URL}/api/v1/categories/create-category`, {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify({ name })

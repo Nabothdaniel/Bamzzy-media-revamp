@@ -38,6 +38,7 @@ const fundingInstructions = document.getElementById('fundingInstructions');
 const userInfoForm = document.getElementById('userInfoForm');
 const copyAccountBtn = document.getElementById('copyAccountBtn');
 const copySuccess = document.getElementById('copySuccess');
+  const BASE_URL = "https://bamzzy-media-revamp.onrender.com";
 
 // Fetch existing virtual account if available
 async function fetchVirtualAccount() {
@@ -46,7 +47,7 @@ async function fetchVirtualAccount() {
         const session = getSessionData();
         const token = session.token;
 
-        const response = await fetch('http://localhost:5000/api/v1/fund/get-virtual-account', {
+        const response = await fetch(`${BASE_URL}/api/v1/fund/get-virtual-account`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -78,7 +79,7 @@ fetchVirtualAccount();
 async function createVirtualAccount(userName, userEmail, userPhone) {
     try {
         const session = getSessionData();
-        const response = await fetch('http://localhost:5000/api/v1/fund/create-virtual-account', {
+        const response = await fetch(`${BASE_URL}/api/v1/fund/create-virtual-account`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

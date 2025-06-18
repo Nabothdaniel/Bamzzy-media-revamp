@@ -245,7 +245,7 @@
                     }
 
                     try {
-                        const res = await fetch("http://localhost:5000/api/v1/transactions/get-transaction", {
+                        const res = await fetch(`https://bamzzy-media-revamp.onrender.com/api/v1/transactions/get-transaction`, {
                             headers: {
                                 "Content-Type": "application/json",
                                 "Authorization": `Bearer ${token}`,
