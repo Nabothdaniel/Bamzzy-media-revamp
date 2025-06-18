@@ -30,6 +30,7 @@ app.use(
     },
   })
 );
+app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({
   origin: ["http://127.0.0.1:5500","https://bamzzy-media-revamp.vercel.app"], // allow Live Server origin
@@ -42,11 +43,6 @@ sequelize.authenticate()
   .then(() => console.log('✅ Database connected'))
   .catch(err => console.error('❌ DB connection failed:', err));
 
-// Serve uploaded images statically
-app.use('/uploads', express.static(path.join(__dirname, 'src/uploads')));
-app.use(bodyParser.json({ limit: "50mb" }))
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(express.static(path.join(__dirname, ".")))
 
 
 
@@ -68,8 +64,6 @@ app.use('/',(req,res)=>{
 
 
 // Start server
-sequelize.sync().then(() => {
   app.listen(PORT,'0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
   });
-});
