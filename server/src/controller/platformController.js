@@ -1,5 +1,5 @@
 
-import PlatformFn from '../models/platform.js';
+import PlatformFn from '../models/Platform.js';
 import User from '../models/User.js';
 import sequelize from '../utils/database.js';
 
