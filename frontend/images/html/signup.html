@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BAMZY MEDIA - Register</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Font: Space Grotesk -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+
+    <!--font awesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 text-gray-900">
+    <div class="min-h-screen flex">
+        <!-- LEFT SIDE IMAGE/BRANDING -->
+        <div
+            class="hidden lg:w-1/2 relative bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white p-8 md:flex flex-col justify-between rounded-t-lg md:rounded-t-none">
+            <div class="flex items-center space-x-4 ">
+                <img src="../images/logo.png" alt="BAMZY MEDIA Logo" class="h-20 rounded-full w-20" />
+                <h1 class="text-2xl font-semibold">BAMZY MEDIA</h1>
+            </div>
+
+            <div class="mt-16 ">
+                <h2 class="text-3xl font-bold mb-4">Signup and create an Account</h2>
+                <p class="text-gray-300">Premium Social Media Accounts Marketplace</p>
+                <ul class="mt-8 space-y-3 text-sm text-gray-300">
+                    <li class="flex items-center gap-2">
+                        <i class="fa-solid fa-check-circle text-green-400"></i>
+                        Verified Accounts
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <i class="fa-solid fa-shield text-blue-400"></i>
+                        Secure Transfers
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <i class="fa-solid fa-headset text-pink-400"></i>
+                        24/7 Support
+                    </li>
+                </ul>
+            </div>
+
+            <div class="text-sm text-gray-500 mt-12">&copy; <span id="date-span"></span> BAMZY MEDIA. All rights
+                reserved.</div>
+        </div>
+
+        <!-- RIGHT SIDE FORMS -->
+        <div class="w-full md:w-1/2 flex items-center justify-center p-8 bg-white">
+            <div class="w-full max-w-md">
+                <h2 class="text-2xl font-bold mb-2">Welcome!</h2>
+                <p class="mb-6 text-gray-600">Sign up to create your account</p>
+
+                <form id="signUpFormElement" class="space-y-4">
+                    <div>
+                        <label for="name" class="block text-sm font-medium mb-1">Name</label>
+                        <div class="relative">
+                            <input type="text" id="name" placeholder="Enter your name" required
+                                class="w-full pl-10 pr-4 py-2 border rounded-md focus:ring focus:ring-blue-200 focus:outline-none" />
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-400" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5.121 17.804A10.005 10.005 0 0112 15c2.137 0 4.102.667 5.879 1.804M12 12a4 4 0 100-8 4 4 0 000 8z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div id="nameError" class="text-red-500 text-xs mt-1"></div>
+                    </div>
+
+                    <div>
+                        <label for="email" class="block text-sm font-medium mb-1">Email Address</label>
+                        <div class="relative">
+                            <input type="email" id="email" placeholder="Enter your email" required
+                                class="w-full pl-10 pr-4 py-2 border rounded-md focus:ring focus:ring-blue-200 focus:outline-none" />
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-400" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M16 12H8m8 0a4 4 0 100-8 4 4 0 000 8zM4 16h16v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div id="emailError" class="text-red-500 text-xs mt-1"></div>
+                    </div>
+
+                    <div>
+                        <label for="password" class="block text-sm font-medium mb-1">Password</label>
+                        <div class="relative">
+                            <input type="password" id="password" placeholder="Enter your password" required
+                                class="w-full pl-10 pr-4 py-2 border rounded-md focus:ring focus:ring-blue-200 focus:outline-none" />
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-400" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 11c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2zm0 0v4m0 4v0m0 0H6a2 2 0 01-2-2v-4a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2h-6z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div id="passwordError" class="text-red-500 text-xs mt-1"></div>
+                    </div>
+
+                    <button id="signin-btn" type="submit"
+                        class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">Signup</button>
+                </form>
+
+                <div class="text-center mt-6 text-sm">
+                    <p>Already have an account? <a href="./login.html" class="text-blue-600 hover:underline">Login</a>
+                    </p>
+                    <a href="../index.html" class="inline-flex items-center text-gray-500 hover:underline mt-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                        Back to Home
+                    </a>
+                </div>
+
+                <!-- Custom Alert -->
+                <div id="customAlert"
+                    class="fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded shadow hidden">
+                    <span id="customAlertMessage" class="text-sm font-medium"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script>
+        document.getElementById('date-span').innerHTML = new Date().getFullYear();
+    </script>
+</body>
+
+</html>

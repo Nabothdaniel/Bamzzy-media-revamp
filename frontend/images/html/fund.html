@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" class='h-full'>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fund - BAMZY MEDIA</title>
+
+    <!--google fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!--font awesome cdn-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="h-full overflow-hidden bg-gray-100 text-gray-800">
+
+    <!-- Mobile Nav -->
+    <div class="md:hidden flex justify-between items-center px-4 py-3 bg-white shadow">
+        <h2 class="text-lg font-semibold">BAMZY MEDIA</h2>
+        <button id="menuToggle" class="text-2xl">
+            <!-- Bars  -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-800" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+        </button>
+    </div>
+
+    <div class="flex h-full">
+
+        <!-- Sidebar -->
+        <aside id="sidebar"
+            class="fixed inset-y-0 left-0 w-80 bg-white shadow-lg transform -translate-x-full md:translate-x-0 md:relative md:flex flex-col transition-transform duration-300 z-50">
+            <div class="p-6 border-b">
+                <h2 class="text-xl font-bold hidden md:block">BAMZY MEDIA</h2>
+            </div>
+            <div class="p-4 border-b flex items-center gap-4">
+                <div id="userAvatar"
+                    class="bg-gray-200 w-12 h-12 rounded-full flex items-center justify-center text-xl text-white font-bold">
+                    <!-- Content will be inserted dynamically -->
+                </div>
+                <div>
+                    <p>Welcome, <span id="userName" class="font-semibold"></span></p>
+                    <p class="text-sm text-gray-500">Balance: <span id="userBalance">0.00</span></p>
+                </div>
+            </div>
+            <nav class="flex-grow p-4 space-y-4">
+                <a href="./dashboard.html"
+                    class="flex items-center gap-3 text-gray-700 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path
+                            d="M3 9.75L12 3l9 6.75v10.5A2.25 2.25 0 0118.75 22.5h-13.5A2.25 2.25 0 013 20.25v-10.5z" />
+                        <path d="M9 22.5v-7.5h6v7.5" />
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="cart.html"
+                    class="flex items-center gap-3 text-gray-700 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                    </svg>
+                    Cart
+                    <span id="cartCount"
+                        class="ml-auto bg-blue-100 text-blue-600 text-xs px-2 py-1 rounded-full">0</span>
+                </a>
+                <a href="purchases.html"
+                    class="flex items-center gap-3 text-gray-700 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                    Purchase History
+                </a>
+                <a href="./fund.html"
+                    class="flex items-center gap-3 text-blue-600 font-semibold bg-blue-50 rounded-lg px-3 py-2 transition hover:bg-blue-100 hover:text-blue-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                    Fund Account
+                </a>
+                <a href="messages.html"
+                    class="flex items-center gap-3 text-gray-700 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                    </svg>
+                    Notifications
+                    <span id="unreadCount"
+                        class="ml-auto bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full hidden">0</span>
+                </a>
+                <a href="./purchased-account.html"
+                    class="flex items-center gap-3 text-gray-700 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
+                    <!-- Envelope Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                    Purchased Accounts
+                </a>
+                <a href="#" id="logout"
+                    class="flex items-center gap-3 text-red-500 rounded-lg px-3 py-2 transition hover:bg-red-50 hover:text-red-600 active:bg-red-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-6 0v-1m6-10V5a3 3 0 00-6 0v1" />
+                    </svg>
+                    Logout
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class='w-full h-screen overflow-y-auto w-full ml:2'>
+            <!-- Header -->
+            <header class="md:bg-white p-3 flex md:flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-semibold">Fund Account</h1>
+                <div class="flex gap-4 items-center">
+                    <a href="messages.html" class="relative">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                        </svg>
+                        <span id="headerUnreadCount"
+                            class="absolute -top-2 -right-2 text-xs bg-red-600 text-white px-1 rounded-full hidden">0</span>
+                    </a>
+                </div>
+            </header>
+
+            <div class="max-w-xl md:mx-auto mx-5 mb-20 mt-5 p-6 bg-white rounded-2xl shadow-xl">
+                <h1 class="text-2xl font-bold text-center mb-6">Fund Your Account</h1>
+
+                <!-- User Input Form -->
+                <div id="userInfoForm" class="mb-6">
+                    <h2 class="text-xl font-semibold mb-3">Enter Your Details</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="userNameInput" class="block text-sm font-medium text-gray-700">Name</label>
+                            <input type="text" id="userNameInput" class="w-full mt-1 p-2 border rounded-lg" required />
+                        </div>
+                        <div>
+                            <label for="userEmailInput" class="block text-sm font-medium text-gray-700">Email</label>
+                            <input type="email" id="userEmailInput" class="w-full mt-1 p-2 border rounded-lg"
+                                required />
+                        </div>
+                        <div>
+                            <label for="userPhoneInput" class="block text-sm font-medium text-gray-700">Phone
+                                Number</label>
+                            <input type="tel" id="userPhoneInput" class="w-full mt-1 p-2 border rounded-lg" required />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Create Virtual Account Section -->
+                <div id="virtualAccountSection" class="mb-6">
+                    <p class="text-gray-700 text-sm mb-2">Click the button below to generate your virtual account
+                        number.</p>
+                    <button id="createAccountBtn"
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">Create
+                        Virtual Account</button>
+                    <div id="accountInfo"
+                        class="hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-lg flex flex-col gap-2">
+                        <div>
+                            <div>
+                                <p class="text-sm text-gray-600">Account Name:</p>
+                                <p id="accountName" class="text-lg font-semibold text-green-800 inline"></p>
+                            </div>
+                        </div>
+                        <div class="inline-flex items-center gap-2">
+                            <div>
+                                <p class="text-sm text-gray-600">Account Number:</p>
+                                <p id="accountNumber" class="text-lg font-semibold text-green-800 inline"></p>
+                            </div>
+                            <button id="copyAccountBtn" title="Copy Account Number"
+                                class="ml-2 p-2 rounded hover:bg-green-100 focus:outline-none">
+                                <i class="fas fa-clipboard"></i>
+                            </button>
+                            <span id="copySuccess" class="text-green-600 text-xs ml-2 hidden">Copied!</span>
+                        </div>
+                        <div>
+                            <div>
+                                <p class="text-sm text-gray-600">Bank Name:</p>
+                                <p id="bankName" class="text-lg font-semibold text-green-800 inline"></p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Funding Instructions -->
+                <div id="fundingInstructions" class="hidden">
+                    <h2 class="text-xl font-semibold mb-3">Next Steps</h2>
+                    <p class="text-sm text-gray-600 mb-2">Use the virtual account number above to transfer funds from
+                        your bank app. Your balance will be updated automatically after confirmation.</p>
+                    <p class="text-sm text-gray-600">Make sure to use your registered name to avoid delays.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="customAlert" class="hidden fixed top-6 right-6 z-50 px-4 py-3 rounded shadow-lg transition duration-300">
+        <span id="customAlertMessage"></span>
+    </div>
+
+
+    <script defer src='../js/fund/fund.js'></script>
+    <script defer src='../js/protected/protected.js'></script>
+    <script defer type="module" src="../js/dashboard.js"></script>
+    <script defer src="../js/auth.js"></script>
+    <script defer src="../js/userprofile.js"></script>
+    <script defer src="../js/cart.js"></script>
+    <script defer src="../js/utils.js"></script>
+</body>
+
+</html>
