@@ -121,7 +121,7 @@ const getPublicAccountsForUser = async (req, res) => {
         const { since } = req.query;
 
         const whereClause = {
-            isAvailable: true 
+            isAvailable: true
         };
 
         if (since) {
@@ -203,7 +203,24 @@ const deleteAccount = async (req, res) => {
             });
         }
 
+        // Assuming account has a foreign key: cardId
+        if (account.cardId) {
+            const accountCard = await AccountCard.findByPk(account.cardId, { transaction });
+
+            if (accountCard) {
+                // Reduce the quantity
+                await accountCard.decrement('quantity', { by: 1, transaction });
+
+                // Optionally, if quantity goes below 0, reset to 0
+                if (accountCard.quantity < 0) {
+                    accountCard.quantity = 0;
+                    await accountCard.save({ transaction });
+                }
+            }
+        }
+
         await account.destroy({ transaction });
+
         await transaction.commit();
 
         return res.status(200).json({
@@ -221,6 +238,7 @@ const deleteAccount = async (req, res) => {
         });
     }
 };
+
 
 
 
