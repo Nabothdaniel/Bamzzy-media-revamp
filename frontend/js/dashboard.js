@@ -219,84 +219,74 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!modal || !modalContent) return;
 
+    // Show the modal
     modal.classList.remove("hidden");
 
-
-
+    // Inject the modal content
     modalContent.innerHTML = `
-      <button id="closeAccountModal"
-                    class="absolute top-4 my-5 right-4 text-gray-400 hover:text-white text-2xl transition-colors">
-                 <svg xmlns="http://www.w3.org/2000/svg" class='h-8 w-8' fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-    </svg>
-
-                </button>
-     <div class="rounded-2xl glass-effect p-6 border border-blue-500/20">
-  <div class="flex justify-between items-center mb-4">
-    <h3 class="text-xl text-white font-semibold capitalize">${account.category}</h3>
-  </div>
-
-  <div class="space-y-3 mb-6">
-    <div class="flex justify-between">
-      <span class="text-gray-400">Platform:</span>
-      <span class="text-white font-medium capitalize">${account.platform}</span>
-    </div>
-    <div class="flex flex-col justify-between">
-      <span class="text-gray-400">Description:</span>
-      <span class="text-white">${account.description}</span>
-    </div>
-    <div class="flex justify-between">
-      <span class="text-gray-400">Available:</span>
-      <span class="text-white font-semibold">${account.quantity || 0}</span>
-    </div>
-    <div class="flex justify-between">
-      <span class="text-gray-400">Price per Quantity:</span>
-      <span class="text-yellow-600 font-semibold">₦${Number(account.price).toLocaleString()}</span>
-    </div>
-  </div>
-
-  <div class="mt-4">
-    <label for="quantityToAdd" class="block text-sm text-white font-medium mb-1">Quantity:</label>
-    <input 
-      type="number" 
-      id="quantityToAdd" 
-      name="quantity" 
-      min="1" 
-      max="${account.quantity}" 
-      value="1"
-      class="w-full border border-blue-500/20 bg-transparent text-white px-3 py-2 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
-
-    <button 
-      class="add-to-cart-btn w-full py-3 bg-gradient-to-r from-blue-600 to-blue-900 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all"
-      data-id="${account.id}"
-    >
-      Add to Cart
+    <button id="closeAccountModal"
+      class="absolute top-4 my-5 right-4 text-gray-400 hover:text-white text-2xl transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class='h-8 w-8' fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+      </svg>
     </button>
-  </div>
-</div>
-`;
+    <div class="rounded-2xl glass-effect p-6 border border-blue-500/20">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl text-white font-semibold capitalize">${account.category}</h3>
+      </div>
+      <div class="space-y-3 mb-6">
+        <div class="flex justify-between">
+          <span class="text-gray-400">Platform:</span>
+          <span class="text-white font-medium capitalize">${account.platform}</span>
+        </div>
+        <div class="flex flex-col justify-between">
+          <span class="text-gray-400">Description:</span>
+          <span class="text-white">${account.description}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-400">Available:</span>
+          <span class="text-white font-semibold">${account.quantity || 0}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-400">Price per Quantity:</span>
+          <span class="text-yellow-600 font-semibold">₦${Number(account.price).toLocaleString()}</span>
+        </div>
+      </div>
+      <div class="mt-4">
+        <label for="quantityToAdd" class="block text-sm text-white font-medium mb-1">Quantity:</label>
+        <input 
+          type="number" 
+          id="quantityToAdd" 
+          name="quantity" 
+          min="1" 
+          max="${account.quantity}" 
+          value="1"
+          class="w-full border border-blue-500/20 bg-transparent text-white px-3 py-2 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <button 
+          class="add-to-cart-btn w-full py-3 bg-gradient-to-r from-blue-600 to-blue-900 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all"
+          data-id="${account.id}"
+        >
+          Purchase Account
+        </button>
+      </div>
+    </div>
+  `;
 
-    document.getElementById("closeAccountModal").addEventListener("click", () => {
-      modal.classList.add("hidden");
-    });
-
-    const addToCartBtn = document.querySelector(".add-to-cart-btn");
-    if (addToCartBtn) {
-      addToCartBtn.addEventListener("click", () => {
-        const quantityInput = document.getElementById("quantityToAdd");
-        const quantity = parseInt(quantityInput?.value) || 1;
-        const token = getSessionData().token;
-
-        if (!token) {
-          showCustomAlert("Please log in to add to cart.", "error");
-          return;
-        }
-
-        addToCart(account.id, quantity, token, addToCartBtn);
+    // Attach the close button event listener AFTER setting innerHTML
+    const closeBtn = document.getElementById("closeAccountModal");
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => {
+        modal.classList.add("hidden");
       });
+
+      // Optional: for mobile support, also listen for touchstart
+      closeBtn.addEventListener("touchstart", () => {
+        modal.classList.add("hidden");
+      }, { passive: true });
     }
   }
+
 
   async function addToCart(accountId, quantity, token, buttonElement) {
     if (!buttonElement) return;
