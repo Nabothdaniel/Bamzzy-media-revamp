@@ -162,11 +162,8 @@
     <div
         class="md:hidden flex justify-between items-center px-4 py-3 glass-effect border-b border-blue-500/20 relative z-10">
         <div class="flex items-center space-x-2">
-            <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-lg flex items-center justify-center">
-                <i class="fas fa-shield-alt text-white"></i>
-            </div>
             <span
-                class="text-lg font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">SocialVault</span>
+                class="text-lg font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">Bamzymedia</span>
         </div>
         <button id="menuToggle" class="text-2xl text-blue-400 hover:text-cyan-300 transition-colors">
             <i class="fas fa-bars"></i>
@@ -299,13 +296,13 @@
             <header class="glass-effect border-b border-blue-500/20 px-3 py-2 flex justify-between items-center mb-8">
                 <div>
                     <h1
-                        class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+                        class="text-xl md:text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
                         Purchase History</h1>
-                    <p class="text-gray-400 mt-1">View your social media account purchases</p>
+                    <p class="text-sm md:text-md text-gray-400 mt-1">View your social media account purchases</p>
                 </div>
                 <div class="flex gap-4 items-center">
                     <a href="messages.html"
-                        class="relative p-3 glass-effect rounded-full hover:bg-blue-500/20 transition-all">
+                        class="relative  transition-all">
                         <i class="fas fa-bell text-blue-400 text-lg"></i>
                         <span id="headerUnreadCount"
                             class="absolute -top-1 -right-1 text-xs bg-red-500 text-white px-2 py-1 rounded-full min-w-[20px] text-center hidden">0</span>
@@ -325,7 +322,7 @@
 
                     <!-- Table Container -->
                     <div class="overflow-x-auto">
-                        <table class="min-w-full">
+                        <table class="w-full md:min-w-full">
                             <thead class="bg-gradient-to-r from-blue-900/20 to-cyan-900/20">
                                 <tr>
                                     <th
@@ -334,7 +331,7 @@
                                     </th>
                                     <th
                                         class="px-6 py-4 text-left text-xs font-bold text-blue-400 uppercase tracking-wider">
-                                        <i class="fas fa-dollar-sign mr-2"></i>Price
+                                        Price
                                     </th>
                                     <th
                                         class="px-6 py-4 text-left text-xs font-bold text-blue-400 uppercase tracking-wider">
@@ -397,62 +394,17 @@
         </div>
     </div>
 
-    <!-- Overlay for mobile menu -->
-    <div id="overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden md:hidden z-40"></div>
 
     <script>
-        // Mobile menu functionality
-        const menuToggle = document.getElementById('menuToggle');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
+       
+       
 
-        if (menuToggle) {
-            menuToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('-translate-x-full');
-                overlay.classList.toggle('hidden');
-            });
-        }
+         
 
-        if (overlay) {
-            overlay.addEventListener('click', () => {
-                sidebar.classList.add('-translate-x-full');
-                overlay.classList.add('hidden');
-            });
-        }
-
-        // Load user profile
-        function loadUserProfile() {
-            const userData = {
-                name: 'John Doe',
-                balance: '$1,250.00',
-                avatar: 'JD'
-            };
-
-            const userNameEl = document.getElementById('userName');
-            const userBalanceEl = document.getElementById('userBalance');
-            const userAvatarEl = document.getElementById('userAvatar');
-
-            if (userNameEl) userNameEl.textContent = userData.name;
-            if (userBalanceEl) userBalanceEl.textContent = userData.balance;
-            if (userAvatarEl) userAvatarEl.textContent = userData.avatar;
-        }
-
-        // Logout functionality
-        const logoutBtn = document.getElementById('logout');
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (confirm('Are you sure you want to logout?')) {
-                    localStorage.clear();
-                    window.location.href = 'login.html';
-                }
-            });
-        }
+    
 
         // Purchase history functionality
         document.addEventListener("DOMContentLoaded", async () => {
-            // Load user profile
-            loadUserProfile();
 
             const session = JSON.parse(window.name || "{}");
             const token = session?.token;
@@ -524,7 +476,7 @@
                             </div>
                         </td>
                         <td class="px-6 py-4">
-                            <span class="text-lg font-bold text-blue-400">$${Number(item.price).toLocaleString()}</span>
+                            <span class="text-lg font-bold text-blue-400">₦${Number(item.price).toLocaleString()}</span>
                         </td>
                         <td class="px-6 py-4">
                             <span class="text-gray-300">${new Date(item.createdAt).toLocaleDateString('en-US', {
