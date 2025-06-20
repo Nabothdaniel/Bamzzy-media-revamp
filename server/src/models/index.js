@@ -1,22 +1,23 @@
-// models/index.js
 import sequelize from '../utils/database.js';
-import TransactionFactory from './Transaction.js';
-import UserFactory from './User.js';
 
-const models = {};
+import User, { associateUser } from './User.js';
+import AccountCard, { associateAccountCard } from './AccountCard.js';
+import Cart, { associateCart } from './Cart.js';
+import Account, { accountAssociation} from './Account.js'; // Optional if used
 
-models.User = UserFactory(sequelize);
-models.Transaction = TransactionFactory(sequelize);
-// ...initialize other models here
+// Collect all models
+const models = {
+  User,
+  AccountCard,
+  Cart,
+  Account, // if needed
+};
 
-// run associations
-Object.values(models).forEach(model => {
-  if (model.associate) {
-    model.associate(models);
-  }
-});
+// Call all associate functions **AFTER** models are registered
+associateUser(models);
+associateAccountCard(models);
+associateCart(models);
+accountAssociation(models); 
 
-models.sequelize = sequelize;
-models.Sequelize = sequelize;
-
+export { sequelize };
 export default models;

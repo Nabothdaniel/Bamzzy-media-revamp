@@ -2,6 +2,7 @@ import { DataTypes } from 'sequelize';
 import sequelize from '../utils/database.js';
 import User from './User.js';
 import Transaction from './Transaction.js';
+import AccountCard from './AccountCard.js';
 
 const PurchasedAccount = sequelize.define('PurchasedAccount', {
   platform: {
@@ -41,23 +42,49 @@ const PurchasedAccount = sequelize.define('PurchasedAccount', {
     allowNull: false,
   },
   status: {
-    type: DataTypes.STRING,
+    type: DataTypes.ENUM('pending', 'completed', 'refunded', 'failed'),
     allowNull: false,
+    defaultValue: 'completed',
   },
   userId: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    references: {
+      model: User,
+      key: 'id',
+    },
+    onDelete: 'CASCADE',
   },
   transactionId: {
     type: DataTypes.STRING,
     allowNull: false,
+    references: {
+      model: Transaction,
+      key: 'transactionId',
+    },
+    onDelete: 'CASCADE',
+  },
+  accountCardId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: {
+      model: AccountCard,
+      key: 'id',
+    },
+    onDelete: 'SET NULL',
   },
 }, {
   tableName: 'purchased_accounts',
   timestamps: true,
+  indexes: [
+    {
+      unique: true,
+      fields: ['username', 'transactionId'],
+    },
+  ],
 });
 
-// 🔗 Associations (defined directly here to match your Transaction.js style)
+// 🔗 Associations
 PurchasedAccount.belongsTo(User, {
   foreignKey: 'userId',
   as: 'user',
@@ -66,9 +93,15 @@ PurchasedAccount.belongsTo(User, {
 
 PurchasedAccount.belongsTo(Transaction, {
   foreignKey: 'transactionId',
-  targetKey: 'transactionId', // Match non-default primary key
+  targetKey: 'transactionId',
   as: 'transaction',
   onDelete: 'CASCADE',
+});
+
+PurchasedAccount.belongsTo(AccountCard, {
+  foreignKey: 'accountCardId',
+  as: 'card',
+  onDelete: 'SET NULL',
 });
 
 export default PurchasedAccount;

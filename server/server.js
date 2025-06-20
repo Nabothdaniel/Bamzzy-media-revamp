@@ -1,6 +1,4 @@
 import express from "express"
-import bodyParser from "body-parser"
-import path from "path"
 import cors from 'cors';
 import dotenv from "dotenv"
 import { authRoute } from './src/routes/auth.js'
@@ -13,6 +11,7 @@ import { messageRoutes } from "./src/routes/MessageRoutes.js";
 import { transactionRouter } from "./src/routes/transactions.js";
 import {platformRouter} from './src/routes/platform.js';
 import {categoryRouter} from './src/routes/categoryRoute.js'
+import './src/models/index.js';
 
 dotenv.config();
 

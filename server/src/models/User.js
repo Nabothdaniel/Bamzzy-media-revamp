@@ -28,4 +28,10 @@ const User = sequelize.define('User', {
   timestamps: true
 });
 
+export const associateUser = (models) => {
+  User.hasMany(models.AccountCard, { foreignKey: 'adminId', as: 'accountCards' });
+  User.hasMany(models.Cart, { foreignKey: 'userId' });
+};
+
+
 export default User;

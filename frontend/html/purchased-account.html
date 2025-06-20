@@ -4,117 +4,279 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard - BAMZY MEDIA</title>
+    <title>Purchased Accounts - Bamzymedia</title>
 
-
-    <!--google fonts -->
+    <!-- Google Fonts - Space Grotesk -->
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Space Grotesk -->
-
-    <!--font awesome cdn-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cyber-blue': '#00d4ff',
+                        'dark-blue': '#0a1628',
+                        'electric-blue': '#1e40af',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'slide-up': 'slideUp 0.8s ease-out',
+                        'pulse-slow': 'pulse 3s ease-in-out infinite',
+                    }
+                }
+            }
+        }
+    </script>
 
     <style>
         body {
             font-family: 'Space Grotesk', sans-serif;
         }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 20px #00d4ff;
+            }
+
+            to {
+                box-shadow: 0 0 30px #00d4ff, 0 0 40px #00d4ff;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .glass-sidebar {
+            backdrop-filter: blur(20px);
+            background: rgba(15, 23, 42, 0.9);
+            border-right: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        /* Modified nav-link styling with hover background instead of border */
+        .nav-link {
+            transition: all 0.3s ease;
+            border-radius: 0.5rem;
+        }
+
+        .nav-link:hover {
+            background: rgba(0, 212, 255, 0.15);
+            color: #00d4ff;
+        }
+
+        .nav-link.active {
+            background: rgba(0, 212, 255, 0.25);
+            color: #00d4ff;
+        }
+
+        /* Clean gradient background */
+        .main-background {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #1e293b 75%, #0f172a 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Subtle floating particles */
+        .floating-particles::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(2px 2px at 20px 30px, rgba(0, 212, 255, 0.3), transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(59, 130, 246, 0.2), transparent),
+                radial-gradient(1px 1px at 90px 40px, rgba(139, 92, 246, 0.3), transparent),
+                radial-gradient(1px 1px at 130px 80px, rgba(0, 212, 255, 0.2), transparent);
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: float 20s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Account card hover effects */
+        .account-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .account-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.2);
+        }
+
+        /* Modal styling */
+        .modal-backdrop {
+            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        /* Platform badge animations */
+        .platform-badge {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
     </style>
 </head>
 
-<body class="bg-gray-100 overflow-y-auto h-screen text-gray-800">
+<body class="main-background floating-particles text-white min-h-screen overflow-y-auto">
 
     <!-- Mobile Nav -->
-    <div class="md:hidden flex justify-between items-center px-4 py-3 bg-white shadow">
-        <h2 class="text-lg font-semibold">BAMZY MEDIA</h2>
-        <button id="menuToggle" class="text-2xl">
-            <!-- Bars  -->
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-800" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="3" y1="12" x2="21" y2="12" />
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
+    <div
+        class="md:hidden flex justify-between items-center px-4 py-3 glass-effect border-b border-blue-500/20 relative z-10">
+        <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-lg flex items-center justify-center">
+                <i class="fas fa-shield-alt text-white"></i>
+            </div>
+            <span
+                class="text-lg font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">SocialVault</span>
+        </div>
+        <button id="menuToggle" class="text-2xl text-blue-400 hover:text-cyan-300 transition-colors">
+            <i class="fas fa-bars"></i>
         </button>
     </div>
 
-    <div class="flex min-h-screen ">
+    <div class="flex min-h-screen relative z-10">
 
         <!-- Sidebar -->
         <aside id="sidebar"
-            class="fixed inset-y-0 left-0 w-72 bg-white shadow-lg transform -translate-x-full md:translate-x-0 md:relative md:flex flex-col transition-transform duration-300 z-50">
-            <div class="p-6 border-b">
-                <h2 class="text-xl font-bold hidden md:block">BAMZY MEDIA</h2>
+            class="fixed inset-y-0 left-0 w-72 glass-sidebar transform -translate-x-full md:translate-x-0 md:relative md:flex flex-col transition-transform duration-300 z-50 border-r border-blue-500/20">
+
+            <!-- Logo Section -->
+            <div class="p-6 border-b border-blue-500/20">
+                <div class="flex items-center space-x-2">
+
+                    <span
+                        class="text-xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent hidden md:block">Bamzy
+                        Media</span>
+                </div>
             </div>
-            <div class="p-4 border-b flex items-center gap-4">
+
+            <!-- User Profile Section -->
+            <div class="p-4 border-b border-blue-500/20 flex items-center gap-4">
                 <div id="userAvatar"
-                    class="bg-gray-200 w-12 h-12 rounded-full flex items-center justify-center text-xl text-white font-bold">
+                    class="bg-gradient-to-r from-blue-500 to-cyan-400 w-12 h-12 rounded-full flex items-center justify-center text-xl text-white font-bold animate-float">
                     <!-- Content will be inserted dynamically -->
                 </div>
-
                 <div>
-                    <p>Welcome, <span id="userName" class="font-semibold"></span></p>
-                    <p class="text-sm text-gray-500">Balance: <span id="userBalance">0.00</span></p>
+                    <p class="text-gray-300">Welcome, <span id="userName" class="font-semibold text-blue-400"></span>
+                    </p>
+                    <p class="text-sm text-gray-400">Balance: <span id="userBalance"
+                            class="text-cyan-400 font-semibold">$0.00</span></p>
                 </div>
             </div>
-            <nav class="flex-grow p-4 space-y-4">
-                <a href="./dashboard.html"
-                    class="flex items-center gap-3 text-gray-700 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
 
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path
-                            d="M3 9.75L12 3l9 6.75v10.5A2.25 2.25 0 0118.75 22.5h-13.5A2.25 2.25 0 013 20.25v-10.5z" />
-                        <path d="M9 22.5v-7.5h6v7.5" />
+            <!-- Navigation -->
+            <nav class="flex-grow p-4 space-y-2">
+                <a href="dashboard.html"
+                    class="nav-link  flex items-center gap-3 text-blue-400 font-semibold rounded-lg px-3 py-3 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                     </svg>
+
                     Dashboard
                 </a>
 
                 <a href="cart.html"
-                    class="flex items-center gap-3 text-gray-700 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
-                    <!-- Shopping Cart Icon -->
+                    class="nav-link flex items-center gap-3 text-gray-300 rounded-lg px-3 py-3 transition-all hover:text-blue-400">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                            d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
                     </svg>
 
                     Cart
                     <span id="cartCount"
-                        class="ml-auto bg-blue-100 text-blue-600 text-xs px-2 py-1 rounded-full">0</span>
+                        class="ml-auto bg-blue-500/20 text-blue-400 text-xs px-2 py-1 rounded-full border border-blue-500/30">0</span>
                 </a>
 
                 <a href="purchases.html"
-                    class="flex items-center gap-3 text-gray-700 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
-                    <!-- History Icon -->
+                    class="nav-link flex items-center gap-3 text-gray-300 rounded-lg px-3 py-3 transition-all hover:text-blue-400">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>
 
-                    </svg>
                     Purchase History
                 </a>
+
                 <a href="./fund.html"
-                    class="flex items-center gap-3 text-gray-700 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
-                    <!-- Wallet Icon -->
+                    class="nav-link flex items-center gap-3 text-gray-300 rounded-lg px-3 py-3 transition-all hover:text-blue-400">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>
+
                     Fund Account
                 </a>
 
                 <a href="messages.html"
-                    class="flex items-center gap-3 text-gray-700 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
-                    <!-- Envelope Icon -->
+                    class="nav-link flex items-center gap-3 text-gray-300 rounded-lg px-3 py-3 transition-all hover:text-blue-400">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -122,265 +284,404 @@
                     </svg>
 
                     Notifications
-                    <span id="unreadCount"
-                        class="ml-auto bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full hidden">0</span>
+                    <span id="notificationCount"
+                        class="ml-auto bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded-full border border-red-500/30">0</span>
                 </a>
+
                 <a href="./purchased-account.html"
-                    class="flex items-center gap-3 text-gray-700 rounded-lg px-3 py-2 transition hover:bg-blue-50 hover:text-blue-700 active:bg-blue-100">
-                    <!-- Envelope Icon -->
+                    class="nav-link active flex items-center gap-3 text-gray-300 rounded-lg px-3 py-3 transition-all hover:text-blue-400">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
                     </svg>
+
                     Purchased Accounts
                 </a>
 
-                <a href="#" id="logout"
-                    class="flex items-center gap-3 text-red-500 rounded-lg px-3 py-2 transition hover:bg-red-50 hover:text-red-600 active:bg-red-100">
-                    <!-- Logout Icon -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-6 0v-1m6-10V5a3 3 0 00-6 0v1" />
-                    </svg>
-                    Logout
-                </a>
+                <div class="pt-4 mt-4 border-t border-blue-500/20">
+                    <a href="#" id="logout"
+                        class="nav-link flex items-center gap-3 text-red-400 rounded-lg px-3 py-3 transition-all hover:text-red-300 hover:bg-red-500/10">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+                        </svg>
+
+                        Logout
+                    </a>
+                </div>
             </nav>
 
         </aside>
 
+
         <!-- Main Content -->
+        <main class='flex-1 w-full'>
 
-        <!-- Main Content Wrapper -->
-        <div class="flex-1 bg-gray-100">
-            <!-- Place your <main> here or wrap content inside this -->
+            <!-- Header -->
+            <header class="glass-effect border-b border-blue-500/20  py-2 px-3 flex justify-between items-center mb-8">
+                <div>
+                    <h1
+                        class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+                        Purchased Accounts</h1>
+                    <p class="text-gray-400 mt-1">Access your social media account credentials</p>
+                </div>
+            </header>
 
+            <!-- Content -->
+            <div class="max-w-7xl mx-auto px-6 pb-8">
 
-            <main class="p-4 max-w-8xl mx-auto">
-                <header class="bg-white p-4 rounded-lg shadow flex justify-between items-center mb-6">
-                    <h1 class="text-2xl font-semibold text-gray-800">Your Social Media Purchases</h1>
-                </header>
-
-                <!-- Spinner -->
-                <div id="loadingSpinner" class="my-10 flex justify-center">
-                    <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-blue-500 border-opacity-75"></div>
+                <!-- Loading Spinner -->
+                <div id="loadingSpinner" class="flex justify-center items-center py-20">
+                    <div class="flex flex-col items-center gap-4">
+                        <div class="flex items-center space-x-1">
+                            <div class="h-4 w-4 bg-blue-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                            <div class="h-4 w-4 bg-cyan-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                            <div class="h-4 w-4 bg-blue-400 rounded-full animate-bounce"></div>
+                        </div>
+                        <span class="text-gray-400">Loading your accounts...</span>
+                    </div>
                 </div>
 
                 <!-- Purchase Card Container -->
-                <div id="purchaseCardContainer" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
+                <div id="purchaseCardContainer" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 hidden">
                     <!-- Cards will be injected here -->
                 </div>
 
-                <!-- Empty or Error Message -->
-                <div id="emptyStateMessage" class="text-center text-gray-500 mt-10 hidden">
-                    <!-- Message will be injected -->
+                <!-- Empty State -->
+                <div id="emptyStateMessage"
+                    class="hidden glass-effect rounded-2xl border border-blue-500/20 p-12 text-center">
+                    <div class="w-20 h-20 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-user-check text-4xl text-blue-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">No Purchased Accounts</h3>
+                    <p class="text-gray-400 mb-6">You haven't purchased any accounts yet. Browse our premium collection!
+                    </p>
+                    <a href="dashboard.html"
+                        class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl hover:from-blue-700 hover:to-cyan-600 transition-all font-semibold">
+                        <i class="fas fa-store mr-2"></i>
+                        Browse Accounts
+                    </a>
                 </div>
-            </main>
+            </div>
+        </main>
+    </div>
 
-            <div id="accountModal"
-                class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                <div class="bg-white rounded-xl p-6 w-full max-w-md relative">
-                    <button id="closeModal" class="absolute top-3 right-3 text-gray-600 hover:text-red-500 text-xl">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="size-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                        </svg>
+    <!-- Account Details Modal -->
+    <div id="accountModal" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4">
+        <div class="glass-effect rounded-2xl border border-blue-500/30 w-full max-w-md relative animate-slide-up">
 
+            <!-- Modal Header -->
+            <div class="p-6 border-b border-blue-500/20">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-blue-400 flex items-center gap-3">
+                        <div class="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-key text-blue-400"></i>
+                        </div>
+                        Account Details
+                    </h2>
+                    <button id="closeModal"
+                        class="p-2 glass-effect rounded-lg hover:bg-red-500/20 text-gray-400 hover:text-red-400 transition-all">
+                        <i class="fas fa-times text-lg"></i>
                     </button>
-                    <h2 class="text-lg font-semibold mb-4 text-gray-800">Account Details</h2>
-
-                    <p><strong>Platform:</strong> <span id="modalPlatform" class="text-gray-700"></span></p>
-                    <p><strong>Username:</strong> <span id="modalUsername" class="text-gray-700"></span></p>
-                    <p><strong>Password:</strong> <span id="modalPassword" class="text-gray-700"></span></p>
-                    <p><strong>Mail:</strong> <span id="modalMail" class="text-gray-700"></span></p>
-                    <p><strong>Mail Password:</strong> <span id="modalMailPassword" class="text-gray-700"></span></p>
-                    <p><strong>Two-Factor Enabled:</strong> <span id="modalTwoFactor" class="text-gray-700"></span></p>
-                    <button id="copyDetailsBtn"
-                        class="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition">
-                        Copy All Details
-                    </button>
-
                 </div>
             </div>
 
+            <!-- Modal Content -->
+            <div class="p-6 space-y-4">
+                <div class="space-y-3">
+                    <div
+                        class="flex justify-between items-center p-3 glass-effect rounded-lg border border-blue-500/20">
+                        <span class="text-gray-400 text-sm">Platform:</span>
+                        <span id="modalPlatform" class="text-white font-medium"></span>
+                    </div>
+
+                    <div
+                        class="flex justify-between items-center p-3 glass-effect rounded-lg border border-blue-500/20">
+                        <span class="text-gray-400 text-sm">Username:</span>
+                        <span id="modalUsername" class="text-blue-400 font-medium"></span>
+                    </div>
+
+                    <div
+                        class="flex justify-between items-center p-3 glass-effect rounded-lg border border-blue-500/20">
+                        <span class="text-gray-400 text-sm">Password:</span>
+                        <span id="modalPassword" class="text-cyan-400 font-medium font-mono"></span>
+                    </div>
+
+                    <div
+                        class="flex justify-between items-center p-3 glass-effect rounded-lg border border-blue-500/20">
+                        <span class="text-gray-400 text-sm">Mail:</span>
+                        <span id="modalMail" class="text-white font-medium"></span>
+                    </div>
+
+                    <div
+                        class="flex justify-between items-center p-3 glass-effect rounded-lg border border-blue-500/20">
+                        <span class="text-gray-400 text-sm">Mail Password:</span>
+                        <span id="modalMailPassword" class="text-cyan-400 font-medium font-mono"></span>
+                    </div>
 
 
-            <!-- Alert Box -->
-            <div id="logoutAlert"
-                class="fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded shadow hidden">
-                <span id="logoutAlertMessage"></span>
+                    <div
+                        class="flex justify-between items-center p-3 glass-effect rounded-lg border border-blue-500/20">
+                        <span class="text-gray-400 text-sm">2FA Enabled:</span>
+                        <span id="modalTwoFactor" class="text-white font-medium"></span>
+                    </div>
+                </div>
+
+                <!-- Copy Button -->
+                <button id="copyDetailsBtn"
+                    class="w-full py-3 px-6 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white rounded-xl font-bold transition-all transform hover:scale-105 animate-glow flex items-center justify-center gap-2">
+                    <i class="fas fa-copy"></i>
+                    Copy All Details
+                </button>
             </div>
+        </div>
+    </div>
 
-            <!-- Scripts -->
-            <script defer src="../js/protected/protected.js"></script>
-            <script defer type="module" src="../js/dashboard.js"></script>
-            <script defer src="../js/auth.js"></script>
-            <script defer src="../js/cart.js"></script>
-            <script defer src="../js/userprofile.js"></script>
-            <script defer src="../js/utils.js"></script>
+    <!-- Custom Alert -->
+    <div id="logoutAlert"
+        class="fixed top-4 right-4 glass-effect border border-green-500/30 text-green-400 px-6 py-4 rounded-xl shadow-lg hidden animate-slide-up">
+        <div class="flex items-center gap-3">
+            <i class="fas fa-check-circle text-green-400"></i>
+            <span id="logoutAlertMessage"></span>
+        </div>
+    </div>
 
-            <!-- Purchase Script -->
-            <script>
-                document.addEventListener("DOMContentLoaded", async () => {
-                    const session = JSON.parse(window.name || "{}");
-                    const token = session?.token;
 
-                    const spinner = document.getElementById("loadingSpinner");
-                    const cardContainer = document.getElementById("purchaseCardContainer");
-                    const emptyMessage = document.getElementById("emptyStateMessage");
+    <script>
 
-                    const modal = document.getElementById("accountModal");
-                    const closeModal = document.getElementById("closeModal");
+        // Main functionality
+        document.addEventListener("DOMContentLoaded", async () => {
 
-                    const modalPlatform = document.getElementById("modalPlatform");
-                    const modalUsername = document.getElementById("modalUsername");
-                    const modalPassword = document.getElementById("modalPassword");
+            const session = JSON.parse(window.name || "{}");
+            const token = session?.token;
 
-                    closeModal.addEventListener("click", () => modal.classList.add("hidden"));
+            const spinner = document.getElementById("loadingSpinner");
+            const cardContainer = document.getElementById("purchaseCardContainer");
+            const emptyMessage = document.getElementById("emptyStateMessage");
 
-                    if (!token) {
-                        spinner.style.display = "none";
-                        emptyMessage.textContent = "User not authenticated.";
-                        emptyMessage.classList.remove("hidden");
-                        return;
-                    }
+            const modal = document.getElementById("accountModal");
+            const closeModal = document.getElementById("closeModal");
 
-                    try {
-                        const res = await fetch(`https://bamzzy-media-revamp.onrender.com/api/v1/transactions/get-transaction`, {
-                            headers: {
-                                "Content-Type": "application/json",
-                                "Authorization": `Bearer ${token}`,
-                            },
-                        });
+            const modalPlatform = document.getElementById("modalPlatform");
+            const modalUsername = document.getElementById("modalUsername");
+            const modalPassword = document.getElementById("modalPassword");
+            const modalMail = document.getElementById("modalMail");
+            const modalMailPassword = document.getElementById("modalMailPassword");
+            const modalTwoFactor = document.getElementById("modalTwoFactor");
 
-                        if (!res.ok) throw new Error("Failed to fetch transactions");
+            closeModal.addEventListener("click", () => modal.classList.add("hidden"));
 
-                        const data = await res.json();
-                        const accounts = data.accounts;
+            // Close modal when clicking backdrop
+            modal.addEventListener("click", (e) => {
+                if (e.target === modal) {
+                    modal.classList.add("hidden");
+                }
+            });
 
-                        console.log(accounts)
+            if (!token) {
+                spinner.style.display = "none";
+                emptyMessage.innerHTML = `
+                    <div class="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-exclamation-triangle text-4xl text-red-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Authentication Required</h3>
+                    <p class="text-gray-400">Please log in to view your purchased accounts.</p>
+                `;
+                emptyMessage.classList.remove("hidden");
+                return;
+            }
 
-                        spinner.style.display = "none";
+            try {
+                const res = await fetch(`https://bamzzy-media-revamp.onrender.com/api/v1/transactions/get-transaction`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                });
 
-                        if (!accounts || accounts.length === 0) {
-                            emptyMessage.textContent = "No purchases found.";
-                            emptyMessage.classList.remove("hidden");
-                            return;
+                if (!res.ok) throw new Error("Failed to fetch transactions");
+
+                const data = await res.json();
+                const accounts = data.accounts;
+
+
+                spinner.style.display = "none";
+
+                if (!accounts || accounts.length === 0) {
+                    emptyMessage.classList.remove("hidden");
+                    return;
+                }
+
+                cardContainer.classList.remove("hidden");
+
+                accounts.forEach((account, index) => {
+                    const [username, password] = account.loginDetails?.split(/[:|]/) || ["N/A", "N/A"];
+
+                    // Platform styling
+                    const platformConfig = {
+                        'tiktok': {
+                            gradient: 'from-red-500 to-pink-500',
+                            icon: 'fab fa-tiktok',
+                            color: 'text-red-400'
+                        },
+                        'twitter': {
+                            gradient: 'from-gray-800 to-black',
+                            icon: 'fab fa-twitter',
+                            color: 'text-blue-400'
+                        },
+                        'facebook': {
+                            gradient: 'from-blue-600 to-blue-800',
+                            icon: 'fab fa-facebook',
+                            color: 'text-blue-400'
+                        },
+                        'instagram': {
+                            gradient: 'from-pink-500 to-purple-600',
+                            icon: 'fab fa-instagram',
+                            color: 'text-pink-400'
+                        },
+                        'youtube': {
+                            gradient: 'from-red-600 to-red-800',
+                            icon: 'fab fa-youtube',
+                            color: 'text-red-400'
+                        },
+                        'linkedin': {
+                            gradient: 'from-blue-700 to-blue-900',
+                            icon: 'fab fa-linkedin',
+                            color: 'text-blue-400'
                         }
+                    };
 
-                        cardContainer.classList.remove("hidden");
+                    const platform = account.platform?.toLowerCase();
+                    const config = platformConfig[platform] || {
+                        gradient: 'from-gray-600 to-gray-800',
+                        icon: 'fas fa-share-alt',
+                        color: 'text-gray-400'
+                    };
 
-                        accounts.forEach(account => {
-                            const [username, password] = account.loginDetails?.split(/[:|]/) || ["N/A", "N/A"];
+                    const card = document.createElement("div");
+                    card.className = "account-card glass-effect rounded-2xl border border-blue-500/20 p-6 hover:border-blue-400/40";
+                    card.style.animationDelay = `${index * 0.1}s`;
 
-                            let badgeClass = 'inline-flex items-center gap-2 px-3 py-1 rounded-full text-white text-xs font-semibold max-w-max';
-                            let icon = '';
-                            const platform = account.platform?.toLowerCase();
+                    card.innerHTML = `
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="platform-badge bg-gradient-to-r ${config.gradient} px-3 py-2 rounded-full flex items-center gap-2 text-white text-sm font-semibold">
+                                <i class="${config.icon}"></i>
+                                <span class="capitalize">${account.platform}</span>
+                            </div>
+                            <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                        </div>
+                        
+                        <div class="space-y-3 mb-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-400 text-sm">Price:</span>
+                                <span class="text-lg font-bold ${config.color}">₦${Number(account.price).toLocaleString()}</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-400 text-sm">Purchased:</span>
+                                <span class="text-white text-sm">${new Date(account.createdAt).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    })}</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-400 text-sm">Status:</span>
+                                <span class="inline-flex items-center px-2 py-1 text-xs font-bold text-green-400 bg-green-500/20 rounded-full border border-green-500/30">
+                                    <i class="fas fa-check-circle mr-1"></i>Delivered
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="pt-4 border-t border-blue-500/20">
+                            <button class="w-full py-2 px-4 glass-effect border border-blue-500/30 hover:bg-blue-500/20 text-blue-400 rounded-lg font-semibold transition-all flex items-center justify-center gap-2">
+                                <i class="fas fa-eye"></i>
+                                View Details
+                            </button>
+                        </div>
+                    `;
 
-                            switch (platform) {
-                                case 'tiktok':
-                                    badgeClass += ' bg-red-500';
-                                    icon = '<i class="fab fa-tiktok"></i>';
-                                    break;
-                                case 'twitter':
-                                    badgeClass += ' bg-black';
-                                    icon = '<i class="fab fa-twitter"></i>';
-                                    break;
-                                case 'facebook':
-                                    badgeClass += ' bg-blue-400';
-                                    icon = '<i class="fab fa-facebook"></i>';
-                                    break;
-                                case 'instagram':
-                                    badgeClass += ' bg-pink-600';
-                                    icon = '<i class="fab fa-instagram"></i>';
-                                    break;
-                                default:
-                                    badgeClass += ' bg-gray-500';
-                                    icon = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                         stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                         <path stroke-linecap="round" stroke-linejoin="round"
-                         d="m21 7.5-2.25-1.313M21 7.5v2.25m0-2.25-2.25 1.313M3 7.5l2.25-1.313M3 7.5l2.25 1.313M3 7.5v2.25m9 3 2.25-1.313M12 12.75l-2.25-1.313M12 12.75V15m0 6.75 2.25-1.313M12 21.75V19.5m0 2.25-2.25-1.313m0-16.875L12 2.25l2.25 1.313M21 14.25v2.25l-2.25 1.313m-13.5 0L3 16.5v-2.25" />
-                       </svg>`;
-                            }
+                    card.addEventListener("click", () => {
+                        modalPlatform.textContent = account.platform || "N/A";
+                        modalUsername.textContent = account.username || username || "N/A";
+                        modalPassword.textContent = account.password || password || "N/A";
+                        modalMail.textContent = account.mail || "N/A";
+                        modalMailPassword.textContent = account.mailPassword || "N/A";
+                        modalTwoFactor.textContent = account.twoFactor === "true" || account.twoFactor === true ? "Yes" : "No";
 
-                            const card = document.createElement("div");
-                            card.className = "bg-white border border-gray-200 rounded-xl p-5 shadow hover:shadow-lg transition cursor-pointer";
+                        modal.classList.remove("hidden");
+                    });
 
-                            card.innerHTML = `
-        <div class="flex items-center gap-3 mb-4">
-            <div class="${badgeClass}">
-                ${icon}
-                <span class="capitalize">${account.platform}</span>
-            </div>
-        </div>
-        <div class="text-gray-600 text-sm mb-1">Price: 
-            <span class="text-gray-800 font-medium">₦${Number(account.price).toLocaleString()}</span>
-        </div>
-        <div class="text-gray-600 text-sm mb-1">Purchased: 
-            <span class="text-gray-800">${new Date(account.createdAt).toLocaleDateString()}</span>
-        </div>
-        <div class=" font-semibold mt-2">Status: <span class='text-green-400'>Delivered</span></div>
-    `;
-
-                            card.addEventListener("click", () => {
-                                modalPlatform.textContent = account.platform || "N/A";
-                                modalUsername.textContent = account.username || username || "N/A";
-                                modalPassword.textContent = account.password || password || "N/A";
-                                modalMail.textContent = account.mail || "N/A";
-                                modalMailPassword.textContent = account.mailPassword || "N/A";
-                                modalTwoFactor.textContent = account.twoFactor === "true" || account.twoFactor === true ? "Yes" : "No";
-
-                                // 👇 This is the line you were missing
-                                modal.classList.remove("hidden");
-
-                            });
-
-                            cardContainer.appendChild(card);
-                        });
-
-                    } catch (err) {
-                        console.error("Fetch error:", err);
-                        spinner.style.display = "none";
-                        emptyMessage.textContent = "Error loading purchase history.";
-                        emptyMessage.classList.remove("hidden");
-                    }
+                    cardContainer.appendChild(card);
                 });
 
-                const copyBtn = document.getElementById('copyDetailsBtn');
+            } catch (err) {
+                console.error("Fetch error:", err);
+                spinner.style.display = "none";
+                emptyMessage.innerHTML = `
+                    <div class="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-exclamation-triangle text-4xl text-red-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Error Loading Accounts</h3>
+                    <p class="text-gray-400 mb-6">Failed to load your purchased accounts. Please try again.</p>
+                    <button onclick="location.reload()" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl hover:from-blue-700 hover:to-cyan-600 transition-all font-semibold">
+                        <i class="fas fa-redo mr-2"></i>Retry
+                    </button>
+                `;
+                emptyMessage.classList.remove("hidden");
+            }
+        });
 
-                copyBtn.addEventListener('click', () => {
-                    const platform = document.getElementById('modalPlatform')?.textContent || '';
-                    const username = document.getElementById('modalUsername')?.textContent || '';
-                    const password = document.getElementById('modalPassword')?.textContent || '';
-                    const mail = document.getElementById('modalMail')?.textContent || '';
-                    const mailPassword = document.getElementById('modalMailPassword')?.textContent || '';
-                    const twoFactor = document.getElementById('modalTwoFactor')?.textContent || '';
+        // Copy functionality
+        const copyBtn = document.getElementById('copyDetailsBtn');
 
-                    const textToCopy = `
-                Platform: ${platform}
-                Username: ${username}
-                Password: ${password}
-                Mail: ${mail}
-                Mail Password: ${mailPassword}
-                Two-Factor Enabled: ${twoFactor}
-                 `.trim();
+        copyBtn.addEventListener('click', () => {
+            const platform = document.getElementById('modalPlatform')?.textContent || '';
+            const username = document.getElementById('modalUsername')?.textContent || '';
+            const password = document.getElementById('modalPassword')?.textContent || '';
+            const mail = document.getElementById('modalMail')?.textContent || '';
+            const mailPassword = document.getElementById('modalMailPassword')?.textContent || '';
+            const twoFactor = document.getElementById('modalTwoFactor')?.textContent || '';
 
-                    navigator.clipboard.writeText(textToCopy)
-                        .then(() => {
-                            const originalText = copyBtn.textContent;
-                            copyBtn.textContent = "Copied...";
-                            copyBtn.disabled = true;
+            const textToCopy = `Platform: ${platform}
+Username: ${username}
+Password: ${password}
+Email: ${mail}
+Email Password: ${mailPassword}
+Two-Factor Enabled: ${twoFactor}`;
 
-                            setTimeout(() => {
-                                copyBtn.textContent = originalText;
-                                copyBtn.disabled = false;
-                            }, 2000);
-                        })
-                        .catch(err => {
-                            console.error("Failed to copy text: ", err);
-                            alert("Failed to copy text.");
-                        });
+            navigator.clipboard.writeText(textToCopy)
+                .then(() => {
+                    const originalHTML = copyBtn.innerHTML;
+                    copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    copyBtn.disabled = true;
+                    copyBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+                    copyBtn.classList.remove('bg-gradient-to-r', 'from-blue-600', 'to-cyan-500');
+
+                    setTimeout(() => {
+                        copyBtn.innerHTML = originalHTML;
+                        copyBtn.disabled = false;
+                        copyBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                        copyBtn.classList.add('bg-gradient-to-r', 'from-blue-600', 'to-cyan-500');
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error("Failed to copy text: ", err);
+                    alert("Failed to copy text.");
                 });
-            </script>
+        });
+    </script>
+
+    <script defer src="../js/protected/protected.js"></script>
+    <script defer type="module" src="../js/dashboard.js"></script>
+    <script defer src="../js/auth.js"></script>
+    <script defer src="../js/cart.js"></script>
+    <script defer src="../js/userprofile.js"></script>
+    <script defer src="../js/utils.js"></script>
+
 </body>
 
 </html>

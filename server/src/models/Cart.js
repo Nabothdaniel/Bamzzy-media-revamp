@@ -1,45 +1,59 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../utils/database.js';
-import User from './User.js';
-import { Account } from './Account.js';
 
 class Cart extends Model { }
 
 Cart.init({
   userId: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: false,
   },
-  accountId: {
+  accountCardId: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: false,
   },
   quantity: {
     type: DataTypes.INTEGER,
     defaultValue: 1,
-    allowNull: false
+    allowNull: false,
   },
   isSold: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false
-  }
+    defaultValue: false,
+  },
 }, {
   sequelize,
   modelName: 'Cart',
+  tableName: 'Carts',
   indexes: [
     {
       unique: true,
-      fields: ['userId', 'accountId']
-    }
-  ]
+      fields: ['userId', 'accountCardId', 'isSold'],
+    },
+  ],
 });
 
+export const associateCart = (models) => {
+  Cart.belongsTo(models.User, {
+    foreignKey: 'userId',
+    onDelete: 'CASCADE',
+  });
 
-// Associations
-User.hasMany(Cart, { foreignKey: 'userId', onDelete: 'CASCADE' });
-Cart.belongsTo(User, { foreignKey: 'userId' });
+  Cart.belongsTo(models.AccountCard, {
+    foreignKey: 'accountCardId',
+    as: 'card',
+    onDelete: 'CASCADE',
+  });
 
-Account.hasMany(Cart, { foreignKey: 'accountId', onDelete: 'CASCADE' });
-Cart.belongsTo(Account, { foreignKey: 'accountId' });
+  models.User.hasMany(Cart, {
+    foreignKey: 'userId',
+    onDelete: 'CASCADE',
+  });
+
+  models.AccountCard.hasMany(Cart, {
+    foreignKey: 'accountCardId',
+    onDelete: 'CASCADE',
+  });
+};
 
 export default Cart;

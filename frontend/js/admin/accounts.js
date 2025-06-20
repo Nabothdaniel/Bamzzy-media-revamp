@@ -32,7 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const sessionData = getSessionData();
     const token = sessionData.token;
 
-    // Show loading spinner
     loadingIndicator.style.display = "flex";
     tableBody.innerHTML = "";
 
@@ -50,9 +49,13 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(data => {
             loadingIndicator.style.display = "none";
             const accounts = data.accounts;
+
+            console.log(accounts)
+
+
             tableBody.innerHTML = "";
 
-            if (!accounts || accounts.length === 0) {
+            if (!Array.isArray(accounts) || accounts.length === 0) {
                 tableBody.innerHTML = `
                     <tr>
                         <td colspan="5" class="text-center text-gray-500 py-6">No accounts found.</td>
@@ -61,23 +64,30 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             accounts.forEach((account, index) => {
-                const isSold = account.isSold;
+                const {
+                    id,
+                    platform = "N/A",
+                    price = 0,
+                    isSold = false,
+                    status = "unknown"
+                } = account;
 
                 const row = document.createElement("tr");
+
                 row.innerHTML = `
                     <td class="px-4 py-3">${index + 1}</td>
-                    <td class="px-4 py-3">${account.platform}</td>
-                    <td class="px-4 py-3">₦${Number(account.price).toLocaleString()}</td>
+                    <td class="px-4 py-3">${platform}</td>
+                    <td class="px-4 py-3">₦${Number(price).toLocaleString()}</td>
                     <td class="px-4 py-3">
                         <span class="inline-block px-2 py-1 text-xs font-medium rounded-full
-                            ${isSold ? 'bg-red-100 text-red-600' : account.status === 'available' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}">
-                            ${isSold ? 'Sold' : account.status}
+                            ${isSold ? 'bg-red-100 text-red-600' : status === 'available' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}">
+                            ${isSold ? 'Sold' : status}
                         </span>
                     </td>
-                    <td class="px-4 py-3 text-red-600 hover:underline delete-btn cursor-pointer ${isSold ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}" data-id="${account.id}">
+                    <td class="px-4 py-3 text-red-600 hover:underline delete-btn cursor-pointer 
+                        ${isSold ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}" data-id="${id}">
                          Delete
                     </td>
-
                 `;
                 tableBody.appendChild(row);
             });

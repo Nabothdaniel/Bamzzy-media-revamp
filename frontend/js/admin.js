@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const price = parseFloat(document.getElementById('price').value);
     const quantityInput = parseInt(document.getElementById('quantity').value);
 
-    if (!platform || !category || isNaN(price)) {
+    if (!platform || !category) {
       showCustomAlert("Please fill all required fields.");
       submitBtn.disabled = false;
       submitBtn.textContent = 'Create Account';

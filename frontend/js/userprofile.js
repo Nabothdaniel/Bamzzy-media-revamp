@@ -1,5 +1,5 @@
 
- "https://bamzzy-media-revamp.onrender.com";
+ 
 
 const colors = [
   "bg-red-500", "bg-green-500", "bg-blue-500",

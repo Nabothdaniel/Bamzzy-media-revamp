@@ -1,8 +1,8 @@
 
 
 import bcrypt from 'bcrypt';
-import User from '../models/User.js';  
-import { Account } from '../models/Account.js';
+import User from '../models/User.js';
+import Account from '../models/Account.js';
 import { generateToken } from '../utils/helperfns.js';
 import Transaction from '../models/Transaction.js';
 //import sequelize from '../utils/database.js';
@@ -74,7 +74,7 @@ const signupAdmin = async (req, res) => {
 const adminStats = async (req, res) => {
   try {
     const totalAccounts = await Account.count();
-    const accountsSold = await Account.count({ where: { isSold: true} });
+    const accountsSold = await Account.count({ where: { isSold: true } });
 
     const totalRevenueData = await Transaction.findAll({
       where: { type: 'purchase' },
@@ -100,4 +100,4 @@ const adminStats = async (req, res) => {
 };
 
 
-export {  adminStats, signupAdmin }
+export { adminStats, signupAdmin }

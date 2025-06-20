@@ -4,33 +4,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BAMZY MEDIA - Premium Social Media Accounts Marketplace</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="./css/landing.css">
-    <link rel="stylesheet" href="./css/index.css">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
-        rel="stylesheet" />
-
-    <!--google fonts -->
+    <title>Bamzymedia - Premium Social Media Accounts</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Space Grotesk -->
-
-    <!--font awesome cdn-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cyber-blue': '#00d4ff',
+                        'dark-blue': '#0a1628',
+                        'electric-blue': '#1e40af',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'slide-up': 'slideUp 0.8s ease-out',
+                        'pulse-slow': 'pulse 3s ease-in-out infinite',
+                        'bounce-slow': 'bounce 3s ease-in-out infinite',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 20px #00d4ff;
+            }
+
+            to {
+                box-shadow: 0 0 30px #00d4ff, 0 0 40px #00d4ff;
+            }
+        }
+
         html {
             scroll-behavior: smooth;
         }
 
-        @keyframes slideDown {
+        @keyframes slideUp {
             from {
                 opacity: 0;
-                transform: translateY(-10px);
+                transform: translateY(30px);
             }
 
             to {
@@ -39,309 +73,562 @@
             }
         }
 
-        .animate-slide-down {
-            animation: slideDown 0.3s ease-out forwards;
+        .cyber-grid {
+            background-image:
+                linear-gradient(rgba(0, 212, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .gradient-border {
+            background: linear-gradient(45deg, #3b82f6, #06b6d4, #8b5cf6);
+            padding: 2px;
+            border-radius: 1rem;
+        }
+
+        .gradient-border-inner {
+            background: rgba(15, 23, 42, 0.9);
+            border-radius: 0.875rem;
         }
     </style>
 </head>
 
-<body>
+<body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white overflow-x-hidden">
     <!-- Navigation -->
-    <nav class="bg-white border-b shadow-sm fixed top-0 w-full z-50">
+    <nav class="fixed w-full z-50 glass-effect">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <!-- Logo -->
-                <div class="flex items-center space-x-3">
-                    <img src="./images/logo.png" alt="BAMZY MEDIA Logo" class="h-10 w-10 rounded-full" />
-                    <h1 class="text-xl font-bold text-gray-800">BAMZY MEDIA</h1>
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-2">
+
+                    <span
+                        class="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+                        Bamzymedia
+                    </span>
+                </div>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#home" class="hover:text-blue-400 transition-colors">Home</a>
+                    <a href="#features" class="hover:text-blue-400 transition-colors">Features</a>
+                    <a href="#how-it-works" class="hover:text-blue-400 transition-colors">How It Works</a>
+                    <a href="#pricing" class="hover:text-blue-400 transition-colors">Pricing</a>
+                    <a href="#testimonials" class="hover:text-blue-400 transition-colors">Reviews</a>
                 </div>
 
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex space-x-8">
-                    <a href="#features" class="text-gray-700 hover:text-blue-600 font-medium">Features</a>
-                    <a href="#how-it-works" class="text-gray-700 hover:text-blue-600 font-medium">How It Works</a>
-                    <a href="#testimonials" class="text-gray-700 hover:text-blue-600 font-medium">Testimonials</a>
-                </div>
-
-                <!-- Auth Buttons -->
+                <!-- Desktop buttons -->
                 <div class="hidden md:flex items-center space-x-4">
-                    <a href="./html/login.html"
-                        class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded hover:bg-gray-100">Login</a>
+                    <a href="./html/login.html" class="text-white hover:text-blue-400 transition-colors">Login</a>
                     <a href="./html/signup.html"
-                        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700">Sign
-                        Up</a>
+                        class="bg-gradient-to-r from-blue-500 to-cyan-400 text-white px-4 py-2 rounded-md hover:from-blue-600 hover:to-cyan-500 transition duration-200">
+                        Sign Up
+                    </a>
                 </div>
 
-                <!-- Hamburger Menu -->
-                <button id="mobileMenuToggle" class="md:hidden focus:outline-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-gray-800" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h16" />
+                <button class="md:hidden text-white" id="mobile-menu-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
                     </svg>
                 </button>
             </div>
         </div>
 
         <!-- Mobile Menu -->
-        <div id="mobileMenu" class="md:hidden hidden px-4 pb-4 bg-white border-t shadow">
-            <a href="#features" class="block py-2 text-gray-700 hover:text-blue-600">Features</a>
-            <a href="#how-it-works" class="block py-2 text-gray-700 hover:text-blue-600">How It Works</a>
-            <a href="#testimonials" class="block py-2 text-gray-700 hover:text-blue-600">Testimonials</a>
-            <div class="mt-3 space-y-2">
-                <a href="./html/login.html"
-                    class="block text-center py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded hover:bg-gray-100">Login</a>
-                <a href="./html/signup.html"
-                    class="block text-center py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700">Sign
-                    Up</a>
+        <div id="mobile-menu" class="hidden md:hidden bg-[#0f172a]/80 backdrop-blur-md">
+            <div class="px-4 py-4 space-y-3">
+                <a href="#home"
+                    class="block py-2 px-3 rounded-md text-white hover:bg-blue-500/20 hover:text-blue-400 transition-all duration-200">
+                    Home
+                </a>
+                <a href="#features"
+                    class="block py-2 px-3 rounded-md text-white hover:bg-blue-500/20 hover:text-blue-400 transition-all duration-200">
+                    Features
+                </a>
+                <a href="#how-it-works"
+                    class="block py-2 px-3 rounded-md text-white hover:bg-blue-500/20 hover:text-blue-400 transition-all duration-200">
+                    How It Works
+                </a>
+                <a href="#pricing"
+                    class="block py-2 px-3 rounded-md text-white hover:bg-blue-500/20 hover:text-blue-400 transition-all duration-200">
+                    Pricing
+                </a>
+                <a href="#testimonials"
+                    class="block py-2 px-3 rounded-md text-white hover:bg-blue-500/20 hover:text-blue-400 transition-all duration-200">
+                    Reviews
+                </a>
+
+                <!-- Login & Signup Buttons -->
+                <div class="pt-4 border-t border-white/10 flex flex-col gap-2">
+                    <a href="./html/login.html"
+                        class="block text-center py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200">
+                        Login
+                    </a>
+                    <a href="./html/signup"
+                        class="block text-center py-2 px-4 bg-cyan-500 text-white rounded-md hover:bg-cyan-600 transition duration-200">
+                        Sign Up
+                    </a>
+                </div>
             </div>
         </div>
     </nav>
 
+
     <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <h1>Buy Premium Social Media Accounts</h1>
-                <p>Get instant access to established social media accounts with real followers. Boost your online
-                    presence today!</p>
-                <div class="hero-buttons">
-                    <a href="./html/signup.html" class="btn btn-primary btn-large">Get Started</a>
-                    <a href="#how-it-works" class="btn btn-secondary btn-large">Learn More</a>
-                </div>
-                <div class="hero-stats">
-                    <div class="stat">
-                        <h3>10K+</h3>
-                        <p>Accounts Sold</p>
-                    </div>
-                    <div class="stat">
-                        <h3>5K+</h3>
-                        <p>Happy Customers</p>
-                    </div>
-                    <div class="stat">
-                        <h3>99%</h3>
-                        <p>Satisfaction Rate</p>
+    <section id="home" class="min-h-screen flex items-center justify-center relative cyber-grid">
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-900/20 to-purple-900/20"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center animate-slide-up">
+                <div class="mb-8 animate-float">
+                    <div class="inline-block p-4 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 animate-glow">
+                        <i class="fas fa-rocket text-4xl text-white"></i>
                     </div>
                 </div>
+                <h1
+                    class="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500 bg-clip-text text-transparent">
+                    Premium Social Media Accounts
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 text-gray-300 max-w-3xl mx-auto">
+                    Unlock instant access to verified, high-quality social media accounts.
+                    Boost your digital presence with our secure and reliable platform.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+                    <a href="./html/login.html"
+                        class="px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-full text-lg font-semibold hover:from-blue-700 hover:to-cyan-600 transform hover:scale-105 transition-all duration-300 animate-glow flex items-center justify-center">
+                        <i class="fas fa-shopping-cart mr-2"></i>
+                        Browse Accounts
+                    </a>
+                    <a href="./html/signup.html"
+                        class="px-8 py-4 border-2 border-blue-500 rounded-full text-lg font-semibold hover:bg-blue-500 hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
+                        Get Started
+                    </a>
+                </div>
+
             </div>
-            <div class="hero-image">
-                <img src="./images/hero-image.png" alt="BAMZY MEDIA Hero Image">
+
+            <!-- Trust Indicators -->
+            <div class="flex flex-wrap justify-center items-center gap-8 text-sm text-gray-400">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-shield-check text-green-400"></i>
+                    <span>SSL Secured</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-users text-blue-400"></i>
+                    <span>10,000+ Customers</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-star text-yellow-400"></i>
+                    <span>4.9/5 Rating</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-clock text-purple-400"></i>
+                    <span>24/7 Support</span>
+                </div>
             </div>
         </div>
-    </section>
+        </div>
 
-    <!-- Platforms Section -->
-    <section class="platforms">
-        <div class="container">
-            <h2>Available Platforms</h2>
-            <div class="platform-icons">
-                <div class="platform">
-                    <i class="fab fa-instagram"></i>
-                    <span>Instagram</span>
-                </div>
-                <div class="platform">
-                    <i class="fab fa-tiktok"></i>
-                    <span>TikTok</span>
-                </div>
-                <div class="platform">
-                    <i class="fab fa-twitter"></i>
-                    <span>Twitter</span>
-                </div>
-                <div class="platform">
-                    <i class="fab fa-facebook"></i>
-                    <span>Facebook</span>
-                </div>
-                <div class="platform">
-                    <i class="fab fa-youtube"></i>
-                    <span>YouTube</span>
-                </div>
-                <div class="platform">
-                    <i class="fab fa-pinterest"></i>
-                    <span>Pinterest</span>
-                </div>
+        <!-- Floating Elements -->
+        <div class="absolute top-20 left-10 animate-float" style="animation-delay: 0.5s;">
+            <div class="w-16 h-16 bg-blue-500 bg-opacity-20 rounded-full flex items-center justify-center">
+                <i class="fab fa-instagram text-2xl text-blue-400"></i>
+            </div>
+        </div>
+        <div class="absolute top-40 right-20 animate-float" style="animation-delay: 1s;">
+            <div class="w-20 h-20 bg-cyan-500 bg-opacity-20 rounded-full flex items-center justify-center">
+                <i class="fab fa-twitter text-3xl text-cyan-400"></i>
+            </div>
+        </div>
+        <div class="absolute bottom-40 left-20 animate-float" style="animation-delay: 1.5s;">
+            <div class="w-12 h-12 bg-purple-500 bg-opacity-20 rounded-full flex items-center justify-center">
+                <i class="fab fa-tiktok text-xl text-purple-400"></i>
             </div>
         </div>
     </section>
 
     <!-- Features Section -->
-    <section id="features" class="features">
-        <div class="container">
-            <div class="section-header">
-                <h2>Why Choose BAMZY MEDIA?</h2>
-                <p>We provide premium social media accounts with real followers to help you grow your online presence.
+    <section id="features" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2
+                    class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+                    Why Choose Bamzymedia
+                </h2>
+                <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+                    Experience the future of social media account acquisition with our cutting-edge platform
                 </p>
             </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-check-circle"></i>
+
+            <div class="grid md:grid-cols-3 gap-8 mb-16">
+                <div class="glass-effect rounded-2xl p-8 hover:transform hover:scale-105 transition-all duration-300">
+                    <div
+                        class="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full flex items-center justify-center mb-6 animate-glow">
+                        <i class="fas fa-shield-check text-2xl text-white"></i>
                     </div>
-                    <h3>Verified Accounts</h3>
-                    <p>All our accounts are manually verified to ensure quality and authenticity.</p>
+                    <h3 class="text-2xl font-bold mb-4 text-blue-400">100% Verified</h3>
+                    <p class="text-gray-300">All accounts are thoroughly verified and authenticated before listing. Your
+                        investment is protected.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-users"></i>
+
+                <div class="glass-effect rounded-2xl p-8 hover:transform hover:scale-105 transition-all duration-300">
+                    <div
+                        class="w-16 h-16 bg-gradient-to-r from-cyan-500 to-blue-400 rounded-full flex items-center justify-center mb-6 animate-glow">
+                        <i class="fas fa-bolt text-2xl text-white"></i>
                     </div>
-                    <h3>Real Followers</h3>
-                    <p>Our accounts come with real, engaged followers - no bots or fake accounts.</p>
+                    <h3 class="text-2xl font-bold mb-4 text-cyan-400">Instant Delivery</h3>
+                    <p class="text-gray-300">Get immediate access to your purchased accounts. No waiting, no delays -
+                        just instant results.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-lock"></i>
+
+                <div class="glass-effect rounded-2xl p-8 hover:transform hover:scale-105 transition-all duration-300">
+                    <div
+                        class="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-400 rounded-full flex items-center justify-center mb-6 animate-glow">
+                        <i class="fas fa-headset text-2xl text-white"></i>
                     </div>
-                    <h3>Secure Transfer</h3>
-                    <p>Secure account transfer process with full access to email and recovery options.</p>
+                    <h3 class="text-2xl font-bold mb-4 text-purple-400">24/7 Support</h3>
+                    <p class="text-gray-300">Our expert team is available around the clock to assist you with any
+                        questions or concerns.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-headset"></i>
-                    </div>
-                    <h3>24/7 Support</h3>
-                    <p>Our customer support team is available 24/7 to assist you with any issues.</p>
+            </div>
+
+            <!-- Additional Features Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="text-center p-6 glass-effect rounded-xl">
+                    <i class="fas fa-lock text-3xl text-blue-400 mb-4"></i>
+                    <h4 class="font-bold mb-2">Secure Transactions</h4>
+                    <p class="text-sm text-gray-400">Bank-level encryption</p>
+                </div>
+                <div class="text-center p-6 glass-effect rounded-xl">
+                    <i class="fas fa-chart-line text-3xl text-cyan-400 mb-4"></i>
+                    <h4 class="font-bold mb-2">Growth Analytics</h4>
+                    <p class="text-sm text-gray-400">Track your progress</p>
+                </div>
+                <div class="text-center p-6 glass-effect rounded-xl">
+                    <i class="fas fa-users-cog text-3xl text-purple-400 mb-4"></i>
+                    <h4 class="font-bold mb-2">Account Management</h4>
+                    <p class="text-sm text-gray-400">Full control panel</p>
+                </div>
+                <div class="text-center p-6 glass-effect rounded-xl">
+                    <i class="fas fa-money-back text-3xl text-green-400 mb-4"></i>
+                    <h4 class="font-bold mb-2">Money Back Guarantee</h4>
+                    <p class="text-sm text-gray-400">30-day guarantee</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- How It Works Section -->
-    <section id="how-it-works" class="how-it-works">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="text-center">How It Works</h2>
-                <p>Get started with BAMZY MEDIA in just a few simple steps</p>
+    <section id="how-it-works" class="py-20 bg-gradient-to-r from-blue-900/30 to-cyan-900/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2
+                    class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+                    How It Works
+                </h2>
+                <p class="text-xl text-gray-300">Get started in just 3 simple steps</p>
             </div>
-            <div class="steps">
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <h3>Create an Account</h3>
-                    <p>Sign up for a free account on our platform to get started.</p>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center relative">
+                    <div class="gradient-border mb-6 mx-auto w-fit">
+                        <div class="gradient-border-inner w-20 h-20 flex items-center justify-center">
+                            <span class="text-3xl font-bold text-blue-400">1</span>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-blue-400">Browse & Select</h3>
+                    <p class="text-gray-300 mb-6">Browse our extensive catalog of verified social media accounts and
+                        select the perfect match for your needs.</p>
+                    <div class="hidden md:block absolute top-10 -right-4 text-blue-400 text-2xl">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
                 </div>
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <h3>Browse Accounts</h3>
-                    <p>Browse our marketplace for accounts that match your needs.</p>
+
+                <div class="text-center relative">
+                    <div class="gradient-border mb-6 mx-auto w-fit">
+                        <div class="gradient-border-inner w-20 h-20 flex items-center justify-center">
+                            <span class="text-3xl font-bold text-cyan-400">2</span>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-cyan-400">Secure Payment</h3>
+                    <p class="text-gray-300 mb-6">Complete your purchase using our secure payment system with multiple
+                        payment options available.</p>
+                    <div class="hidden md:block absolute top-10 -right-4 text-cyan-400 text-2xl">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
                 </div>
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <h3>Fund Your Wallet</h3>
-                    <p>Add funds to your wallet using our secure payment methods.</p>
-                </div>
-                <div class="step">
-                    <div class="step-number">4</div>
-                    <h3>Purchase & Receive</h3>
-                    <p>Complete your purchase and receive account details instantly.</p>
+
+                <div class="text-center">
+                    <div class="gradient-border mb-6 mx-auto w-fit">
+                        <div class="gradient-border-inner w-20 h-20 flex items-center justify-center">
+                            <span class="text-3xl font-bold text-purple-400">3</span>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-purple-400">Instant Access</h3>
+                    <p class="text-gray-300 mb-6">Receive your account credentials instantly and start building your
+                        social media presence right away.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Showcase Section -->
-    <section class="showcase">
-        <div class="container">
-            <div class="section-header">
-                <h2>Featured Accounts</h2>
-                <p>Check out some of our premium accounts available for purchase</p>
-            </div>
-            <div class="showcase-grid">
-                <div class="showcase-item">
-                    <img src="./images/showcase1.jpg" alt="Featured Account 1">
-                    <div class="showcase-content">
-                        <div class="platform-badge instagram">
-                            <i class="fab fa-instagram"></i> Instagram
-                        </div>
-                        <h3>Fashion & Lifestyle</h3>
-                        <p>216k+ Followers</p>
-                        <div class="price">₦230,000</div>
-                    </div>
+
+    <!-- Stats Section -->
+    <section class="py-20 bg-gradient-to-r from-blue-900/30 to-cyan-900/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8 text-center">
+                <div class="animate-slide-up">
+                    <div class="text-4xl md:text-5xl font-bold text-blue-400 mb-2">10K+</div>
+                    <div class="text-gray-300">Accounts Sold</div>
                 </div>
-                <div class="showcase-item">
-                    <img src="./images/showcase2.jpg" alt="Featured Account 2">
-                    <div class="showcase-content">
-                        <div class="platform-badge tiktok">
-                            <i class="fab fa-tiktok"></i> TikTok
-                        </div>
-                        <h3>Dance & Entertainment</h3>
-                        <p>101K+ Followers</p>
-                        <div class="price">₦110,000</div>
-                    </div>
+                <div class="animate-slide-up" style="animation-delay: 0.2s;">
+                    <div class="text-4xl md:text-5xl font-bold text-cyan-400 mb-2">99.9%</div>
+                    <div class="text-gray-300">Success Rate</div>
                 </div>
-                <div class="showcase-item">
-                    <img src="./images/showcase3.jpg" alt="Featured Account 3">
-                    <div class="showcase-content">
-                        <div class="platform-badge twitter">
-                            <i class="fab fa-twitter"></i> Twitter
-                        </div>
-                        <h3>Tech & Gaming</h3>
-                        <p>335k+ Followers</p>
-                        <div class="price">₦350,000</div>
-                    </div>
+                <div class="animate-slide-up" style="animation-delay: 0.4s;">
+                    <div class="text-4xl md:text-5xl font-bold text-purple-400 mb-2">5K+</div>
+                    <div class="text-gray-300">Happy Customers</div>
                 </div>
-            </div>
-            <div class="showcase-cta">
-                <a href="./html/login.html" class="btn btn-primary btn-large">View All Accounts</a>
+                <div class="animate-slide-up" style="animation-delay: 0.6s;">
+                    <div class="text-4xl md:text-5xl font-bold text-blue-400 mb-2">24/7</div>
+                    <div class="text-gray-300">Support Available</div>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Testimonials Section -->
-    <section id="testimonials" class="testimonials">
-        <div class="container">
-            <div class="section-header">
-                <h2>What Our Customers Say</h2>
-                <p>Don't just take our word for it - hear from our satisfied customers</p>
+    <section id="testimonials" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2
+                    class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+                    What Our Customers Say
+                </h2>
+                <p class="text-xl text-gray-300">Real reviews from satisfied customers</p>
             </div>
-            <div class="testimonials-slider">
-                <div class="testimonial active">
-                    <div class="testimonial-content">
-                        <p>"I purchased an Instagram account with 20K followers and it has completely transformed my
-                            business. The engagement is real and the followers are active. Highly recommended!"</p>
-                    </div>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">
-                            <img src="./images/testimonial1.jpg" alt="John D.">
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="glass-effect rounded-2xl p-8">
+                    <div class="flex items-center mb-6">
+                        <div
+                            class="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full flex items-center justify-center mr-4">
+                            <span class="text-white font-bold">EO</span>
                         </div>
-                        <div class="author-info">
-                            <h4>John D.</h4>
-                            <p>Fashion Brand Owner</p>
+                        <div>
+                            <h4 class="font-bold text-white">Emmanuel James Olu</h4>
+                            <p class="text-gray-400 text-sm">Digital Marketer</p>
                         </div>
                     </div>
+                    <div class="flex mb-4">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-300 italic">"Bamzymedia helped me kickstart my client's social media presence.
+                        The account quality is exceptional and the process was seamless!"</p>
                 </div>
-                <div class="testimonial">
-                    <div class="testimonial-content">
-                        <p>"The TikTok account I bought already had a good following in my niche. It saved me months of
-                            hard work trying to build an audience from scratch. The transfer was smooth and secure."</p>
-                    </div>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">
-                            <img src="./images/testimonial2.jpg" alt="Sarah M.">
+
+                <div class="glass-effect rounded-2xl p-8">
+                    <div class="flex items-center mb-6">
+                        <div
+                            class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-400 rounded-full flex items-center justify-center mr-4">
+                            <span class="text-white font-bold">AA</span>
                         </div>
-                        <div class="author-info">
-                            <h4>Sarah M.</h4>
-                            <p>Content Creator</p>
+                        <div>
+                            <h4 class="font-bold text-white">Adamu Ahmed</h4>
+                            <p class="text-gray-400 text-sm">Influencer</p>
                         </div>
                     </div>
+                    <div class="flex mb-4">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-300 italic">"Amazing service! I purchased an Instagram account and it came with
+                        genuine followers and great engagement. Highly recommended!"</p>
                 </div>
-                <div class="testimonial">
-                    <div class="testimonial-content">
-                        <p>"Customer service was exceptional. They helped me find the perfect account for my business
-                            needs and guided me through the entire process. The account has been performing great!"</p>
-                    </div>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">
-                            <img src="./images/testimonial3.jpg" alt="Michael T.">
+
+                <div class="glass-effect rounded-2xl p-8">
+                    <div class="flex items-center mb-6">
+                        <div
+                            class="w-12 h-12 bg-gradient-to-r from-green-500 to-blue-400 rounded-full flex items-center justify-center mr-4">
+                            <span class="text-white font-bold">MA</span>
                         </div>
-                        <div class="author-info">
-                            <h4>Michael T.</h4>
-                            <p>Digital Marketer</p>
+                        <div>
+                            <h4 class="font-bold text-white">Miracle Ani</h4>
+                            <p class="text-gray-400 text-sm">Business Owner</p>
                         </div>
                     </div>
+                    <div class="flex mb-4">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-300 italic">"The customer support is outstanding. They helped me choose the
+                        perfect account for my business niche. Worth every penny!"</p>
                 </div>
             </div>
-            <div class="testimonial-dots">
-                <span class="dot active"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-20 bg-gradient-to-r from-blue-900/30 to-cyan-900/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2
+                    class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+                    Choose Your Package
+                </h2>
+                <p class="text-xl text-gray-300">Select the perfect plan for your social media growth</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 w-full">
+                <div class="glass-effect rounded-2xl p-8 hover:transform hover:scale-105 transition-all duration-300">
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-bold mb-2 text-blue-400">Starter</h3>
+                    </div>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>1-5K Followers
+                        </li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>Basic Verification
+                        </li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>Email Support</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>Account Transfer
+                            Guide</li>
+                    </ul>
+                    <a href="./html/signup.html"
+                        class="block w-full text-center font-semibold py-4 px-3  border-2 border-blue-500 rounded-full hover:bg-blue-500 hover:bg-opacity-20 transition-all duration-300">
+                        Get Started
+                    </a>
+                </div>
+
+                <div
+                    class="glass-effect rounded-2xl p-8 hover:transform hover:scale-105 transition-all duration-300 border-2 border-cyan-400 relative">
+                    <div
+                        class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-2 rounded-full text-sm font-bold">
+                        POPULAR
+                    </div>
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-bold mb-2 text-cyan-400">Professional</h3>
+                    </div>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>5-50K Followers
+                        </li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>Premium
+                            Verification</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>Priority Support
+                        </li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>Account History
+                            Report</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>Growth Strategy
+                            Guide</li>
+                    </ul>
+                    <a href="./html/signup.html"
+                        class="block w-full text-center font-semibold py-4 px-3  bg-gradient-to-r from-cyan-600 to-blue-500 rounded-full hover:from-cyan-700 hover:to-blue-600 transition-all duration-300 animate-glow">
+                        Get Started
+                    </a>
+                </div>
+
+                <div class="glass-effect rounded-2xl p-8 hover:transform hover:scale-105 transition-all duration-300">
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-bold mb-2 text-purple-400">Enterprise</h3>
+                    </div>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>50K+ Followers
+                        </li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>Blue Tick Verified
+                        </li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>24/7 Dedicated
+                            Support</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>Complete
+                            Documentation</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-3"></i>Personal Account
+                            Manager</li>
+                    </ul>
+                    <a href="./html/signup.html"
+                        class="block w-full text-center font-semibold py-4 px-3  border-2 border-purple-500 rounded-full hover:bg-purple-500 hover:bg-opacity-20 transition-all duration-300">
+                        Get Started
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-20">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2
+                    class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+                    Frequently Asked Questions
+                </h2>
+                <p class="text-xl text-gray-300">Everything you need to know about our service</p>
+            </div>
+
+            <div class="space-y-6">
+                <div class="glass-effect rounded-xl p-6 cursor-pointer faq-item">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-bold text-white">Are the accounts genuine and safe?</h3>
+                        <i class="fas fa-chevron-down text-blue-400 faq-icon"></i>
+                    </div>
+                    <div class="faq-content hidden mt-4 text-gray-300">
+                        <p>Yes, all our accounts are 100% genuine with real followers and engagement. We thoroughly
+                            verify each account before listing and ensure they comply with platform guidelines.</p>
+                    </div>
+                </div>
+
+                <div class="glass-effect rounded-xl p-6 cursor-pointer faq-item">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-bold text-white">How quickly will I receive my account?</h3>
+                        <i class="fas fa-chevron-down text-blue-400 faq-icon"></i>
+                    </div>
+                    <div class="faq-content hidden mt-4 text-gray-300">
+                        <p>Account delivery is instant! Once your payment is confirmed, you'll receive the login
+                            credentials and transfer instructions within minutes.</p>
+                    </div>
+                </div>
+
+                <div class="glass-effect rounded-xl p-6 cursor-pointer faq-item">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-bold text-white">What if I'm not satisfied with my purchase?</h3>
+                        <i class="fas fa-chevron-down text-blue-400 faq-icon"></i>
+                    </div>
+                    <div class="faq-content hidden mt-4 text-gray-300">
+                        <p>We offer a 30-day money-back guarantee. If you're not completely satisfied with your account,
+                            contact our support team for a full refund.</p>
+                    </div>
+                </div>
+
+                <div class="glass-effect rounded-xl p-6 cursor-pointer faq-item">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-bold text-white">Do you provide ongoing support?</h3>
+                        <i class="fas fa-chevron-down text-blue-400 faq-icon"></i>
+                    </div>
+                    <div class="faq-content hidden mt-4 text-gray-300">
+                        <p>Our 24/7 support team is always available to help with account setup, growth strategies, and
+                            any questions you might have.</p>
+                    </div>
+                </div>
+
+                <div class="glass-effect rounded-xl p-6 cursor-pointer faq-item">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-bold text-white">Can I customize my account requirements?</h3>
+                        <i class="fas fa-chevron-down text-blue-400 faq-icon"></i>
+                    </div>
+                    <div class="faq-content hidden mt-4 text-gray-300">
+                        <p>Yes! We offer custom account sourcing for specific niches, follower counts, and engagement
+                            rates. Contact our team to discuss your requirements.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -349,153 +636,260 @@
 
 
     <!-- CTA Section -->
-    <section class="cta">
-        <div class="container">
-            <div class="cta-content">
-                <h2>Ready to Boost Your Social Media Presence?</h2>
-                <p>Join thousands of satisfied customers who have accelerated their online growth with BAMZY MEDIA.</p>
-                <div class="cta-buttons">
-                    <a href="./html/signup.html" class="btn btn-primary btn-large">Get Started Now</a>
-                    <a href="#" class="btn btn-outline btn-large">Contact Sales</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Trust Badges Section -->
-    <section class="trust-badges">
-        <div class="container">
-            <div class="badges-container">
-                <div class="badge-item">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Secure Payments</span>
-                </div>
-                <div class="badge-item">
-                    <i class="fas fa-lock"></i>
-                    <span>Data Protection</span>
-                </div>
-                <div class="badge-item">
-                    <i class="fas fa-check-circle"></i>
-                    <span>Verified Accounts</span>
-                </div>
-                <div class="badge-item">
-                    <i class="fas fa-headset"></i>
-                    <span>24/7 Support</span>
-                </div>
+    <section class="py-20">
+        <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+            <h2
+                class="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+                Ready to Boost Your Social Presence?
+            </h2>
+            <p class="text-xl text-gray-300 mb-8">
+                Join thousands of satisfied customers who have transformed their digital presence with SocialVault
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="./html/signup.html"
+                    class="px-12 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-full text-xl font-semibold hover:from-blue-700 hover:to-cyan-600 transform hover:scale-105 transition-all duration-300 animate-glow">
+                    <i class="fas fa-rocket mr-3"></i>
+                    Start Your Journey
+                </a>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-about">
-                    <h3>BAMZY MEDIA</h3>
-                    <p>The premier marketplace for buying and selling social media accounts with real followers.</p>
-                    <div class="social-icons">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
+    <footer class="py-12 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-5 gap-8">
+                <div class="md:col-span-2">
+                    <div class="flex items-center space-x-2 mb-4">
+                       
+                        <span
+                            class="text-xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">Bamzymedia</span>
+                    </div>
+                    <p class="text-gray-400 mb-6">Your trusted partner for premium social media accounts. We help
+                        businesses and individuals boost their digital presence with verified, high-quality accounts.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#"
+                            class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors">
+                            <i class="fab fa-telegram"></i>
+                        </a>
                     </div>
                 </div>
-                <div class="footer-links">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="#features">Features</a></li>
-                        <li><a href="#how-it-works">How It Works</a></li>
-                        <li><a href="#pricing">Pricing</a></li>
-                        <li><a href="#testimonials">Testimonials</a></li>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4 text-blue-400">Services</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-blue-400 transition-colors">Instagram Accounts</a></li>
+                        <li><a href="#" class="hover:text-blue-400 transition-colors">Twitter Accounts</a></li>
+                        <li><a href="#" class="hover:text-blue-400 transition-colors">TikTok Accounts</a></li>
+                        <li><a href="#" class="hover:text-blue-400 transition-colors">YouTube Channels</a></li>
+                        <li><a href="#" class="hover:text-blue-400 transition-colors">Custom Requests</a></li>
                     </ul>
                 </div>
-                <div class="footer-links">
-                    <h4>Legal</h4>
-                    <ul>
-                        <li><a href="#">Terms of Service</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Refund Policy</a></li>
-                        <li><a href="#">FAQ</a></li>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4 text-blue-400">Support</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-blue-400 transition-colors">Help Center</a></li>
+                        <li><a href="#" class="hover:text-blue-400 transition-colors">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-blue-400 transition-colors">Live Chat</a></li>
+                        <li><a href="#" class="hover:text-blue-400 transition-colors">Account Setup</a></li>
+                        <li><a href="#" class="hover:text-blue-400 transition-colors">Tutorials</a></li>
                     </ul>
                 </div>
-                <div class="footer-contact">
-                    <h4>Contact Us</h4>
-                    <ul>
-                        <li><i class="fas fa-envelope"></i> support@bamzymedia.com</li>
-                        <li><i class="fas fa-phone"></i> +234 7044 080997</li>
-                        <li><i class="fas fa-map-marker-alt"></i> Lagos, Nigeria</li>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4 text-blue-400">Legal</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-blue-400 transition-colors">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-blue-400 transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-blue-400 transition-colors">Refund Policy</a></li>
+                        <li><a href="#" class="hover:text-blue-400 transition-colors">Cookie Policy</a></li>
+                        <li><a href="#" class="hover:text-blue-400 transition-colors">GDPR</a></li>
                     </ul>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; <span id="date-span"></span> BAMZY MEDIA. All rights reserved.</p>
+            <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 text-center md:text-left">&copy; <span id="date-span"></span> Bamzymedia All rights reserved.</p>
+                <div class="flex items-center space-x-4 mt-4 md:mt-0">
+                    <div class="flex items-center space-x-2 text-gray-400">
+                        <i class="fas fa-shield-check text-green-400"></i>
+                        <span class="text-sm">SSL Secured</span>
+                    </div>
+                    <div class="flex items-center space-x-2 text-gray-400">
+                        <i class="fas fa-lock text-blue-400"></i>
+                        <span class="text-sm">256-bit Encryption</span>
+                    </div>
+                </div>
             </div>
         </div>
     </footer>
 
+    <!-- Chat Widget -->
+    <div id="chat-widget" class="fixed bottom-6 right-6 z-50">
+        <a href="https://wa.me/1234567890"
+            class="w-16 h-16 bg-gradient-to-r from-blue-600 to-cyan-500 mb-3 rounded-full flex items-center justify-center text-white shadow-lg hover:from-blue-700 hover:to-cyan-600 transition-all duration-300 animate-bounce-slow"
+            target="_blank" rel="noopener noreferrer">
+            <i class="fab fa-whatsapp text-xl"></i>
+        </a>
+        <a href="https://t.me/your_username"
+            class="w-16 h-16 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-full flex items-center justify-center text-white shadow-lg hover:from-blue-700 hover:to-cyan-600 transition-all duration-300 animate-bounce-slow"
+            target="_blank" rel="noopener noreferrer">
+            <i class="fab fa-telegram-plane text-xl"></i>
+        </a>
+
+    </div>
+
     <script>
-        const hamburger = document.querySelector('.hamburger');
-        const navLinks = document.querySelector('.nav-links');
-        const authButtons = document.querySelector('.auth-buttons');
-        const dateSpan = document.querySelector('#date-span');
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
 
-        // Set current year in the footer or wherever it's used
-        if (dateSpan) {
-            dateSpan.innerHTML = new Date().getFullYear();
-        }
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
 
-        // Desktop hamburger (if used somewhere else)
-        if (hamburger) {
-            hamburger.addEventListener('click', () => {
-                navLinks?.classList.toggle('active');
-                authButtons?.classList.toggle('active');
-                hamburger.classList.toggle('active');
-            });
-        }
+        document.querySelector("#date-span").innerHTML = new Date().getFullYear();
 
-        // Testimonial slider logic
-        const dots = document.querySelectorAll('.dot');
-        const testimonials = document.querySelectorAll('.testimonial');
-        let currentSlide = 0;
-
-        function showSlide(index) {
-            testimonials.forEach(testimonial => {
-                testimonial.style.display = 'none';
-                testimonial.classList.remove('active');
-            });
-            dots.forEach(dot => {
-                dot.classList.remove('active');
-            });
-
-            testimonials[index].style.display = 'block';
-            testimonials[index].classList.add('active');
-            dots[index].classList.add('active');
-        }
-
-        dots.forEach((dot, index) => {
-            dot.addEventListener('click', () => {
-                currentSlide = index;
-                showSlide(currentSlide);
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+                // Close mobile menu if open
+                mobileMenu.classList.add('hidden');
             });
         });
 
-        setInterval(() => {
-            currentSlide = (currentSlide + 1) % testimonials.length;
-            showSlide(currentSlide);
-        }, 5000);
+        // Add scroll effect to navigation
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 100) {
+                nav.classList.add('bg-slate-900', 'bg-opacity-90');
+            } else {
+                nav.classList.remove('bg-slate-900', 'bg-opacity-90');
+            }
+        });
 
-        showSlide(currentSlide);
+        // FAQ functionality
+        document.querySelectorAll('.faq-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const content = item.querySelector('.faq-content');
+                const icon = item.querySelector('.faq-icon');
 
-        //  Mobile nav toggle
-        const mobileMenuToggle = document.getElementById("mobileMenuToggle");
-        const mobileMenu = document.getElementById("mobileMenu");
-
-        if (mobileMenuToggle && mobileMenu) {
-            mobileMenuToggle.addEventListener("click", function () {
-                mobileMenu.classList.toggle("hidden");
+                if (content.classList.contains('hidden')) {
+                    content.classList.remove('hidden');
+                    icon.classList.remove('fa-chevron-down');
+                    icon.classList.add('fa-chevron-up');
+                } else {
+                    content.classList.add('hidden');
+                    icon.classList.remove('fa-chevron-up');
+                    icon.classList.add('fa-chevron-down');
+                }
             });
-        }
+        });
 
+        // Chat widget functionality
+        const chatToggle = document.getElementById('chat-toggle');
+        const chatBox = document.getElementById('chat-box');
+        const chatClose = document.getElementById('chat-close');
+
+        chatToggle.addEventListener('click', () => {
+            chatBox.classList.toggle('hidden');
+        });
+
+        chatClose.addEventListener('click', () => {
+            chatBox.classList.add('hidden');
+        });
+
+        // Animate elements on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-slide-up');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all sections
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Counter animation for stats
+        const animateCounters = () => {
+            const counters = document.querySelectorAll('[data-counter]');
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-counter'));
+                const increment = target / 100;
+                let current = 0;
+
+                const updateCounter = () => {
+                    if (current < target) {
+                        current += increment;
+                        counter.textContent = Math.ceil(current);
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        counter.textContent = target;
+                    }
+                };
+
+                updateCounter();
+            });
+        };
+
+        // Newsletter form submission
+        document.querySelector('form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = e.target.querySelector('input[type="email"]').value;
+            if (email) {
+                alert('Thank you for subscribing! We\'ll keep you updated with our latest offers.');
+                e.target.reset();
+            }
+        });
+
+        // Contact form submission
+        document.querySelector('#contact form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Thank you for your message! We\'ll get back to you within 24 hours.');
+            e.target.reset();
+        });
+
+        // Add loading states to buttons
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', function () {
+                if (this.textContent.includes('Get Started') || this.textContent.includes('Browse') || this.textContent.includes('View Details')) {
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Loading...';
+                    this.disabled = true;
+
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.disabled = false;
+                    }, 2000);
+                }
+            });
+        });
     </script>
 </body>
 

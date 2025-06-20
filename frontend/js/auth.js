@@ -208,7 +208,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         setTimeout(() => {
           window.location.href = "./login.html";
-        }, 1500);
+        }, 1000);
       } else {
         showAlert(data.message || "Logout failed", "error");
       }

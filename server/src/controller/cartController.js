@@ -1,53 +1,100 @@
-
-
 import Cart from '../models/Cart.js';
-import { Account } from '../models/Account.js';
+import Account from '../models/Account.js';
+import AccountCard from '../models/AccountCard.js';
 
 const addToCart = async (req, res) => {
+  const userId = req.user.id;
+  const { accountCardId, quantity } = req.body;
+
+  if (!quantity || quantity <= 0) {
+    return res.status(400).json({ message: 'Invalid quantity provided.' });
+  }
+
   try {
-    const { accountId } = req.body;
-    const userId = req.user.id;
-
-    // Check if account exists and is available
-    const account = await Account.findOne({ where: { id: accountId, isSold: false } });
-    if (!account) {
-      return res.status(400).json({ success: false, message: 'Account does not exist or is already sold.' });
+    // Confirm AccountCard exists
+    const accountCard = await AccountCard.findByPk(accountCardId);
+    if (!accountCard) {
+      return res.status(404).json({ message: 'Account card not found.' });
     }
 
-    // Check if account is already in user's cart
-    const existingCart = await Cart.findOne({ where: { userId, accountId } });
-    if (existingCart) {
-      return res.status(400).json({ success: false, message: 'Account already in cart.' });
+    // Count available unsold accounts
+    const unsoldAccountsCount = await Account.count({
+      where: {
+        accountCardId,
+        isSold: false
+      }
+    });
+
+    // Check if item already exists in cart
+    const existingItem = await Cart.findOne({
+      where: { userId, accountCardId },
+    });
+
+    const currentCartQuantity = existingItem ? existingItem.quantity : 0;
+    const newTotalQuantity = currentCartQuantity + quantity;
+
+    if (newTotalQuantity > unsoldAccountsCount) {
+      return res.status(400).json({
+        message: `Only ${unsoldAccountsCount - currentCartQuantity} item(s) available.`,
+      });
     }
 
-    // Add to cart
-    await Cart.create({ userId, accountId });
+    if (existingItem) {
+      existingItem.quantity = newTotalQuantity;
+      await existingItem.save();
+      return res.status(200).json({
+        message: 'Cart item quantity updated.',
+        cartItem: existingItem,
+      });
+    }
 
-    // ✅ Return updated cart list
-    const updatedCart = await Cart.findAll({ where: { userId } });
+    // Create new cart item
+    const cartItem = await Cart.create({
+      userId,
+      accountCardId,
+      quantity,
+      isSold: false,
+    });
 
     return res.status(201).json({
-      success: true,
-      message: 'Account added to cart.',
-      cart: updatedCart
+      message: 'Item added to cart.',
+      cartItem,
     });
-  } catch (err) {
-    console.error('Add to Cart Error:', err);
-    return res.status(500).json({ success: false, message: 'Server error while adding to cart.' });
+
+  } catch (error) {
+    console.error('Add to Cart Error:', error);
+    return res.status(500).json({ message: 'Internal server error.' });
   }
 };
 
-//get cart
+
 
 const getCart = async (req, res) => {
   try {
     const userId = req.user.id;
+
     const cartItems = await Cart.findAll({
-      where: { userId, isSold: false },
-      include: ['Account'] // If using Sequelize aliases or relationships
+      where: { userId },
+      include: [{ model: AccountCard, as: 'card' }]
     });
 
-    res.status(200).json({ success: true, cart: cartItems });
+    const cartWithAvailability = await Promise.all(cartItems.map(async (item) => {
+      const card = item.card;
+
+      const availableCount = await Account.count({
+        where: { isSold: false, accountCardId: card.id }
+      });
+
+      return {
+        ...item.toJSON(),
+        card: {
+          ...card.toJSON(),
+          availableQuantity: availableCount
+        }
+      };
+    }));
+
+    res.status(200).json({ success: true, cart: cartWithAvailability });
   } catch (err) {
     console.error('Get Cart Error:', err);
     res.status(500).json({ success: false, message: 'Server error while retrieving cart.' });
@@ -57,14 +104,24 @@ const getCart = async (req, res) => {
 const updateCartQuantity = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { accountId, quantity } = req.body;
+    const { accountCardId, quantity } = req.body;
 
-    if (!accountId || quantity < 1) {
-      return res.status(400).json({ success: false, message: 'Invalid account or quantity.' });
+    if (!accountCardId || quantity < 1) {
+      return res.status(400).json({ success: false, message: 'Invalid card or quantity.' });
     }
 
-    const cartItem = await Cart.findOne({ where: { userId, accountId } });
+    const availableCount = await Account.count({
+      where: { isSold: false, accountCardId }
+    });
 
+    if (quantity > availableCount) {
+      return res.status(400).json({
+        success: false,
+        message: `Only ${availableCount} unsold accounts available in this card.`
+      });
+    }
+
+    const cartItem = await Cart.findOne({ where: { userId, accountCardId } });
     if (!cartItem) {
       return res.status(404).json({ success: false, message: 'Item not found in cart.' });
     }
@@ -72,7 +129,7 @@ const updateCartQuantity = async (req, res) => {
     cartItem.quantity = quantity;
     await cartItem.save();
 
-    return res.json({ success: true, message: 'Quantity updated.', cart: cartItem });
+    res.json({ success: true, message: 'Quantity updated.', cart: cartItem });
   } catch (err) {
     console.error('Update quantity error:', err);
     return res.status(500).json({ success: false, message: 'Server error.' });
@@ -82,28 +139,42 @@ const updateCartQuantity = async (req, res) => {
 const removeFromCart = async (req, res) => {
   try {
     const userId = req.user.id;
-    const accountId = req.params.id;
-
-
+    const accountCardId = req.params.id;
 
     const deleted = await Cart.destroy({
-      where: {
-        userId,
-        accountId
-      }
+      where: { userId, accountCardId }
     });
 
     if (!deleted) {
       return res.status(404).json({ success: false, message: 'Item not found in cart.' });
     }
 
-    // Optionally include account details if frontend depends on it
     const updatedCart = await Cart.findAll({
-      where: { userId },
-      include: [{ model: Account }]
+      where: { userId, isSold: false },
+      include: [{ model: AccountCard, as: 'card' }]
     });
 
-    return res.json({ success: true, message: 'Item removed successfully.', cart: updatedCart });
+    const cartWithAvailability = await Promise.all(updatedCart.map(async (item) => {
+      const card = item.card;
+
+      const availableCount = await Account.count({
+        where: { isSold: false, accountCardId: card.id }
+      });
+
+      return {
+        ...item.toJSON(),
+        card: {
+          ...card.toJSON(),
+          availableQuantity: availableCount
+        }
+      };
+    }));
+
+    return res.json({
+      success: true,
+      message: 'Item removed successfully.',
+      cart: cartWithAvailability
+    });
 
   } catch (err) {
     console.error('Remove from cart error:', err);
@@ -111,4 +182,9 @@ const removeFromCart = async (req, res) => {
   }
 };
 
-export { addToCart, getCart, removeFromCart, updateCartQuantity }
+export {
+  addToCart,
+  getCart,
+  removeFromCart,
+  updateCartQuantity
+};

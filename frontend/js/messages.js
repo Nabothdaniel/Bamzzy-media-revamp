@@ -15,7 +15,7 @@ async function fetchMessages() {
 
     // Show loader
     if (loader) loader.classList.remove('hidden');
-    if (container) container.innerHTML = ""; // Clear content while loading
+    if (container) container.innerHTML = ""; 
 
     try {
         const res = await fetch(`${BASE_URL}/api/v1/message/messages`, {
@@ -31,6 +31,8 @@ async function fetchMessages() {
 
         const response = await res.json();
         const messages = response.data || [];
+
+        console.log(messages)
 
         renderMessages(messages);           // Render message list
         updateUnreadBadge(messages);        // Update unread badge
@@ -121,7 +123,7 @@ function renderMessages(messages) {
                 <span class="text-sm font-semibold capitalize ${iconColor}">${title}</span>
                 <span class="text-xs text-gray-500">${formatDate(createdAt)}</span>
             </div>
-            <p class="text-sm">${content}</p>
+            <p class="text-sm text-black">${content}</p>
         `;
 
         // Attach click listener to the "mark as read" button

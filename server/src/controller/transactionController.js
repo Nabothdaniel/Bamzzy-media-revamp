@@ -1,22 +1,23 @@
 import Cart from '../models/Cart.js';
 import User from '../models/User.js';
-import { Account } from '../models/Account.js';
+import Account from '../models/Account.js';
 import PurchasedAccount from '../models/PurchasedAccount.js';
-import Transaction from '../models/Transaction.js'
+import Transaction from '../models/Transaction.js';
+import AccountCard from '../models/AccountCard.js';
 import { generateTransactionId } from '../utils/helperfns.js';
-
-
-import sequelize from '../utils/database.js'; // adjust the path to your Sequelize instance
+import sequelize from '../utils/database.js';
 
 const createTransactions = async (req, res) => {
   const t = await sequelize.transaction();
+
   try {
     const user = req.user;
 
     const cartItems = await Cart.findAll({
       where: { userId: user.id, isSold: false },
-      include: [{ model: Account }],
-      transaction: t
+      include: [{ model: AccountCard, as: 'card' }],
+      transaction: t,
+      lock: t.LOCK.UPDATE,
     });
 
     if (!cartItems.length) {
@@ -24,45 +25,102 @@ const createTransactions = async (req, res) => {
       return res.status(400).json({ message: 'Cart is empty or already sold.' });
     }
 
-    let totalPrice = 0;
     const transactionRecords = [];
     const purchasedAccounts = [];
+    let totalPrice = 0;
 
     for (const item of cartItems) {
-      const account = item.Account;
-      const price = parseFloat(account.price) || 0;
-      console.log(price)
-      const transactionId = generateTransactionId();
+      const quantity = item.quantity || 1;
+      const card = item.card;
 
-      totalPrice += price;
+      if (!card) {
+        await t.rollback();
+        return res.status(400).json({ message: 'Account card not found in cart item.' });
+      }
 
-      transactionRecords.push({
-        transactionId,
-        userId: user.id,
-        accountId: account.id,  
-        platform: account.platform,
-        price,
-        status: 'Delivered',    
-        type: 'purchase'
+      const cardQuantity = parseInt(card.quantity);
+
+      if (isNaN(cardQuantity) || cardQuantity < quantity) {
+        await t.rollback();
+        return res.status(400).json({
+          message: `Not enough stock for ${card.platform} - ${card.category}`,
+        });
+      }
+
+      const availableAccounts = await Account.findAll({
+        where: {
+          accountCardId: card.id,
+          isSold: false,
+        },
+        limit: quantity,
+        transaction: t,
+        lock: t.LOCK.UPDATE,
       });
 
+      if (availableAccounts.length < quantity) {
+        await t.rollback();
+        return res.status(400).json({
+          message: `Not enough available accounts for ${card.platform} - ${card.category}`,
+        });
+      }
 
-      purchasedAccounts.push({
-        userId: user.id,
-        transactionId,
-        platform: account.platform,
-        category: account.category,
-        username: account.username,
-        password: account.password,
-        twoFactor: account.twoFactor,
-        mail: account.mail,
-        mailPassword: account.mailPassword,
-        description: account.description,
-        price,
-        status: 'completed'
-      });
+      for (const account of availableAccounts) {
+        const price = parseFloat(card.price) || 0;
+        const transactionId = generateTransactionId();
 
-      await Account.update({ isSold: true }, { where: { id: account.id }, transaction: t });
+        totalPrice += price;
+
+        transactionRecords.push({
+          transactionId,
+          userId: user.id,
+          accountId: account.id,
+          platform: card.platform,
+          price,
+          status: 'Delivered',
+          type: 'purchase',
+        });
+
+        purchasedAccounts.push({
+          userId: user.id,
+          transactionId,
+          platform: card.platform,
+          category: card.category,
+          username: account.username,
+          password: account.password,
+          twoFactor: account.twoFactor,
+          mail: account.mail,
+          mailPassword: account.mailPassword,
+          description: card.description,
+          price,
+          status: 'completed',
+        });
+
+        await Account.update(
+          { isSold: true },
+          { where: { id: account.id }, transaction: t }
+        );
+      }
+
+      // ✅ Deduct card quantity safely
+      const newQuantity = cardQuantity - quantity;
+
+      if (newQuantity < 0) {
+        await t.rollback();
+        return res.status(400).json({
+          message: `Negative resulting quantity for ${card.platform} - ${card.category}`,
+        });
+      }
+
+      await AccountCard.update(
+        { quantity: newQuantity },
+        { where: { id: card.id }, transaction: t }
+      );
+    }
+
+    const clientTotal = parseFloat(req.body.totalPrice || 0);
+    if (clientTotal !== totalPrice) {
+      await t.rollback();
+      return res.status(400).json({ message: 'Price mismatch. Please refresh cart.' });
     }
 
     const userInstance = await User.findByPk(user.id, { transaction: t });
@@ -75,18 +133,11 @@ const createTransactions = async (req, res) => {
     await Transaction.bulkCreate(transactionRecords, { transaction: t });
     await PurchasedAccount.bulkCreate(purchasedAccounts, { transaction: t });
 
-    await Cart.update(
-      { isSold: true },
-      { where: { userId: user.id, isSold: false }, transaction: t }
-    );
-
-    const purchasedAccountIds = cartItems.map(item => item.accountId);
     await Cart.destroy({
-      where: { userId: user.id, accountId: purchasedAccountIds },
-      transaction: t
+      where: { userId: user.id, isSold: false },
+      transaction: t,
     });
 
-    // ✅ Deduct balance only after everything succeeds
     userInstance.balance -= totalPrice;
     await userInstance.save({ transaction: t });
 
@@ -94,15 +145,12 @@ const createTransactions = async (req, res) => {
 
     return res.status(201).json({
       message: 'Transaction complete',
-      transactionRecords,
-      purchasedAccounts,
-      newBalance: userInstance.balance
+      newBalance: userInstance.balance,
     });
-
   } catch (error) {
     await t.rollback();
     console.error('Transaction Error:', error);
-    res.status(500).json({ message: 'Transaction failed' });
+    return res.status(500).json({ message: 'Transaction failed' });
   }
 };
 
@@ -128,21 +176,17 @@ const getAllTransactions = async (req, res) => {
     const transactions = await Transaction.findAll({
       include: {
         model: User,
-        as: 'user', // MUST match 'as' from .belongsTo
+        as: 'user',
         attributes: ['id', 'name', 'email']
       },
       order: [['createdAt', 'DESC']]
     });
 
-
-
     return res.status(200).json({ success: true, transactions });
   } catch (error) {
-    console.error("Get all transactions error:", error);
-    return res.status(500).json({ success: false, message: "Server error" });
+    console.error('Get all transactions error:', error);
+    return res.status(500).json({ success: false, message: 'Server error' });
   }
 };
 
-
-
-export { createTransactions, getPurchasedAccounts, getAllTransactions }
+export { createTransactions, getPurchasedAccounts, getAllTransactions };

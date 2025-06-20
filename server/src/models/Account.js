@@ -1,25 +1,11 @@
-// models/Account.js
 import { DataTypes } from 'sequelize';
 import sequelize from '../utils/database.js';
-import User from './User.js'; // import User model
 
 const Account = sequelize.define('Account', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
-  },
-  platform: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  category: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  price: {
-    type: DataTypes.FLOAT,
-    allowNull: false,
   },
   username: {
     type: DataTypes.STRING,
@@ -41,15 +27,6 @@ const Account = sequelize.define('Account', {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  description: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  status: {
-    type: DataTypes.STRING,
-    allowNull: true,
-    defaultValue: 'available',
-  },
   isSold: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
@@ -58,19 +35,31 @@ const Account = sequelize.define('Account', {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: User,
+      model: 'users', 
       key: 'id',
     },
     onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   },
+  accountCardId: {
+  type: DataTypes.INTEGER,
+  allowNull: false,
+  references: {
+    model: 'account_cards', // Use table name instead of model reference
+    key: 'id',
+  },
+  onDelete: 'CASCADE',
+},
 }, {
   tableName: 'accounts',
   timestamps: true,
 });
 
+// Associations
+export const accountAssociation = (models) => {
+Account.belongsTo(models.User, { foreignKey: 'adminId', as: 'admin' }); 
+  Account.belongsTo(models.AccountCard, { foreignKey: 'accountCardId', as: 'card' });
+};
 
-// Association
-Account.belongsTo(User, { foreignKey: 'adminId', as: 'admin' });
-User.hasMany(Account, { foreignKey: 'adminId', as: 'accounts' });
 
-export { Account };
+export default Account;
