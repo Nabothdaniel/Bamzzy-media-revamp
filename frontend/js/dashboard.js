@@ -131,8 +131,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const card = document.createElement("div");
       card.setAttribute("data-id", account.id);
 
-      console.log(account)
-
       let badgeClass = 'inline-flex items-center gap-2 px-3 py-1 rounded-full text-white text-xs font-semibold max-w-max';
       let icon = '';
       const platform = account.platform?.toLowerCase();
@@ -164,47 +162,23 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       card.innerHTML = `
-                    <div
-                        class="account-card glass-effect rounded-2xl p-6 border border-blue-500/20 hover:border-blue-400/40">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center space-x-3">
-                              <div class="${badgeClass}">
-                                    ${icon}
-                           <span class="capitalize">${account.platform}</span>
-                           </div>
-                            </div>
-                        </div>
-                        <div class="space-y-2 mb-6">
-                            <div class="flex justify-between">
-                                <span class="text-gray-400">Category:</span>
-                                <span class="text-white font-semibold">${account.category}</span>
-                            </div>
-                              <div class="flex justify-between">
-                                 <span class="text-gray-400">Quantity:</span>
-                                 <span class="text-white font-semibold">${account.quantity || 0}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-400">price per quantity:</span>
-                                <span class="text-yellow-600"> ₦${account.price.toLocaleString()}</span>
-                            </div>
-                            <div class="flex flex-col justify-between">
-                                <span class="text-gray-400">Description:</span>
-                                <span class="text-white"> ${account.description}</span>
-                            </div>
-                            
-                            <div class="flex justify-between">
-                                <span class="text-gray-400">Verified:</span>
-                                <span class="text-blue-400"><i class="fas fa-check-circle"></i></span>
-                            </div>
-                        </div>
-                        <div class="flex gap-2">
-                            <button
-                                class="flex-1 py-3 bg-gradient-to-r from-blue-600 to-blue-900 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all font-semibold">
-                                View Details
-                            </button>
-    
-                        </div>
-                    </div>`;
+        <div class="account-card glass-effect rounded-2xl p-6 border border-blue-500/20 hover:border-blue-400/40">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-3">
+              <div class="${badgeClass}">${icon}<span class="capitalize">${account.platform}</span></div>
+            </div>
+          </div>
+          <div class="space-y-2 mb-6">
+            <div class="flex justify-between"><span class="text-gray-400">Category:</span><span class="text-white font-semibold">${account.category}</span></div>
+            <div class="flex justify-between"><span class="text-gray-400">Quantity:</span><span class="text-white font-semibold">${account.quantity || 0}</span></div>
+            <div class="flex justify-between"><span class="text-gray-400">Price per quantity:</span><span class="text-yellow-600">₦${account.price.toLocaleString()}</span></div>
+            <div class="flex flex-col"><span class="text-gray-400">Description:</span><span class="text-white">${account.description}</span></div>
+            <div class="flex justify-between"><span class="text-gray-400">Verified:</span><span class="text-blue-400"><i class="fas fa-check-circle"></i></span></div>
+          </div>
+          <div class="flex gap-2">
+            <button class="flex-1 py-3 bg-gradient-to-r from-blue-600 to-blue-900 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all font-semibold">View Details</button>
+          </div>
+        </div>`;
 
       card.addEventListener("click", () => showAccountModal(account));
       showcaseContainer.appendChild(card);
@@ -219,74 +193,54 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!modal || !modalContent) return;
 
-    // Show the modal
     modal.classList.remove("hidden");
 
-    // Inject the modal content
     modalContent.innerHTML = `
-    <button id="closeAccountModal"
-      class="absolute top-4 my-5 right-4 text-gray-400 hover:text-white text-2xl transition-colors">
-      <svg xmlns="http://www.w3.org/2000/svg" class='h-8 w-8' fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-      </svg>
-    </button>
-    <div class="rounded-2xl glass-effect p-6 border border-blue-500/20">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-xl text-white font-semibold capitalize">${account.category}</h3>
-      </div>
-      <div class="space-y-3 mb-6">
-        <div class="flex justify-between">
-          <span class="text-gray-400">Platform:</span>
-          <span class="text-white font-medium capitalize">${account.platform}</span>
-        </div>
-        <div class="flex flex-col justify-between">
-          <span class="text-gray-400">Description:</span>
-          <span class="text-white">${account.description}</span>
-        </div>
-        <div class="flex justify-between">
-          <span class="text-gray-400">Available:</span>
-          <span class="text-white font-semibold">${account.quantity || 0}</span>
-        </div>
-        <div class="flex justify-between">
-          <span class="text-gray-400">Price per Quantity:</span>
-          <span class="text-yellow-600 font-semibold">₦${Number(account.price).toLocaleString()}</span>
-        </div>
-      </div>
-      <div class="mt-4">
+            <button id="closeAccountModal" class="absolute top-8 right-4 z-50 text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" class="h-10 w-10" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <div class="rounded-2xl glass-effect p-6 border border-blue-500/20">
+        <h2 class="text-xl text-white font-bold mb-4 capitalize">${account.platform} Account</h2>
+        <p class="text-white mb-2">Category: <strong>${account.category}</strong></p>
+        <p class="text-white mb-2">Description: ${account.description}</p>
+        <p class="text-white mb-4">Available: ${account.quantity} units</p>
+
         <label for="quantityToAdd" class="block text-sm text-white font-medium mb-1">Quantity:</label>
-        <input 
-          type="number" 
-          id="quantityToAdd" 
-          name="quantity" 
-          min="1" 
-          max="${account.quantity}" 
-          value="1"
-          class="w-full border border-blue-500/20 bg-transparent text-white px-3 py-2 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <button 
-          class="add-to-cart-btn w-full py-3 bg-gradient-to-r from-blue-600 to-blue-900 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all"
-          data-id="${account.id}"
-        >
-          Purchase Account
-        </button>
-      </div>
-    </div>
-  `;
+        <input type="number" id="quantityToAdd" name="quantity" min="1" max="${account.quantity}" value="1"
+               class="w-full border border-blue-500/20 bg-transparent text-white px-3 py-2 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" />
 
-    // Attach the close button event listener AFTER setting innerHTML
-    const closeBtn = document.getElementById("closeAccountModal");
-    if (closeBtn) {
-      closeBtn.addEventListener("click", () => {
-        modal.classList.add("hidden");
+        <button class="add-to-cart-btn w-full py-3 bg-gradient-to-r from-blue-600 to-blue-900 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all"
+                data-id="${account.id}">Add to Cart</button>
+      </div>`;
+
+    document.getElementById("closeAccountModal")?.addEventListener("click", () => modal.classList.add("hidden"));
+
+    const addToCartBtn = modalContent.querySelector(".add-to-cart-btn");
+    if (addToCartBtn) {
+      addToCartBtn.addEventListener("click", () => {
+        const quantityInput = modalContent.querySelector("#quantityToAdd");
+        const quantity = parseInt(quantityInput?.value, 10);
+
+        if (!quantity || quantity < 1) {
+          showCustomAlert("Please enter a valid quantity.", "error");
+          return;
+        }
+
+        const accountId = addToCartBtn.getAttribute("data-id");
+        const token = getSessionData().token;
+
+        if (!token) {
+          showCustomAlert("You must be logged in to add to cart.", "error");
+          return;
+        }
+
+        addToCart(accountId, quantity, token, addToCartBtn);
       });
-
-      // Optional: for mobile support, also listen for touchstart
-      closeBtn.addEventListener("touchstart", () => {
-        modal.classList.add("hidden");
-      }, { passive: true });
     }
   }
-
 
   async function addToCart(accountId, quantity, token, buttonElement) {
     if (!buttonElement) return;
@@ -308,11 +262,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await response.json();
 
       if (data.success) {
-        buttonElement.innerHTML = `
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="white" class="w-5 h-5 inline-block mr-1">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-          </svg> Added`;
-        fetchAndDisplayAccounts()
+        buttonElement.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="white" class="w-5 h-5 inline-block mr-1"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg> Added`;
+        fetchAndDisplayAccounts();
         updateCartCount();
         showCustomAlert("Account added to cart!");
       } else {
@@ -330,17 +281,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function updateCartCount() {
     const session = getSessionData();
+    try {
+      const response = await fetch(`${BASE_URL}/api/v1/cart/get`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.token || ''}`
+        }
+      });
 
-    const response = await fetch(`${BASE_URL}/api/v1/cart/get`, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${session.token || ''}`
-      }
-    });
-
-    const data = await response.json();
-    document.getElementById("cartCount").textContent = data.cart?.length || 0;
-    document.getElementById("headerCartCount").textContent = data.cart?.length || 0;
+      const data = await response.json();
+      document.getElementById("cartCount").textContent = data.cart?.length || 0;
+      document.getElementById("headerCartCount").textContent = data.cart?.length || 0;
+    } catch (err) {
+      console.error("Failed to update cart count", err);
+    }
   }
 
   updateCartCount();
